@@ -50,14 +50,62 @@ angular.module('app.controllers', [])
 	});
 })
 
-.controller('mapsCtrl2', function($scope, $state, $cordovaGeolocation, $rootScope) {
+.controller('mapsCtrl2', function($scope, $state, $cordovaGeolocation, $rootScope, $window) {
 
-	TESTER = document.getElementById('test-chart');
-	Plotly.plot(TESTER, [{
-		x: [1, 2, 3, 4, 5],
-		y: [1, 2, 4, 8, 16] }], {
-			margin: {t:0}});	
+//	TESTER = document.getElementById('test-chart');
+//	Plotly.plot(TESTER, [{
+//		x: [1, 2, 3, 4, 5],
+//		y: [1, 2, 4, 8, 16] }], {
+//			margin: {t:0}});	
+    
+    var innerHeight = $window.innerHeight;
+    var innerWidth = $window.innerWidth;
+    var padding = "30";
+    console.log(innerHeight + ',  ' + innerWidth)
+    
+    var data = [{
+    "sale": "202",
+    "year": "2000"
+    }, {
+    "sale": "215",
+    "year": "2001"
+    }, {
+    "sale": "179",
+    "year": "2002"
+    }, {
+    "sale": "199",
+    "year": "2003"
+    }, {
+    "sale": "134",
+    "year": "2003"
+    }, {
+    "sale": "176",
+    "year": "2010"
+    }];
 
+    var vis = d3.select("#visualisation"),
+        WIDTH = innerWidth,
+        HEIGHT = innerHeight,
+        MARGINS = {
+            top: 20,
+            right: 20,
+            bottom: 20,
+            left: 50
+        },
+        xScale = d3.scaleLinear().range([MARGINS.left, WIDTH - MARGINS.right]).domain([2000,2010]),
+        yScale = d3.scaleLinear().range([HEIGHT - MARGINS.top, MARGINS.bottom]).domain([134,215]),
+        xAxis = d3.axisBottom()
+            .scale(xScale),
+        yAxis = d3.axisLeft()
+            .scale(yScale);
+    
+    vis.append("svg:g")
+    .attr("transform", "translate(0,100)")
+    .call(xAxis);
+    
+    vis.append("svg:g")
+    .attr("transform", "translate(" + padding + ",0)")
+    .call(yAxis);
 
 })
    
