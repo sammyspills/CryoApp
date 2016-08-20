@@ -82,10 +82,30 @@ angular.module('app.controllers', [])
     "sale": "176",
     "year": "2010"
     }];
+    
+    var data2 = [{
+    "sale": "152",
+    "year": "2000"
+    }, {
+    "sale": "189",
+    "year": "2002"
+    }, {
+    "sale": "179",
+    "year": "2004"
+    }, {
+    "sale": "199",
+    "year": "2006"
+    }, {
+    "sale": "134",
+    "year": "2008"
+    }, {
+    "sale": "176",
+    "year": "2010"
+    }];
 
     var vis = d3.select("#visualisation"),
         WIDTH = innerWidth,
-        HEIGHT = innerHeight,
+        HEIGHT = 600,
         MARGINS = {
             top: 20,
             right: 20,
@@ -94,18 +114,39 @@ angular.module('app.controllers', [])
         },
         xScale = d3.scaleLinear().range([MARGINS.left, WIDTH - MARGINS.right]).domain([2000,2010]),
         yScale = d3.scaleLinear().range([HEIGHT - MARGINS.top, MARGINS.bottom]).domain([134,215]),
-        xAxis = d3.axisBottom()
-            .scale(xScale),
-        yAxis = d3.axisLeft()
-            .scale(yScale);
+        xAxis = d3.axisBottom().scale(xScale),
+        yAxis = d3.axisLeft().scale(yScale);
     
     vis.append("svg:g")
-    .attr("transform", "translate(0,100)")
+    .attr("class","axis")
+    .attr("transform", "translate(0," +(HEIGHT - MARGINS.bottom)+ ")")
     .call(xAxis);
     
     vis.append("svg:g")
-    .attr("transform", "translate(" + padding + ",0)")
+    .attr("class","axis")
+    .attr("transform", "translate(" + (MARGINS.left) + ",0)")
     .call(yAxis);
+    
+    var lineGen = d3.line()
+        .x(function(d) {
+            return xScale(d.year);
+        })
+        .y(function(d) {
+            return yScale(d.sale);
+        })
+        .curve(d3.curveBasis);
+    
+    vis.append('svg:path')
+        .attr('d', lineGen(data))
+        .attr('stroke', 'green')
+        .attr('stroke-width', 2)
+        .attr('fill', 'none');
+    
+    vis.append('svg:path')
+      .attr('d', lineGen(data2))
+      .attr('stroke', 'blue')
+      .attr('stroke-width', 2)
+      .attr('fill', 'none');
 
 })
    
