@@ -60,8 +60,14 @@ angular.module('app.controllers', [])
     
     var innerHeight = $window.innerHeight;
     var innerWidth = $window.innerWidth;
+    
+    var chartDiv = document.getElementById('chart-div');
+    var divHeight = chartDiv.offsetHeight;
+    var divWidth = chartDiv.offsetWidth;
+    
     var padding = "30";
-    console.log(innerHeight + ',  ' + innerWidth)
+    
+    console.log(divHeight + ',  ' + divWidth)
     
     var data = [{
     "sale": "202",
@@ -104,8 +110,8 @@ angular.module('app.controllers', [])
     }];
 
     var vis = d3.select("#visualisation"),
-        WIDTH = innerWidth,
-        HEIGHT = 600,
+        WIDTH = divWidth,
+        HEIGHT = divHeight,
         MARGINS = {
             top: 20,
             right: 20,
@@ -119,7 +125,7 @@ angular.module('app.controllers', [])
     
     vis.append("svg:g")
     .attr("class","axis")
-    .attr("transform", "translate(0," +(HEIGHT - MARGINS.bottom)+ ")")
+    .attr("transform", "translate(0," +(HEIGHT - (2*MARGINS.bottom))+ ")")
     .call(xAxis);
     
     vis.append("svg:g")
