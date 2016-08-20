@@ -18,11 +18,12 @@ angular.module('app.controllers', [])
  
 		$cordovaGeolocation.getCurrentPosition(options).then(function(position){
 
-			var latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
- 
+			//var latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+            var latLng = new google.maps.LatLng(80, 0);
+            
 			var mapOptions = {
 				center: latLng,
-				zoom: 15,
+				zoom: 1,
 				mapTypeId: google.maps.MapTypeId.ROADMAP
 			};
  
@@ -48,18 +49,6 @@ angular.module('app.controllers', [])
 	}, function(error){
 		console.log("Could not get location");
 	});
-})
-
-.controller('mapsCtrl2', function($scope, $state, $cordovaGeolocation, $rootScope, $window) {
-
-//	TESTER = document.getElementById('test-chart');
-//	Plotly.plot(TESTER, [{
-//		x: [1, 2, 3, 4, 5],
-//		y: [1, 2, 4, 8, 16] }], {
-//			margin: {t:0}});	
-    
-    var innerHeight = $window.innerHeight;
-    var innerWidth = $window.innerWidth;
     
     var chartDiv = document.getElementById('chart-div');
     var divHeight = chartDiv.offsetHeight;
@@ -153,6 +142,10 @@ angular.module('app.controllers', [])
       .attr('stroke', 'blue')
       .attr('stroke-width', 2)
       .attr('fill', 'none');
+})
+
+.controller('mapsCtrl2', function($scope, $state, $cordovaGeolocation, $rootScope, $window) {	
+    
 
 })
    
