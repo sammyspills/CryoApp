@@ -6592,7 +6592,7 @@ button.item.item-button-right {
 .card {
   padding-top: 1px;
   padding-bottom: 1px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3); }
+  box-shadow: 0 3px 25px rgba(0, 0, 0, 0.3); }
   .card .item {
     border-left: 0;
     border-right: 0; }
