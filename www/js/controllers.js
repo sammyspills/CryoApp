@@ -228,7 +228,7 @@ angular.module('app.controllers', [])
 	  		$scope.long_geo = position.coords.longitude;
 	  	});
 
-	  	var isRecording = false;
+	  	$scope.isRecording = false;
 
 	  	// TODO: Set interval to 1 hour. Set debug = false.
 	  	bgGeo.configure({
@@ -261,7 +261,7 @@ angular.module('app.controllers', [])
 		var onResume = function(){
 
 	  		var getLocation = function(){
-	  			if(isRecording){
+	  			if($scope.isRecording){
 	  				$cordovaGeolocation.getCurrentPosition(optionsGeo).then(function(position){
 	  					console.log('[ForegroundGeo] Location updated - Position: latitude - ' + position.coords.latitude + ', longitude - ' + position.coords.longitude);
 	  					$scope.lat_geo = position.coords.latitude;
@@ -289,7 +289,7 @@ angular.module('app.controllers', [])
 		   	confirmPopup.then(function(res) {
 		   		if(res){
 		   			bgGeo.start();
-		   			isRecording = true;
+                    $scope.isRecording = true;
 		            console.log('[BackgroundGeo] Tracking started.');
 		            onResume();
 		        } else {
@@ -308,7 +308,7 @@ angular.module('app.controllers', [])
 		   	confirmPopup.then(function(res) {
 		   		if(res){
 		   			bgGeo.stop();
-		   			isRecording = false;
+                    $scope.isRecording = false;
 		            console.log('[BackgroundGeo] Tracking stopped.');
 		        } else {
 		        	//return
