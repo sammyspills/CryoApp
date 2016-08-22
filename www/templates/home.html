@@ -6,14 +6,26 @@
 </style>
 <ion-view title="Home" id="homeScreen">
     <ion-content padding="false" class="has-header">
-<!--
-        <div class="" style="margin-left: -10px; width: calc(100% + 20px);">
-            <img src="img/home_header2.PNG" width="100%" height="auto" style="display: block; margin:-5px">
-        </div>
--->
-        <div class="crop">
-            <img src="img/ice_picture.jpg" width="100%" height="auto">
-        </div>
+        <ion-slide-box width="100%" height="250px" show-pager="false" does-continue="true" auto-play="true" slide-interval="4500">
+            <ion-slide>
+                <img src="img/header_anna_ice_berg.JPG" width="100%" height="250px%"/>
+            </ion-slide>
+            <ion-slide>
+                <img src="img/header_anna_ice_berg4.JPG" width="100%" height="250px%"/>
+            </ion-slide>
+            <ion-slide>
+                <img src="img/header_sea_ice_terrain.jpg" width="100%" height="250px%"/>
+            </ion-slide>
+            <ion-slide>
+                <img src="img/header_anna_ice_berg2.JPG" width="100%" height="250px%"/>
+            </ion-slide>
+            <ion-slide>
+                <img src="img/header_anna_ice_berg3.JPG" width="100%" height="250px%"/>
+            </ion-slide>
+            <ion-slide>
+                <img src="img/header_anna_work.JPG" width="100%" height="250px%"/>
+            </ion-slide>
+        </ion-slide-box>
         <div class="card" id="home-card24">
             <div class="item item-divider item-text-wrap"><h2 id="home-heading2" style="color:#000000; text-align: center;font-size:24px">Centre for Polar Observation and Measurement</h2></div>
             <div class="item item-text-wrap"><h5 id="home-markdown2" style="color:#000000; text-align: center; font-size:16px" class="padding">The Centre for Polar Observation and Modelling (CPOM) is a NERC Centre of Excellence that studies processes in the Earth’s polar latitudes that can affect the Earth’s radiation reflectance, polar atmosphere and ocean circulation, and global sea level.</h5></div>
@@ -56,7 +68,7 @@
 			Since the successful launch of the second mission, CryoSat-2 has been collecting data uninterrupted. This data is fed back periodically every 2 days to the central processing centre at University College London, which in turn processes the data and distibutes it on the CPOM website (Linked in the 'About' section).</h5>
 			</div>
 			<div>
-				<img class="full-image" src="http://cpom.leeds.ac.uk/wp-content/uploads/2016/06/Steph-on-PIG-Credit-David-Vaughan-BAS-300x199.jpg" ng-click="blogSite()">
+				<img class="full-image" src="img/Steph-BAS.jpg" ng-click="blogSite()">
 				<div class="item item-divider item-text-wrap"><h4 style="text-align: center; font-size:14px" ng-click="blogSite()">Click above to read about the latest goings on with the CPOM group and their research!</h4></div>
 			</div>
         </div>

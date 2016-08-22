@@ -125,19 +125,19 @@ angular.module('app.controllers', [])
         },
         xScale = d3.scaleLinear()
             .range([MARGINS.left, WIDTH - MARGINS.right])
-            .domain([d3.min(data, function(d) {
-                return d.year;
-            }), d3.max(data, function(d) {
-                return d.year;
-            })]),
+//            .domain([d3.min(data, function(d) {
+//                return d.year;
+//            }), d3.max(data, function(d) {
+//                return d.year;
+//            })]),
 
         yScale = d3.scaleLinear()
         .range([HEIGHT - MARGINS.bottom, MARGINS.top])
-        .domain([d3.min(data, function(d) {
-            return d.sale;
-        }), d3.max(data, function(d) {
-            return d.sale;
-        })]),
+//        .domain([d3.min(data, function(d) {
+//            return d.sale;
+//        }), d3.max(data, function(d) {
+//            return d.sale;
+//        })]),
 
         xAxis = d3.axisBottom().scale(xScale),
         yAxis = d3.axisLeft().scale(yScale);
@@ -162,6 +162,45 @@ angular.module('app.controllers', [])
             return yScale(d.sale);
         })
         .curve(d3.curveBasis);
+    
+    //Initialise distance calculating function:
+    var getDistance = function(latlon){
+        var lat_point = latlon[0];
+        var lon_point = latlon[1];
+        var deg2rad = Math.pi/180;
+        
+        for(i = 0; i = (latlon[0].length - 1); i++){
+            console.log((i*100/latlon[0].length) + "%");
+            
+            //phi = 90 - lat
+            var phi1 = (90.0 - lat_point[i]) * deg2rad;
+            var phi2 = (90.0 - lat_point[i-1]) * deg2rad;
+            
+            //theta = lon
+            var theta1 = lon_point[i] * deg2rad;
+            var theta2 = lon_point[i-1] * deg2rad;
+            
+            var cos = (Math.sin(phi1) * Math.sin(phi2) * Math.cos(theta1 - theta2)) + (Math.cos(phi1) * Math.cos(phi2));
+            var arc = Math.acos(cos)*6371; //Radius of Earth.
+            latlon[2].push(arc);
+        };
+        
+        for(i = 1; i = (latlon[0].length - 1); i++){
+            var x = latlon[3][i-1] + latlon[2][i];
+            latlon[3].push(x);
+        };
+        console.log(latlon[3]);
+    };
+    
+//Initialise 2D array for lat, lon, dist., cum. dist.
+    var route_array_scientific = [[],[],[],[0]];
+    d3.csv("res/filtered_route.csv", function(data){
+        data.forEach(function(d){
+            route_array_scientific[0].push(parseFloat(d.lat));
+            route_array_scientific[1].push(parseFloat(d.lon));
+        });
+        getDistance(route_array_scientific);
+    });
     
     dataGroup.forEach(function(d, i) {
         vis.append('svg:path')
