@@ -1,0 +1,3 @@
+TODO:
+- Set GPS timeout to 1 hour, set debug=false
+- Make function for reading user data instead of example data
