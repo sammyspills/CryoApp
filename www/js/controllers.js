@@ -18,7 +18,7 @@ angular.module('app.controllers', [])
     var options = {timeout: 10000, enableHighAccuracy: true};
     //var latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
 
-    var latLng = new google.maps.LatLng(80, 0);
+    var latLng = new google.maps.LatLng(51.5074, 0);
     var mapOptions = {
         center: latLng,
         zoom: 1,
@@ -165,19 +165,19 @@ angular.module('app.controllers', [])
         .attr("fill", "none");
         
         vis.append("text")
-        .attr("class", "x label")
+        .attr("class", "legend")
         .attr("text-anchor", "middle")
         .attr("x", MARGINS.left + (WIDTH-MARGINS.left-MARGINS.right)/2)
         .attr("y", HEIGHT-(MARGINS.bottom/3))
-        .text("Distance along route (m)");
+        .text("Distance Along Route (m)");
         
         vis.append("text")
-        .attr("class", "y label")
+        .attr("class", "legend")
         .attr("text-anchor", "middle")
         .attr("y", MARGINS.left/2.5)
         .attr("x", -MARGINS.top-(HEIGHT-MARGINS.top-MARGINS.bottom)/2)
         .attr("transform", "rotate(-90)")
-        .text("life expectancy (years)");
+        .text("Sea Ice Thickness (m)");
 
     };
     
