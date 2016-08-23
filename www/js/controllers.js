@@ -316,25 +316,38 @@ angular.module('app.controllers', [])
 
 })
 
-.controller('aboutCtrl', function($scope, $cordovaEmailComposer){
+.controller('aboutCtrl', function($scope, $ionicPlatform){
 	$scope.leedsSite = function(){
 		window.open("http://cpom.leeds.ac.uk", '_system');
-	}
+	};
 	$scope.uclSite = function(){
 		window.open("http://www.cpom.ucl.ac.uk/csopr/seaice.html", '_system');
-	}
-    $scope.sendMail = function(){
-        var email = {
-             to: 'py14sts@leeds.ac.uk',
-             subject: 'Feedback about CPOM App!',
-             body: '<h1 style="color:#313131; text-align:center">Feedback about CPOM App!</h1>',
-             isHtml: true
-          };
-        
-        $cordovaEmailComposer.open(email).then(null, function () {
-        // user cancelled email
+	};
+    
+    $ionicPlatform.ready(function(){
+        cordova.plugins.email.isAvailable(function(isAvailable){
+            if(isAvailable){
+                var bodyText = "<h1 style='text-align:center; color:lightgrey; font-family:sans-serif'>Feedback about CPOM App!</h1>"
+                console.log('[SendMail] Email plugin is available');
+                $scope.sendEmail = function(){
+                    cordova.plugins.email.open({
+                        to: ["py14sts@leeds.ac.uk"],
+                        cc: null,
+                        bcc: null,
+                        attachments: null,
+                        subject: "Feedback about CPOM App!",
+                        body: bodyText,
+                        isHtml: true,
+                    }, function(){
+                        console.log('[SendMail] Email window closed.');
+                    });
+                };
+            } else {
+                console.log('[SendMail] Email plugin is not available');
+            };
         });
-    }
+    });
+    
 })
 
 .controller('settingsCtrl', function($scope){
