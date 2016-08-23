@@ -1,3 +1,12 @@
+<style>
+    .shady {
+        color: lighten(darkgrey, -30%) !important;
+    }
+    .shady i {
+        color: darkgray !important;
+    }
+    
+</style>
 <ion-view title="Route Tracking" id="trackScreen" class=" ">
     <ion-content padding="false" class="has-header">
     <div class="list card padding" id="route-card-1">
@@ -10,9 +19,10 @@
     	This is where previous routes will be stored.
     	## For now, test Geolocation ##
     	<ion-list>
-    		<ion-item ui-sref="menu.maps">{{lat_geo}}</ion-item>
-    		<ion-item ui-sref="menu.maps">{{long_geo}}</ion-item>
-
+    		<ion-item class="item-icon-left shady item-text-wrap" ui-sref="menu.maps">
+    		    <i class="icon ion-ios-location-outline"></i>
+    		    Example Track: Scientific Cruise around the Siberian Shelf - 2014
+    		</ion-item>
     	</ion-list>
     </div>
     </ion-content>

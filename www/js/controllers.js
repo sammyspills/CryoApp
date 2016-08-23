@@ -44,22 +44,28 @@ angular.module('app.controllers', [])
 //
 //    })
     var latLngArray = []
+//    var mapFunc = function(data){
+//        data.forEach(function(d){
+//            latLngArray.push({
+//                lat: +d.lat,
+//                lng: +d.lon
+//            });
+//        });
+//        console.log(latLngArray);
+//    };
+    
+    var polyOptions = {strokeColor: '#FF0000',strokeOpacity: 0.6,strokeWeight: 2};
+    var poly = new google.maps.Polyline(polyOptions);
+    
     var mapFunc = function(data){
         data.forEach(function(d){
-            latLngArray.push({
-                lat: +d.lat,
-                lng: +d.lon
-            });
-        });
-    };
-    var shipTrack = new google.maps.Polyline({
-        path: latLngArray,
-        geodesic: true,
-        strokeColor: '#FF0000',
-        strokeOpacity: 1.0,
-        strokeWeight: 2
-    });
-    shipTrack.setMap(map);
+            var point = new google.maps.LatLng(parseFloat(d.lat), parseFloat(d.lon));
+            
+            latLngArray.push(point);
+            poly.setPath(latLngArray);
+            poly.setMap(map);
+        })
+    }
     
     var chartDiv = document.getElementById('chart-div');
     var divHeight = chartDiv.offsetHeight;
@@ -310,13 +316,25 @@ angular.module('app.controllers', [])
 
 })
 
-.controller('aboutCtrl', function($scope){
+.controller('aboutCtrl', function($scope, $cordovaEmailComposer){
 	$scope.leedsSite = function(){
 		window.open("http://cpom.leeds.ac.uk", '_system');
 	}
 	$scope.uclSite = function(){
 		window.open("http://www.cpom.ucl.ac.uk/csopr/seaice.html", '_system');
 	}
+    $scope.sendMail = function(){
+        var email = {
+             to: 'py14sts@leeds.ac.uk',
+             subject: 'Feedback about CPOM App!',
+             body: '<h1 style="color:#313131; text-align:center">Feedback about CPOM App!</h1>',
+             isHtml: true
+          };
+        
+        $cordovaEmailComposer.open(email).then(null, function () {
+        // user cancelled email
+        });
+    }
 })
 
 .controller('settingsCtrl', function($scope){
