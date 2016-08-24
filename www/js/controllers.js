@@ -14,58 +14,17 @@ angular.module('app.controllers', [])
    
 .controller('mapsCtrl', function($scope, $state, $cordovaGeolocation) {
     
-
-    var options = {timeout: 10000, enableHighAccuracy: true};
-    //var latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-
-    var latLng = new google.maps.LatLng(51.5074, 0);
-    var mapOptions = {
-        center: latLng,
-        zoom: 1,
-        mapTypeId: 'terrain'
-    };
-
-    var map = new google.maps.Map(document.getElementById("map"), mapOptions);
-//    google.maps.event.addListenerOnce($scope.map, 'idle', function(){
-//
-//        var marker = new google.maps.Marker({
-//            map: $scope.map,
-//            animation: google.maps.Animation.DROP,
-//            position: latLng
-//        })
-//
-//        var infoWindow = new google.maps.InfoWindow({
-//        content: "Current Location"
-//        });
-//
-//        google.maps.event.addListener(marker, 'click', function () {
-//        infoWindow.open($scope.map, marker);
-//        });
-//
-//    })
-    var latLngArray = []
-//    var mapFunc = function(data){
-//        data.forEach(function(d){
-//            latLngArray.push({
-//                lat: +d.lat,
-//                lng: +d.lon
-//            });
-//        });
-//        console.log(latLngArray);
-//    };
-    
-    var polyOptions = {strokeColor: '#FF0000',strokeOpacity: 0.6,strokeWeight: 2};
-    var poly = new google.maps.Polyline(polyOptions);
-    
-    var mapFunc = function(data){
+    var polarPlot = function(data){
+        
+        var route_points = [[],[]];
+        
         data.forEach(function(d){
-            var point = new google.maps.LatLng(parseFloat(d.lat), parseFloat(d.lon));
-            
-            latLngArray.push(point);
-            poly.setPath(latLngArray);
-            poly.setMap(map);
+            route_points[0].push(d.lat);
+            route_points[1].push(d.lon);
         })
-    }
+        
+        
+    };
     
     var chartDiv = document.getElementById('chart-div');
     var divHeight = chartDiv.offsetHeight;
@@ -183,7 +142,7 @@ angular.module('app.controllers', [])
     
     d3.csv("res/scientific_route.csv", function(d){
         plotFunc(d);
-        mapFunc(d);
+        polarPlot(d);
     });
         
 
