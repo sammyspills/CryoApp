@@ -14,17 +14,130 @@ angular.module('app.controllers', [])
    
 .controller('mapsCtrl', function($scope, $state, $cordovaGeolocation) {
     
+    var mapDiv = document.getElementById('map-div');
+    var mapHeight = mapDiv.offsetHeight;
+    var mapWidth = mapDiv.offsetWidth;
+    
     var polarPlot = function(data){
         
         var route_points = [[],[]];
         
         data.forEach(function(d){
+            var deg2rad = Math.pi/180;
+            
+            var theta = d.lon * deg2rad;
+            var phi = d.lat * deg2rad;
+            var radius = (Math.sin(phi))/(1 - (Math.cos(phi)));
+            
+            
+            
+            
+            route_points[0].push(phi);
+            route_points[1].push(radius);
+        });
+        
+        var vis = d3.select("#map-vis"),
+            WIDTH = mapWidth,
+            HEIGHT = mapHeight,
+            PADDING = 30,
+            RADIUS = (Math.min(WIDTH, HEIGHT) / 2) - PADDING,
+            rScale = d3.scaleLinear()
+                    .domain([0, .5])
+                    .range([0, RADIUS]);
+        
+        console.log(WIDTH, HEIGHT);
+        
+        vis.append("svg")
+            .attr("width", (WIDTH - (2*PADDING)))
+            .attr("height", HEIGHT - (2*PADDING))
+            .append("g");
+        
+        vis.append('svg:image')
+            .attr("transform", "translate(" + PADDING + "," + PADDING + ")")
+            .attr('xlink:href', 'img/ice_thickness/sea_ice_scatter.png')
+            .attr("width", WIDTH - (2*PADDING))
+            .attr("height", HEIGHT - (2*PADDING))
+            .attr("x", 0)
+            .attr("y", 0);
+        
+        var gr = vis.append("g")
+            .attr("class", "r axis")
+            .attr("transform", "translate(" + WIDTH/2 + "," + HEIGHT/2 + ")")
+            .selectAll("g")
+            .data(rScale.ticks(5).slice(1))
+            .enter().append("g");
+        
+        gr.append("circle")
+            .attr("r", rScale);
+        
+        var ga = vis.append("g")
+            .attr("class", "a radials")
+            .attr("transform", "translate(" + WIDTH/2 + "," + HEIGHT/2 + ")")
+            .selectAll("g")
+            .data(d3.range(0, 360, 30))
+            .enter().append("g")
+            .attr("transform", function(d) { return "rotate(" + -d + ")"; });
+
+        ga.append("line")
+            .attr("x2", RADIUS);
+        
+    };
+    
+    var topoDiv = document.getElementById("topo-div");
+    topoHeight = topoDiv.offsetHeight;
+    topoWidth = topoDiv.offsetWidth;
+    
+    var topoFunc = function(data){
+        var route_points = [[],[]];
+        data.forEach(function(d){
             route_points[0].push(d.lat);
             route_points[1].push(d.lon);
         })
         
+        var vis = d3.select("#topo-vis"),
+            WIDTH = topoWidth,
+            HEIGHT = topoHeight,
+            PADDING = 30;
         
-    };
+        var projection = d3.geoOrthographic()
+            .scale(150)
+            .rotate([0, -90])
+            .translate([WIDTH/2, PADDING])
+            .center([0, 90])
+            .clipExtent([[0, 0], [WIDTH, HEIGHT]])
+            .precision(1);
+        
+        vis.append("svg")
+            .attr("width", WIDTH)
+            .attr("height", HEIGHT)
+            .attr("transform", "translate(" + PADDING + "," + PADDING + ")")
+        
+        var path = d3.geoPath()
+            .projection(projection);
+        
+        var graticule = d3.geoGraticule();
+        
+        vis.append("path")
+            .datum(graticule)
+            .attr("class", "graticule")
+            .attr("d", path);
+        
+        var g = vis.append("g")
+        
+        d3.json("json/world-110m.json", function(error, world) {
+              if (error) throw error;
+
+            vis.insert("path", ".graticule")
+                .datum(topojson.feature(world, world.objects.land))
+                .attr("class", "land")
+                .attr("d", path);
+
+            vis.insert("path", ".graticule")
+                .datum(topojson.mesh(world, world.objects.countries, function(a, b) { return a !== b; }))
+                .attr("class", "boundary")
+                .attr("d", path);
+        });
+    }
     
     var chartDiv = document.getElementById('chart-div');
     var divHeight = chartDiv.offsetHeight;
@@ -143,6 +256,7 @@ angular.module('app.controllers', [])
     d3.csv("res/scientific_route.csv", function(d){
         plotFunc(d);
         polarPlot(d);
+        topoFunc(d);
     });
         
 
