@@ -1,0 +1,55 @@
+ion-side-menu .menu-drawer{
+	background: "#00376e"
+}
+
+
+.bar.bar-positive {
+	background-color: #00376d
+}
+
+ion-nav-bar {
+	background-color: #00376d
+}
+
+html, body, .custom-button {
+      border-color: #00376d;
+      background: transparent;
+      color: #00367d; 
+      margin:4px; 
+      width: 175px;
+  }
+      .custom_button.active, .custom_button.activated {
+        background: #00376d;
+        box-shadow: none;
+        color: #fff; }
+
+
+
+.item-text-center {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -moz-box;
+    display: -moz-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    -webkit-align-items: center;
+    -moz-align-items: center;
+    align-items: center;
+    position: absolute;
+    top: 0;
+    height: 100%;
+}
+
+.aboutScreen .partner-list img {
+	position: absolute;
+	left: 0;
+	right: 0;
+	margin:0 auto;
+	top: 50%;
+	transform:translateY(-50%); 
+}
+
+
+
