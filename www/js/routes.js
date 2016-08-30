@@ -30,16 +30,6 @@ angular.module('app.routes', [])
     }
   })
 
-    .state('menu.maps2', {
-    url: '/mapScreen2',
-    views: {
-      'side-menu21': {
-        templateUrl: 'templates/maps2.html',
-        controller: 'mapsCtrl2'
-      }
-    }
-  })
-
   .state('menu.marineTraffic', {
     url: '/trafficScreen',
     views: {

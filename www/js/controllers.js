@@ -8,109 +8,59 @@ angular.module('app.controllers', [])
 
 	$scope.blogSite = function(){
 		window.open("http://cpom.leeds.ac.uk/cpom-blog/", '_system');
-	}
+    }
 
 })
    
 .controller('mapsCtrl', function($scope, $state, $cordovaGeolocation) {
     
-    var mapDiv = document.getElementById('map-div');
-    var mapHeight = mapDiv.offsetHeight;
-    var mapWidth = mapDiv.offsetWidth;
-    
-    var polarPlot = function(data){
-        
-        var route_points = [[],[]];
-        
-        data.forEach(function(d){
-            var deg2rad = Math.pi/180;
-            
-            var theta = d.lon * deg2rad;
-            var phi = d.lat * deg2rad;
-            var radius = (Math.sin(phi))/(1 - (Math.cos(phi)));
-            
-            
-            
-            
-            route_points[0].push(phi);
-            route_points[1].push(radius);
-        });
-        
-        var vis = d3.select("#map-vis"),
-            WIDTH = mapWidth,
-            HEIGHT = mapHeight,
-            PADDING = 30,
-            RADIUS = (Math.min(WIDTH, HEIGHT) / 2) - PADDING,
-            rScale = d3.scaleLinear()
-                    .domain([0, .5])
-                    .range([0, RADIUS]);
-        
-        console.log(WIDTH, HEIGHT);
-        
-        vis.append("svg")
-            .attr("width", (WIDTH - (2*PADDING)))
-            .attr("height", HEIGHT - (2*PADDING))
-            .append("g");
-        
-        vis.append('svg:image')
-            .attr("transform", "translate(" + PADDING + "," + PADDING + ")")
-            .attr('xlink:href', 'img/ice_thickness/sea_ice_scatter.png')
-            .attr("width", WIDTH - (2*PADDING))
-            .attr("height", HEIGHT - (2*PADDING))
-            .attr("x", 0)
-            .attr("y", 0);
-        
-        var gr = vis.append("g")
-            .attr("class", "r axis")
-            .attr("transform", "translate(" + WIDTH/2 + "," + HEIGHT/2 + ")")
-            .selectAll("g")
-            .data(rScale.ticks(5).slice(1))
-            .enter().append("g");
-        
-        gr.append("circle")
-            .attr("r", rScale);
-        
-        var ga = vis.append("g")
-            .attr("class", "a radials")
-            .attr("transform", "translate(" + WIDTH/2 + "," + HEIGHT/2 + ")")
-            .selectAll("g")
-            .data(d3.range(0, 360, 30))
-            .enter().append("g")
-            .attr("transform", function(d) { return "rotate(" + -d + ")"; });
-
-        ga.append("line")
-            .attr("x2", RADIUS);
-        
-    };
-    
     var topoDiv = document.getElementById("topo-div");
-    topoHeight = topoDiv.offsetHeight;
-    topoWidth = topoDiv.offsetWidth;
+    var topoHeight = topoDiv.offsetHeight;
+    var topoWidth = topoDiv.offsetWidth;
     
     var topoFunc = function(data){
+        
         var route_points = [[],[]];
         data.forEach(function(d){
             route_points[0].push(d.lat);
             route_points[1].push(d.lon);
-        })
+        });
         
         var vis = d3.select("#topo-vis"),
             WIDTH = topoWidth,
             HEIGHT = topoHeight,
-            PADDING = 30;
+            PADDING = 0;
         
-        var projection = d3.geoOrthographic()
-            .scale(150)
+        var minDim = Math.min(WIDTH, HEIGHT);
+        var maxDim = Math.max(WIDTH, HEIGHT);
+        var Arctic = {
+                          "type": "Feature",
+                          "geometry": {
+                            "type": "MultiPoint",
+                            "coordinates": [[0,60],[180,60]]
+                          },
+                          "properties": {
+                            "name": "Arctic"
+                          }
+                    };
+        
+        var projection = d3.geoStereographic()
             .rotate([0, -90])
-            .translate([WIDTH/2, PADDING])
             .center([0, 90])
-            .clipExtent([[0, 0], [WIDTH, HEIGHT]])
+            .fitSize([WIDTH,HEIGHT],Arctic)
             .precision(1);
         
         vis.append("svg")
             .attr("width", WIDTH)
-            .attr("height", HEIGHT)
-            .attr("transform", "translate(" + PADDING + "," + PADDING + ")")
+            .attr("height", HEIGHT);
+        
+        vis.append("svg:image")
+            .attr('width', WIDTH)
+            .attr('height', HEIGHT)
+            .attr('x','-4%')
+            .attr('y','-4%')
+            .attr("transform", "scale(1.08)")
+            .attr("xlink:href","img/ice_thickness/28_spring_2016.png");
         
         var path = d3.geoPath()
             .projection(projection);
@@ -122,7 +72,24 @@ angular.module('app.controllers', [])
             .attr("class", "graticule")
             .attr("d", path);
         
-        var g = vis.append("g")
+        for(var i=0, len=route_points[0].length-1;i<len;i++){
+            var start_point = [route_points[1][i], route_points[0][i]];
+            var end_point = [route_points[1][i+1], route_points[0][i+1]];
+            
+            var route = {
+                type: "LineString",
+                coordinates: [
+                    start_point,
+                    end_point
+                ]
+            };
+            vis.append("path")
+                .datum(route)
+                .attr("class", "arc")
+                .attr("d", path);
+        };
+        
+        var g = vis.append("g");
         
         d3.json("json/world-110m.json", function(error, world) {
               if (error) throw error;
@@ -137,7 +104,9 @@ angular.module('app.controllers', [])
                 .attr("class", "boundary")
                 .attr("d", path);
         });
-    }
+        
+        return vis;
+    };
     
     var chartDiv = document.getElementById('chart-div');
     var divHeight = chartDiv.offsetHeight;
@@ -174,7 +143,7 @@ angular.module('app.controllers', [])
 //        console.log(latlon[3]);
 //    };
     
-    var plotFunc = function(data){
+    var scatterFunc = function(data){
         //Initialise 2D array for lat, lon, dist., cum. dist.
         var route_array_scientific = [[],[]];
         
@@ -216,7 +185,7 @@ angular.module('app.controllers', [])
             .attr("transform", "translate(0," +(HEIGHT - (MARGINS.bottom))+ ")")
             .call(xAxis);
 
-            vis.append("svg:g")
+        vis.append("svg:g")
             .attr("class","axis")
             .attr("transform", "translate(" + (MARGINS.left) + ",0)")
             .call(yAxis);
@@ -232,9 +201,17 @@ angular.module('app.controllers', [])
         vis.append("svg:path")
         .attr("class", "line")
         .attr("stroke", "#00376d")
-        .attr('stroke-width', 1)
+        .attr('stroke-width', .5)
         .attr("d", lineGen(xData))
         .attr("fill", "none");
+        
+        vis.selectAll(".dot")
+        .data(xData)
+        .enter().append("circle")
+        .attr('class', 'dot')
+        .attr('cx', function(d, i) { return xScale(xData[i]); })
+        .attr('cy', function(d, i) { return yScale(yData[i]); })
+        .attr('r', .8)
         
         vis.append("text")
         .attr("class", "legend")
@@ -254,16 +231,10 @@ angular.module('app.controllers', [])
     };
     
     d3.csv("res/scientific_route.csv", function(d){
-        plotFunc(d);
-        polarPlot(d);
-        topoFunc(d);
+        scatterFunc(d);
+        vis = topoFunc(d);
     });
         
-
-})
-
-.controller('mapsCtrl2', function($scope, $state, $cordovaGeolocation, $rootScope, $window) {	
-    
 
 })
    
@@ -271,8 +242,81 @@ angular.module('app.controllers', [])
 
 })
 
-.controller('seaIceCtrl', function($scope){
+.controller('seaIceCtrl', function($scope, $state){
+    var mapDiv = document.getElementById("sea-ice-div");
+    var mapHeight = mapDiv.offsetHeight;
+    var mapWidth = mapDiv.offsetWidth;
+    
+    var mapFunc = function(data){
+        
+        var vis = d3.select("#sea-ice-vis"),
+            WIDTH = mapWidth,
+            HEIGHT = mapHeight,
+            PADDING = 0;
+        
+        var minDim = Math.min(WIDTH, HEIGHT);
+        var maxDim = Math.max(WIDTH, HEIGHT);
+        var Arctic = {
+                          "type": "Feature",
+                          "geometry": {
+                            "type": "MultiPoint",
+                            "coordinates": [[0,60],[180,60]]
+                          },
+                          "properties": {
+                            "name": "Arctic"
+                          }
+                    };
+        
+        var projection = d3.geoStereographic()
+            .rotate([0, -90])
+            .center([0, 90])
+            .fitSize([WIDTH,HEIGHT],Arctic)
+            .precision(1);
+        
+        vis.append("svg")
+            .attr("width", WIDTH)
+            .attr("height", HEIGHT);
+        
+        vis.append("svg:image")
+            .attr('width', WIDTH)
+            .attr('height', HEIGHT)
+            .attr('x','-4%')
+            .attr('y','-4%')
+            .attr("transform", "scale(1.08)")
+            .attr("xlink:href","img/ice_thickness/28_spring_2016.png");
+        
+        var path = d3.geoPath()
+            .projection(projection);
+        
+        var graticule = d3.geoGraticule();
+        
+        vis.append("path")
+            .datum(graticule)
+            .attr("class", "graticule")
+            .attr("d", path);
+        
+        var g = vis.append("g");
+        
+        d3.json("json/world-110m.json", function(error, world) {
+              if (error) throw error;
 
+            vis.insert("path", ".graticule")
+                .datum(topojson.feature(world, world.objects.land))
+                .attr("class", "land")
+                .attr("d", path);
+
+            vis.insert("path", ".graticule")
+                .datum(topojson.mesh(world, world.objects.countries, function(a, b) { return a !== b; }))
+                .attr("class", "boundary")
+                .attr("d", path);
+        });
+        
+        return vis;
+    };
+    
+    d3.csv("res/scientific_route.csv", function(d){
+        vis = mapFunc(d);
+    });
 })
 
 .controller('routeTrackCtrl', function($scope, $ionicPlatform, $cordovaToast, $ionicPopup, $window, $cordovaGeolocation, $interval){
@@ -402,7 +446,7 @@ angular.module('app.controllers', [])
             if(isAvailable){
                 var bodyText = "<h1 style='text-align:center; color:lightgrey; font-family:sans-serif'>Feedback about CPOM App!</h1>"
                 console.log('[SendMail] Email plugin is available');
-                $scope.sendEmail = function(){
+                $scope.feedbackMail = function(){
                     cordova.plugins.email.open({
                         to: ["py14sts@leeds.ac.uk"],
                         cc: null,
@@ -415,6 +459,20 @@ angular.module('app.controllers', [])
                         console.log('[SendMail] Email window closed.');
                     });
                 };
+                
+                $scope.cpomMail = function(mailAddress){
+                    cordova.plugins.email.open({
+                        to: [mailAddress],
+                        cc: null,
+                        bcc: null,
+                        attachments: null,
+                        subject: "Email from user of CPOM App!",
+                        body: null,
+                        isHtml: true,
+                    }, function(){
+                        console.log('[SendMail] Email window closed.');
+                    });
+                }
             } else {
                 console.log('[SendMail] Email plugin is not available');
             };
