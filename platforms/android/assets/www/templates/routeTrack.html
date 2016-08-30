@@ -1,0 +1,29 @@
+<style>
+    .shady {
+        color: lighten(darkgrey, -30%) !important;
+    }
+    .shady i {
+        color: darkgray !important;
+    }
+    
+</style>
+<ion-view title="Route Tracking" id="trackScreen" class=" ">
+    <ion-content padding="false" class="has-header">
+    <div class="list card padding" id="route-card-1">
+    	<button class="button button-block button-positive" ng-disabled="isRecording" ng-click="startGeolocation()">Start Recording</button>
+    	<button class="button button-block button-assertive" style="margin-top:16px" ng-click="stopGeolocation()" ng-disabled="!isRecording">Stop Recording</button>
+    	<h5 style="text-align:center; color:'gray'">Route tracking will use the phones GPS to record your position once every hour. It will be stored locally, not sent to our servers. The route can be plotted over a map when recording is stopped and the phone is connected to a data network.</h5>
+    </div>
+    <div class="list card padding" id="route-card-2">
+    	<h4 style="text-align:left; font-weight:bold">Previous Routes:</h4>
+    	This is where previous routes will be stored.
+    	## For now, test Geolocation ##
+    	<ion-list>
+    		<ion-item class="item-icon-left shady item-text-wrap" ui-sref="menu.maps">
+    		    <i class="icon ion-ios-location-outline"></i>
+    		    Example Track: Scientific Cruise around the Siberian Shelf - 2014
+    		</ion-item>
+    	</ion-list>
+    </div>
+    </ion-content>
+</ion-view>

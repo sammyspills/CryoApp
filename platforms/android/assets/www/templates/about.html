@@ -1,0 +1,49 @@
+<style>
+    .shady {
+        color: lighten(darkgray, -30%) !important;
+        text-align: center;
+    }
+    .shady i {
+        color: darkgray !important;
+    }
+    
+</style>
+<ion-view title="About" id="aboutScreen" class=" ">
+    <ion-content padding="false" class="has-header">
+    	<div class="list card padding">
+    		<h3 style="text-align: center;">Centre for Polar Observation and Measurement</h3>
+    		<h5 style="text-align: center;">The Centre for Polar Observation and Measurement is a project comissioned by the European Space Agency that looks at the sea ice extent and volume in the Arctic and Antarctic.</h5>
+    	</div>
+    	<div class="list card padding" style="margin-top:none !important">
+    		<h3 style="text-align:center">External Links and Contact</h3>
+    		<ion-list>
+                <ion-item class="item-avatar shady item-text-wrap" ng-click="leedsSite()">
+                   <img src="img/leeds.png"/>
+                   <h3>Centre for Polar Observation and Measurement at Leeds</h3>
+                </ion-item>
+                <ion-item class="item-avatar shady item-text-wrap" ng-click="uclSite()">
+                   <img src="img/ucl.png"/>
+                   <h3>Centre for Polar Observation and Measurement at UCL</h3>
+               </ion-item>
+    		</ion-list>
+            <h3 style="text-align:center">Contact Us</h3>
+            <h4 style="text-align:center; font-weight:bold">Project Leads</h4>
+            <h5 style="text-align:center;">Andrew Shepherd: a.shepherd@leeds.ac.uk</h5>
+            <h5 style="text-align:center;">Anna Hogg: a.e.hogg@leeds.ac.uk</h5>
+            <h4 style="text-align:center; font-weight:bold">Developers</h4>
+            <h5 style="text-align:center;" ng-click="cpomMail('py14sts@leeds.ac.uk')">Sam Spillard: py14sts@leeds.ac.uk</h5>
+            <h5 style="text-align:center;" ng-click="cpomMail('py14jb@leeds.ac.uk')">James Bucag: py14jb@leeds.ac.uk</h5>
+            <h4 style="text-align:center; font-weight:bold">Feedback</h4>
+    		<ion-item class="item-icon-right shady item-text-wrap" ng-click="feedbackMail()">
+               <h3>Send me an email with feedback about the app!</h3>
+    		    <i class="icon ion-paper-airplane"></i>
+    		</ion-item>
+    	</div>
+    	<div class="list card padding" style="margin-top:none !important">
+    		<h3 style="text-align:center">About</h3>
+    		<h5 style="text-align:center">Sam Spillard & James Bucag</h5>
+    		<h5 style="text-align:center">School of Earth and Environment</h5>
+    		<h5 style="text-align:center">University of Leeds</h5>
+    	</div>
+    </ion-content>
+</ion-view>
