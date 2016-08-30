@@ -32,6 +32,8 @@
 		ADE09D1A110C4DC7A4A07419 /* Toast.m in Sources */ = {isa = PBXBuildFile; fileRef = F790BEBF5E314C6ABEF40DEE /* Toast.m */; };
 		3AC373B866F0430CA2882BDB /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2070330AB9AF42D88A492345 /* QuartzCore.framework */; };
 		74D6F5DEC12E436BA9F12419 /* CDVBackgroundLocationServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = 181D9900709045F79118E014 /* CDVBackgroundLocationServices.swift */; };
+		B524DF2337664EB59FB4881A /* APPEmailComposer.m in Sources */ = {isa = PBXBuildFile; fileRef = E000098BAD324807AF6C7FFE /* APPEmailComposer.m */; };
+		0E170C245B5745F38CD13075 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C6CC519E192A432490A1182A /* MessageUI.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -96,6 +98,9 @@
 		2070330AB9AF42D88A492345 /* QuartzCore.framework */ = {isa = PBXFileReference; name = "QuartzCore.framework"; path = "System/Library/Frameworks/QuartzCore.framework"; sourceTree = SDKROOT; fileEncoding = undefined; lastKnownFileType = wrapper.framework; explicitFileType = undefined; includeInIndex = 0; };
 		181D9900709045F79118E014 /* CDVBackgroundLocationServices.swift */ = {isa = PBXFileReference; name = "CDVBackgroundLocationServices.swift"; path = "org.flybuy.cordova.background-location-services/CDVBackgroundLocationServices.swift"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.swift; explicitFileType = undefined; includeInIndex = 0; };
 		373C04C008D94898B0F56EB3 /* Loc-Bridging-Header.h */ = {isa = PBXFileReference; name = "Loc-Bridging-Header.h"; path = "org.flybuy.cordova.background-location-services/Loc-Bridging-Header.h"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; explicitFileType = undefined; includeInIndex = 0; };
+		E000098BAD324807AF6C7FFE /* APPEmailComposer.m */ = {isa = PBXFileReference; name = "APPEmailComposer.m"; path = "cordova-plugin-email/APPEmailComposer.m"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; explicitFileType = undefined; includeInIndex = 0; };
+		FD17C848B1164FF08F13868D /* APPEmailComposer.h */ = {isa = PBXFileReference; name = "APPEmailComposer.h"; path = "cordova-plugin-email/APPEmailComposer.h"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; explicitFileType = undefined; includeInIndex = 0; };
+		C6CC519E192A432490A1182A /* MessageUI.framework */ = {isa = PBXFileReference; name = "MessageUI.framework"; path = "System/Library/Frameworks/MessageUI.framework"; sourceTree = SDKROOT; fileEncoding = undefined; lastKnownFileType = wrapper.framework; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -111,6 +116,7 @@
 				6F245B2BDB184D92ABD90C18 /* AVFoundation.framework in Frameworks */,
 				ACF5D98435B848CC9CCCFC46 /* libsqlite3.dylib in Frameworks */,
 				3AC373B866F0430CA2882BDB /* QuartzCore.framework in Frameworks */,
+				0E170C245B5745F38CD13075 /* MessageUI.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -187,6 +193,7 @@
 				86ACC9EE4D6343CD878C3872 /* AVFoundation.framework */,
 				4A7D28829B4F4B3990BC09B5 /* libsqlite3.dylib */,
 				2070330AB9AF42D88A492345 /* QuartzCore.framework */,
+				C6CC519E192A432490A1182A /* MessageUI.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -230,6 +237,8 @@
 				B74DD88514D54251A919D068 /* Toast.h */,
 				181D9900709045F79118E014 /* CDVBackgroundLocationServices.swift */,
 				373C04C008D94898B0F56EB3 /* Loc-Bridging-Header.h */,
+				E000098BAD324807AF6C7FFE /* APPEmailComposer.m */,
+				FD17C848B1164FF08F13868D /* APPEmailComposer.h */,
 			);
 			name = Plugins;
 			path = "CryoApp/Plugins";
@@ -354,6 +363,7 @@
 				AFE4C62D254F4606A4A98E72 /* Toast+UIView.m in Sources */,
 				ADE09D1A110C4DC7A4A07419 /* Toast.m in Sources */,
 				74D6F5DEC12E436BA9F12419 /* CDVBackgroundLocationServices.swift in Sources */,
+				B524DF2337664EB59FB4881A /* APPEmailComposer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

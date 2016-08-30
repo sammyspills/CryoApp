@@ -52,14 +52,14 @@ angular.module('app.controllers', [])
         
         vis.append("svg")
             .attr("width", WIDTH)
-            .attr("height", HEIGHT)
+            .attr("height", HEIGHT);
         
         vis.append("svg:image")
             .attr('width', WIDTH)
             .attr('height', HEIGHT)
-            .attr('x','-2.5%')
-            .attr('y','-2.5%')
-            .attr("transform", "scale(1.05)")
+            .attr('x','-4%')
+            .attr('y','-4%')
+            .attr("transform", "scale(1.08)")
             .attr("xlink:href","img/ice_thickness/28_spring_2016.png");
         
         var path = d3.geoPath()
@@ -106,7 +106,7 @@ angular.module('app.controllers', [])
         });
         
         return vis;
-    }
+    };
     
     var chartDiv = document.getElementById('chart-div');
     var divHeight = chartDiv.offsetHeight;
@@ -237,18 +237,86 @@ angular.module('app.controllers', [])
         
 
 })
-
-.controller('mapsCtrl2', function($scope, $state, $cordovaGeolocation, $rootScope, $window) {	
-    
-
-})
    
 .controller('marineTrafficCtrl', function($scope) {
 
 })
 
-.controller('seaIceCtrl', function($scope){
+.controller('seaIceCtrl', function($scope, $state){
+    var mapDiv = document.getElementById("sea-ice-div");
+    var mapHeight = mapDiv.offsetHeight;
+    var mapWidth = mapDiv.offsetWidth;
+    
+    var mapFunc = function(data){
+        
+        var vis = d3.select("#sea-ice-vis"),
+            WIDTH = mapWidth,
+            HEIGHT = mapHeight,
+            PADDING = 0;
+        
+        var minDim = Math.min(WIDTH, HEIGHT);
+        var maxDim = Math.max(WIDTH, HEIGHT);
+        var Arctic = {
+                          "type": "Feature",
+                          "geometry": {
+                            "type": "MultiPoint",
+                            "coordinates": [[0,60],[180,60]]
+                          },
+                          "properties": {
+                            "name": "Arctic"
+                          }
+                    };
+        
+        var projection = d3.geoStereographic()
+            .rotate([0, -90])
+            .center([0, 90])
+            .fitSize([WIDTH,HEIGHT],Arctic)
+            .precision(1);
+        
+        vis.append("svg")
+            .attr("width", WIDTH)
+            .attr("height", HEIGHT);
+        
+        vis.append("svg:image")
+            .attr('width', WIDTH)
+            .attr('height', HEIGHT)
+            .attr('x','-4%')
+            .attr('y','-4%')
+            .attr("transform", "scale(1.08)")
+            .attr("xlink:href","img/ice_thickness/28_spring_2016.png");
+        
+        var path = d3.geoPath()
+            .projection(projection);
+        
+        var graticule = d3.geoGraticule();
+        
+        vis.append("path")
+            .datum(graticule)
+            .attr("class", "graticule")
+            .attr("d", path);
+        
+        var g = vis.append("g");
+        
+        d3.json("json/world-110m.json", function(error, world) {
+              if (error) throw error;
 
+            vis.insert("path", ".graticule")
+                .datum(topojson.feature(world, world.objects.land))
+                .attr("class", "land")
+                .attr("d", path);
+
+            vis.insert("path", ".graticule")
+                .datum(topojson.mesh(world, world.objects.countries, function(a, b) { return a !== b; }))
+                .attr("class", "boundary")
+                .attr("d", path);
+        });
+        
+        return vis;
+    };
+    
+    d3.csv("res/scientific_route.csv", function(d){
+        vis = mapFunc(d);
+    });
 })
 
 .controller('routeTrackCtrl', function($scope, $ionicPlatform, $cordovaToast, $ionicPopup, $window, $cordovaGeolocation, $interval){
@@ -399,8 +467,8 @@ angular.module('app.controllers', [])
                         bcc: null,
                         attachments: null,
                         subject: "Email from user of CPOM App!",
-                        body: null,
-                        isHtml: true,
+                        body: "",
+                        isHtml: false,
                     }, function(){
                         console.log('[SendMail] Email window closed.');
                     });

@@ -96,6 +96,14 @@ module.exports = [
         "clobbers": [
             "plugins.backgroundLocationServices"
         ]
+    },
+    {
+        "file": "plugins/cordova-plugin-email/www/email_composer.js",
+        "id": "cordova-plugin-email.EmailComposer",
+        "clobbers": [
+            "cordova.plugins.email",
+            "plugin.email"
+        ]
     }
 ];
 module.exports.metadata = 
@@ -114,7 +122,8 @@ module.exports.metadata =
     "me.rahul.plugins.sqlDB": "1.0.3",
     "ionic-plugin-keyboard": "2.2.1",
     "cordova-plugin-x-toast": "2.5.2",
-    "org.flybuy.cordova.background-location-services": "1.0.4"
+    "org.flybuy.cordova.background-location-services": "1.0.4",
+    "cordova-plugin-email": "1.1.1"
 };
 // BOTTOM OF METADATA
 });

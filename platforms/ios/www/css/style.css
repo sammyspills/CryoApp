@@ -2,7 +2,6 @@ ion-side-menu .menu-drawer{
 	background: "#00376e"
 }
 
-
 .bar.bar-positive {
 	background-color: #00376d
 }
@@ -50,6 +49,10 @@ html, body, .custom-button {
 	top: 50%;
 	transform:translateY(-50%); 
 }
+
+
+
+
 
 
 

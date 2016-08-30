@@ -467,8 +467,8 @@ angular.module('app.controllers', [])
                         bcc: null,
                         attachments: null,
                         subject: "Email from user of CPOM App!",
-                        body: null,
-                        isHtml: true,
+                        body: "",
+                        isHtml: false,
                     }, function(){
                         console.log('[SendMail] Email window closed.');
                     });

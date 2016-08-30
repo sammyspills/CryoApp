@@ -1,32 +1,21 @@
-  <style type="text/css">
-      .my-color{
-        background-color:#00376d !important;
-        background:#00376d !important;
-        color:#fff;
-      }
-  </style>
-
-  <style type="text.css">
-    .custom-divider {
-    padding-top: 8px;
-    padding-bottom: 8px;
-    margin-right: 10px !important;
-    margin-left: 10px !important;
-    min-height: 10px;
-    background-color: #f5f5f5;
-    border: none !important;
-    color: #a6a6a6;
-    box-shadow: none !important;
-    font-weight: 500; 
+<style type="text/css">
+    .image-list-thumb {
+        padding: 2px 2px 2px 2px;
+        height: 50px;
     }
-  </style>
+
+    .my-colour {
+        background: #00376e !important;
+        color: floralwhite !important;
+    }
+</style>
 
 <ion-side-menus enable-menu-with-back-views="false">
     <ion-side-menu-content>
-        <ion-nav-bar class="my-color">
-            <ion-nav-back-button></ion-nav-back-button>
+        <ion-nav-bar class="my-colour">
+            <ion-nav-back-button class="my-colour"></ion-nav-back-button>
             <ion-nav-buttons side="left">
-                <button class="button button-icon button-clear ion-navicon" menu-toggle="left"></button>
+                <button class="button button-icon my-colour ion-navicon" menu-toggle="left"></button>
             </ion-nav-buttons>
         </ion-nav-bar>
         <ion-nav-view name="side-menu21"></ion-nav-view>
@@ -38,24 +27,43 @@
         <ion-content padding="false" class="side-menu-left has-header">
             <div class="">
                 <a style="display: full;" ui-sref="menu.home" menu-close="">
-                    <img src="img/cryosat_logo.PNG" width="100%" height="" style="display: full; margin: 0;">
+                    <img src="img/menu_header.png" width="100%" height="" style="display: full; margin: 0;">
                 </a>
             </div>
             <ion-list id="menu-list1" class=" ">
                 <ion-item class="item-icon-left positive  " id="menu-list-home" ui-sref="menu.home" menu-close="" style="color: #00376e">
-                    <i class="icon ion-android-home"></i>Home</ion-item>
+                    <i class="icon ion-home"></i>Home</ion-item>
                 <ion-item class="item-icon-left positive" id="menu-item-ice" ui-sref="menu.seaIce" menu-close="" style="color: #00376d">
-                    <i class="icon ion-earth"></i>Sea Ice</ion-item>
-                <ion-item class="item-icon-left positive  " id="menu-list-traffic" ui-sref="menu.marineTraffic" menu-close="" style="color: #00376e">
-                    <i class="icon ion-android-boat"></i>Marine Trafic</ion-item>                
+                    <i class="icon ion-earth"></i>Sea Ice</ion-item>               
                 <ion-item class="item-icon-left positive" id="menu-item-track" ui-sref="menu.routeTrack" menu-close="" style="color: #00367d">
-                    <i class="icon ion-location"></i>Route Tracking</ion-item>
+                    <i class="icon ion-compass"></i>Route Tracking</ion-item>
+
                 <ion-item class="item-divider" style="color:#808080">More</ion-item>
-                <ion-item class="item-icon-left positive  " id="menu-list-maps" ui-sref="menu.maps" menu-close="" style="color: #00376e">
-                    <i class="icon ion-android-map"></i>Maps</ion-item>
-                <ion-item class="item-icon-left positive  " id="menu-list-maps2" ui-sref="menu.maps2" menu-close="" style="color: #00376e">
-                    <i class="icon ion-android-map"></i>Maps2</ion-item> 
+                
                 <ion-item class="item" id="menu-item-about" ui-sref="menu.about" menu-close="" style="color: #00376d; font-size: 15px">About</ion-item>
+                
+                <ion-item class="item-divider" style="color: #808080">Partners</ion-item>
+                
+                <div class="padding" id="partner-list">
+                    <div class="item" style="padding: 5px" align="center">
+                        <img src="img/baslogo200.gif" class="image-list-thumb">
+                    </div>
+                    <div class="item" style="padding: 5px" align="center">
+                        <img src="img/noclogo200.png" class="image-list-thumb">
+                    </div>
+                    <div class="item" style="padding: 5px" align="center">
+                        <img src="img/nceologo200.gif" class="image-list-thumb">
+                    </div>
+                    <div class="item" style="padding: 5px" align="center">
+                        <img src="img/nerc-long-logo-200.png" class="image-list-thumb">
+                    </div>
+                    <div class="item" style="padding: 5px" align="center">
+                        <img src="img/img_colorlogo_darkblue-300x131.gif" class="image-list-thumb">
+                    </div>
+                    <div class="item" style="padding: 5px" align="center">
+                        <img class="image-list-thumb" src="img/ionic.png">
+                    </div>
+                </div>
             </ion-list>
         </ion-content>
     </ion-side-menu>
