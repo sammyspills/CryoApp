@@ -12,229 +12,241 @@ angular.module('app.controllers', [])
 
 })
    
-.controller('mapsCtrl', function($scope, $state, $cordovaGeolocation) {
+.controller('mapsCtrl', function($scope, $state, $ionicPlatform, $ionicLoading) {
     
-    var topoDiv = document.getElementById("topo-div");
-    var topoHeight = topoDiv.offsetHeight;
-    var topoWidth = topoDiv.offsetWidth;
     
-    var topoFunc = function(data){
-        
-        var route_points = [[],[]];
-        data.forEach(function(d){
-            route_points[0].push(d.lat);
-            route_points[1].push(d.lon);
-        });
-        
-        var vis = d3.select("#topo-vis"),
-            WIDTH = topoWidth,
-            HEIGHT = topoHeight,
-            PADDING = 0;
-        
-        var minDim = Math.min(WIDTH, HEIGHT);
-        var maxDim = Math.max(WIDTH, HEIGHT);
-        var Arctic = {
-                          "type": "Feature",
-                          "geometry": {
-                            "type": "MultiPoint",
-                            "coordinates": [[0,60],[180,60]]
-                          },
-                          "properties": {
-                            "name": "Arctic"
-                          }
-                    };
-        
-        var projection = d3.geoStereographic()
-            .rotate([0, -90])
-            .center([0, 90])
-            .fitSize([WIDTH,HEIGHT],Arctic)
-            .precision(1);
-        
-        vis.append("svg")
-            .attr("width", WIDTH)
-            .attr("height", HEIGHT);
-        
-        vis.append("svg:image")
-            .attr('width', WIDTH)
-            .attr('height', HEIGHT)
-            .attr('x','-4%')
-            .attr('y','-4%')
-            .attr("transform", "scale(1.08)")
-            .attr("xlink:href","img/ice_thickness/28_spring_2016.png");
-        
-        var path = d3.geoPath()
-            .projection(projection);
-        
-        var graticule = d3.geoGraticule();
-        
-        vis.append("path")
-            .datum(graticule)
-            .attr("class", "graticule")
-            .attr("d", path);
-        
-        for(var i=0, len=route_points[0].length-1;i<len;i++){
-            var start_point = [route_points[1][i], route_points[0][i]];
-            var end_point = [route_points[1][i+1], route_points[0][i+1]];
-            
-            var route = {
-                type: "LineString",
-                coordinates: [
-                    start_point,
-                    end_point
-                ]
-            };
-            vis.append("path")
-                .datum(route)
-                .attr("class", "arc")
-                .attr("d", path);
-        };
-        
-        var g = vis.append("g");
-        
-        d3.json("json/world-110m.json", function(error, world) {
-              if (error) throw error;
-
-            vis.insert("path", ".graticule")
-                .datum(topojson.feature(world, world.objects.land))
-                .attr("class", "land")
-                .attr("d", path);
-
-            vis.insert("path", ".graticule")
-                .datum(topojson.mesh(world, world.objects.countries, function(a, b) { return a !== b; }))
-                .attr("class", "boundary")
-                .attr("d", path);
-        });
-        
-        return vis;
-    };
     
-    var chartDiv = document.getElementById('chart-div');
-    var divHeight = chartDiv.offsetHeight;
-    var divWidth = chartDiv.offsetWidth;
-    
-    var padding = "30";
-    
-    //Initialise distance calculating function:
-//    var getDistance = function(latlon){
-//        var lat_point = latlon[0];
-//        var lon_point = latlon[1];
-//        var deg2rad = Math.pi/180;
-//        
-//        for(i = 0; i = (latlon[0].length - 1); i++){
-//            console.log((i*100/latlon[0].length) + "%");
-//            
-//            //phi = 90 - lat
-//            var phi1 = (90.0 - lat_point[i]) * deg2rad;
-//            var phi2 = (90.0 - lat_point[i-1]) * deg2rad;
-//            
-//            //theta = lon
-//            var theta1 = lon_point[i] * deg2rad;
-//            var theta2 = lon_point[i-1] * deg2rad;
-//            
-//            var cos = (Math.sin(phi1) * Math.sin(phi2) * Math.cos(theta1 - theta2)) + (Math.cos(phi1) * Math.cos(phi2));
-//            var arc = Math.acos(cos)*6371; //Radius of Earth.
-//            latlon[2].push(arc);
-//        };
-//        
-//        for(i = 1; i = (latlon[0].length - 1); i++){
-//            var x = latlon[3][i-1] + latlon[2][i];
-//            latlon[3].push(x);
-//        };
-//        console.log(latlon[3]);
-//    };
-    
-    var scatterFunc = function(data){
-        //Initialise 2D array for lat, lon, dist., cum. dist.
-        var route_array_scientific = [[],[]];
-        
-        //append appropriate data to array
-        data.forEach(function(d){
-            if(d.thick >= 0){
-                route_array_scientific[1].push(d.cumdist);
-                route_array_scientific[0].push(d.thick);
-            } else {
-                
-            }
-        });
-        
-        var xData = route_array_scientific[1];
-        var yData = route_array_scientific[0];
-        
-        var vis = d3.select("#visualisation"),
-            WIDTH = divWidth,
-            HEIGHT = divHeight,
-            MARGINS = {
-                top: 15,
-                right: 20,
-                bottom: 50,
-                left: 60
-            },
-            xScale = d3.scaleLinear()
-            .range([MARGINS.left, WIDTH - MARGINS.right])
-            .domain([0, Math.max(...xData)]),
+        var topoDiv = document.getElementById("topo-div");
+        var topoHeight = topoDiv.offsetHeight;
+        var topoWidth = topoDiv.offsetWidth;
 
-            yScale = d3.scaleLinear()
-            .range([HEIGHT - MARGINS.bottom, MARGINS.top])
-            .domain([0, Math.max(...yData)]),
+        var topoFunc = function(data){
 
-            xAxis = d3.axisBottom().scale(xScale).tickArguments([20, "s"]),
-            yAxis = d3.axisLeft().scale(yScale).tickArguments([5, "s"]);
-
-        vis.append("svg:g")
-            .attr("class","axis")
-            .attr("transform", "translate(0," +(HEIGHT - (MARGINS.bottom))+ ")")
-            .call(xAxis);
-
-        vis.append("svg:g")
-            .attr("class","axis")
-            .attr("transform", "translate(" + (MARGINS.left) + ",0)")
-            .call(yAxis);
-
-        var lineGen = d3.line().x(function(d, i) {
-                return xScale(xData[i]);
-            })
-            .y(function(d, i) {
-                return yScale(yData[i]);
+            var route_points = [[],[]];
+            data.forEach(function(d){
+                route_points[0].push(d.lat);
+                route_points[1].push(d.lon);
             });
 
-        // Add the valueline path.
-        vis.append("svg:path")
-        .attr("class", "line")
-        .attr("stroke", "#00376d")
-        .attr('stroke-width', .5)
-        .attr("d", lineGen(xData))
-        .attr("fill", "none");
-        
-        vis.selectAll(".dot")
-        .data(xData)
-        .enter().append("circle")
-        .attr('class', 'dot')
-        .attr('cx', function(d, i) { return xScale(xData[i]); })
-        .attr('cy', function(d, i) { return yScale(yData[i]); })
-        .attr('r', .8)
-        
-        vis.append("text")
-        .attr("class", "legend")
-        .attr("text-anchor", "middle")
-        .attr("x", MARGINS.left + (WIDTH-MARGINS.left-MARGINS.right)/2)
-        .attr("y", HEIGHT-(MARGINS.bottom/3))
-        .text("Distance Along Route (m)");
-        
-        vis.append("text")
-        .attr("class", "legend")
-        .attr("text-anchor", "middle")
-        .attr("y", MARGINS.left/2.5)
-        .attr("x", -MARGINS.top-(HEIGHT-MARGINS.top-MARGINS.bottom)/2)
-        .attr("transform", "rotate(-90)")
-        .text("Sea Ice Thickness (m)");
+            var vis = d3.select("#topo-vis"),
+                WIDTH = topoWidth,
+                HEIGHT = topoHeight,
+                PADDING = 0;
 
-    };
-    
-    d3.csv("res/scientific_route.csv", function(d){
-        scatterFunc(d);
-        vis = topoFunc(d);
-    });
+            var minDim = Math.min(WIDTH, HEIGHT);
+            var maxDim = Math.max(WIDTH, HEIGHT);
+            var Arctic = {
+                              "type": "Feature",
+                              "geometry": {
+                                "type": "MultiPoint",
+                                "coordinates": [[0,60],[180,60]]
+                              },
+                              "properties": {
+                                "name": "Arctic"
+                              }
+                        };
+
+            var projection = d3.geoStereographic()
+                .rotate([0, -90])
+                .center([0, 90])
+                .fitSize([WIDTH,HEIGHT],Arctic)
+                .precision(1);
+
+            vis.append("svg")
+                .attr("width", WIDTH)
+                .attr("height", HEIGHT);
+
+            vis.append("svg:image")
+                .attr('width', WIDTH)
+                .attr('height', HEIGHT)
+                .attr('x','-4%')
+                .attr('y','-4%')
+                .attr("transform", "scale(1.08)")
+                .attr("xlink:href","img/ice_thickness/28_spring_2016.png");
+
+            var path = d3.geoPath()
+                .projection(projection);
+
+            var graticule = d3.geoGraticule();
+
+            vis.append("path")
+                .datum(graticule)
+                .attr("class", "graticule")
+                .attr("d", path);
+
+            for(var i=0, len=route_points[0].length-1;i<len;i++){
+                var start_point = [route_points[1][i], route_points[0][i]];
+                var end_point = [route_points[1][i+1], route_points[0][i+1]];
+
+                var route = {
+                    type: "LineString",
+                    coordinates: [
+                        start_point,
+                        end_point
+                    ]
+                };
+                vis.append("path")
+                    .datum(route)
+                    .attr("class", "arc")
+                    .attr("d", path);
+            };
+
+            var g = vis.append("g");
+
+            d3.json("json/world-110m.json", function(error, world) {
+                  if (error) throw error;
+
+                vis.insert("path", ".graticule")
+                    .datum(topojson.feature(world, world.objects.land))
+                    .attr("class", "land")
+                    .attr("d", path);
+
+                vis.insert("path", ".graticule")
+                    .datum(topojson.mesh(world, world.objects.countries, function(a, b) { return a !== b; }))
+                    .attr("class", "boundary")
+                    .attr("d", path);
+            });
+
+            console.log('Done loading')
+            $ionicLoading.hide();
+            return vis;
+        };
+
+        var chartDiv = document.getElementById('chart-div');
+        var divHeight = chartDiv.offsetHeight;
+        var divWidth = chartDiv.offsetWidth;
+
+        var padding = "30";
+
+        //Initialise distance calculating function:
+    //    var getDistance = function(latlon){
+    //        var lat_point = latlon[0];
+    //        var lon_point = latlon[1];
+    //        var deg2rad = Math.pi/180;
+    //        
+    //        for(i = 0; i = (latlon[0].length - 1); i++){
+    //            console.log((i*100/latlon[0].length) + "%");
+    //            
+    //            //phi = 90 - lat
+    //            var phi1 = (90.0 - lat_point[i]) * deg2rad;
+    //            var phi2 = (90.0 - lat_point[i-1]) * deg2rad;
+    //            
+    //            //theta = lon
+    //            var theta1 = lon_point[i] * deg2rad;
+    //            var theta2 = lon_point[i-1] * deg2rad;
+    //            
+    //            var cos = (Math.sin(phi1) * Math.sin(phi2) * Math.cos(theta1 - theta2)) + (Math.cos(phi1) * Math.cos(phi2));
+    //            var arc = Math.acos(cos)*6371; //Radius of Earth.
+    //            latlon[2].push(arc);
+    //        };
+    //        
+    //        for(i = 1; i = (latlon[0].length - 1); i++){
+    //            var x = latlon[3][i-1] + latlon[2][i];
+    //            latlon[3].push(x);
+    //        };
+    //        console.log(latlon[3]);
+    //    };
+
+        var scatterFunc = function(data){
+            //Initialise 2D array for lat, lon, dist., cum. dist.
+            var route_array_scientific = [[],[]];
+
+            //append appropriate data to array
+            data.forEach(function(d){
+                if(d.thick >= 0){
+                    route_array_scientific[1].push(d.cumdist);
+                    route_array_scientific[0].push(d.thick);
+                } else {
+
+                }
+            });
+
+            var xData = route_array_scientific[1];
+            var yData = route_array_scientific[0];
+
+            var vis = d3.select("#visualisation"),
+                WIDTH = divWidth,
+                HEIGHT = divHeight,
+                MARGINS = {
+                    top: 15,
+                    right: 20,
+                    bottom: 50,
+                    left: 60
+                },
+                xScale = d3.scaleLinear()
+                .range([MARGINS.left, WIDTH - MARGINS.right])
+                .domain([0, Math.max(...xData)]),
+
+                yScale = d3.scaleLinear()
+                .range([HEIGHT - MARGINS.bottom, MARGINS.top])
+                .domain([0, Math.max(...yData)]),
+
+                xAxis = d3.axisBottom().scale(xScale).tickArguments([10, "s"]),
+                yAxis = d3.axisLeft().scale(yScale).tickArguments([5, "s"]);
+
+            vis.append("svg:g")
+                .attr("class","axis")
+                .attr("transform", "translate(0," +(HEIGHT - (MARGINS.bottom))+ ")")
+                .call(xAxis);
+
+            vis.append("svg:g")
+                .attr("class","axis")
+                .attr("transform", "translate(" + (MARGINS.left) + ",0)")
+                .call(yAxis);
+
+            var lineGen = d3.line().x(function(d, i) {
+                    return xScale(xData[i]);
+                })
+                .y(function(d, i) {
+                    return yScale(yData[i]);
+                });
+
+            // Add the valueline path.
+            vis.append("svg:path")
+            .attr("class", "line")
+            .attr("stroke", "#00376d")
+            .attr('stroke-width', 0.5)
+            .attr("d", lineGen(xData))
+            .attr("fill", "none");
+
+            vis.selectAll(".dot")
+            .data(xData)
+            .enter().append("circle")
+            .attr('class', 'dot')
+            .attr('cx', function(d, i) { return xScale(xData[i]); })
+            .attr('cy', function(d, i) { return yScale(yData[i]); })
+            .attr('r', .8)
+
+            vis.append("text")
+            .attr("class", "legend")
+            .attr("text-anchor", "middle")
+            .attr("x", MARGINS.left + (WIDTH-MARGINS.left-MARGINS.right)/2)
+            .attr("y", HEIGHT-(MARGINS.bottom/3))
+            .text("Distance Along Route (m)");
+
+            vis.append("text")
+            .attr("class", "legend")
+            .attr("text-anchor", "middle")
+            .attr("y", MARGINS.left/2.5)
+            .attr("x", -MARGINS.top-(HEIGHT-MARGINS.top-MARGINS.bottom)/2)
+            .attr("transform", "rotate(-90)")
+            .text("Sea Ice Thickness (m)");
+
+        };
         
+    $ionicPlatform.ready(function(){
+
+        d3.csv("res/example_route_2.csv", function(d){
+            scatterFunc(d);
+            vis = topoFunc(d);
+        });
+        
+    });
+
+    //    d3.csv("res/scientific_route.csv", function(d){
+    //        scatterFunc(d);
+    //        vis = topoFunc(d);
+    //    });
 
 })
    
@@ -242,7 +254,16 @@ angular.module('app.controllers', [])
 
 })
 
-.controller('seaIceCtrl', function($scope, $state){
+.controller('seaIceCtrl', function($scope, $state, $ionicLoading){
+    
+    var loadingTemplate = "<div style='margin:-20px;padding:15px;border-radius:7px;background-color:#00376d'>Processing...</div>"
+    $scope.mapScreen = function(){
+        $ionicLoading.show({
+            template: loadingTemplate
+        });
+        $state.go('menu.maps');    
+    };
+    
     var mapDiv = document.getElementById("sea-ice-div");
     var mapHeight = mapDiv.offsetHeight;
     var mapWidth = mapDiv.offsetWidth;
@@ -313,16 +334,28 @@ angular.module('app.controllers', [])
         
         return vis;
     };
-    
-    d3.csv("res/scientific_route.csv", function(d){
+
+    d3.csv("res/example_route_2.csv", function(d){
         vis = mapFunc(d);
     });
+    
+//    d3.csv("res/scientific_route.csv", function(d){
+//        vis = mapFunc(d);
+//    });
 })
 
-.controller('routeTrackCtrl', function($scope, $ionicPlatform, $cordovaToast, $ionicPopup, $window, $cordovaGeolocation, $interval){
+.controller('routeTrackCtrl', function($scope, $state, $ionicPlatform, $cordovaToast, $ionicPopup, $window, $cordovaGeolocation, $interval, $ionicLoading){
 
 	$scope.lat_geo = "Loading Lat...";
   	$scope.long_geo = "Loading Long...";
+    
+    var loadingTemplate = "<div style='margin:-20px;padding:15px;border-radius:7px;background-color:#00376d'>Processing...</div>"
+    $scope.mapScreen = function(){
+        $ionicLoading.show({
+            template: loadingTemplate
+        });
+        $state.go('menu.maps');
+    };
 
   	$ionicPlatform.ready(function(){
   		console.log("[IONIC PLATFORM IS NOW READY]");

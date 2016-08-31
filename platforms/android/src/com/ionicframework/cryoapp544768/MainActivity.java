@@ -22,7 +22,8 @@ package com.ionicframework.cryoapp544768;
 import android.os.Bundle;
 import org.apache.cordova.*;
 
-public class MainActivity extends CordovaActivity
+public class
+MainActivity extends CordovaActivity
 {
     @Override
     public void onCreate(Bundle savedInstanceState)

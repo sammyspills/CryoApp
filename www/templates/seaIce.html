@@ -101,10 +101,11 @@
             </div>
         </div>
         <ion-list>
-            <ion-item class="item-icon-left shady item-text-wrap" ui-sref="menu.maps">
+            <ion-item class="item-icon-left shady item-text-wrap" ng-click="mapScreen()">
     		    <i class="icon ion-ios-location-outline"></i>
     		    Example Track: Scientific Cruise around the Siberian Shelf - 2014
     		</ion-item>
+<!--            <ion-item class="item-icon-left shady item-text-wrap" ng-repeat="file in fileList" ng-click="mapScreen({{item.name}})"-->
         </ion-list>
     </ion-content>
 </ion-view>
