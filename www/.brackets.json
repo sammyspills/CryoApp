@@ -1,0 +1,26 @@
+{
+    "jscodehints.detectedExclusions": [
+        "C:/Users/Sam Spillard/Desktop/CryoApp/www/lib/ionic/js/angular-ui/angular-ui-router.min.js",
+        "C:/Users/Sam Spillard/Desktop/CryoApp/www/lib/plotly-latest.min.js",
+        "C:/Users/Sam Spillard/Desktop/CryoApp/www/lib/ionic/js/angular-ui/angular-ui-router.js",
+        "C:/Users/Sam Spillard/Desktop/CryoApp/www/lib/topojson/topojson.min.js",
+        "C:/Users/Sam Spillard/Desktop/CryoApp/www/lib/ionic/js/angular/angular.min.js",
+        "C:/Users/Sam Spillard/Desktop/CryoApp/www/lib/ionic/js/angular/angular.js",
+        "C:/Users/Sam Spillard/Desktop/CryoApp/www/lib/ionic/js/angular/angular-sanitize.min.js",
+        "C:/Users/Sam Spillard/Desktop/CryoApp/www/lib/ionic/js/angular/angular-sanitize.js",
+        "C:/Users/Sam Spillard/Desktop/CryoApp/www/lib/ionic/js/angular/angular-resource.min.js",
+        "C:/Users/Sam Spillard/Desktop/CryoApp/www/lib/ionic/js/angular/angular-resource.js",
+        "C:/Users/Sam Spillard/Desktop/CryoApp/www/lib/ionic/js/angular/angular-animate.min.js",
+        "C:/Users/Sam Spillard/Desktop/CryoApp/www/lib/ionic/js/angular/angular-animate.js",
+        "C:/Users/Sam Spillard/Desktop/CryoApp/www/lib/nvd3/meteor/export.js",
+        "C:/Users/Sam Spillard/Desktop/CryoApp/www/lib/nvd3/build/nv.d3.min.js",
+        "C:/Users/Sam Spillard/Desktop/CryoApp/www/lib/nvd3/build/nv.d3.js",
+        "C:/Users/Sam Spillard/Desktop/CryoApp/www/lib/ngCordova/dist/ng-cordova.min.js",
+        "C:/Users/Sam Spillard/Desktop/CryoApp/www/lib/ngCordova/dist/ng-cordova.js",
+        "C:/Users/Sam Spillard/Desktop/CryoApp/www/lib/ngCordova/dist/ng-cordova-mocks.min.js",
+        "C:/Users/Sam Spillard/Desktop/CryoApp/www/lib/ngCordova/dist/ng-cordova-mocks.js",
+        "C:/Users/Sam Spillard/Desktop/CryoApp/www/lib/ionic/js/ionic.min.js",
+        "C:/Users/Sam Spillard/Desktop/CryoApp/www/lib/ionic/js/ionic.js",
+        "C:/Users/Sam Spillard/Desktop/CryoApp/www/lib/ionic/js/ionic.bundle.min.js"
+    ]
+}
