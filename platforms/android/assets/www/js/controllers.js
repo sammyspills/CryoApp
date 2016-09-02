@@ -251,22 +251,22 @@ angular.module('app.controllers', [])
 
 })
 
-.controller('seaIceCtrl', function($scope, $state, $ionicLoading, routeService, $ionicActionSheet){
+.controller('seaIceCtrl', function($scope, $state, $ionicLoading, routeService, $ionicActionSheet, $cordovaGeolocation){
     
     $scope.data = {
         showDelete: false
     };
     
     $scope.itemDelete = function(routeName){
-        $scope.data.showDelete = false;
         
         $ionicActionSheet.show({
             buttons: [],
             destructiveText: ' Delete',
             titleText: 'Confirm delete?',
             cancelText: 'Cancel',
-            cancel: function(){},
+            cancel: function(){ $scope.data.showDelete = false; },
             destructiveButtonClicked: function(){
+                $scope.data.showDelete = false;
                 $scope.exampleRoutes.splice($scope.exampleRoutes.indexOf(routeName), 1);
                 return true;
             }
@@ -274,14 +274,37 @@ angular.module('app.controllers', [])
         
     };
     
+    $scope.userDelete = function(routeName){
+        
+        $ionicActionSheet.show({
+            buttons: [],
+            destructiveText: ' Delete',
+            titleText: 'Confirm delete?',
+            cancelText: 'Cancel',
+            cancel: function(){ $scope.data.showDelete = false; },
+            destructiveButtonClicked: function(){
+                $scope.data.showDelete = false;
+                $scope.userRoutes.splice($scope.userRoutes.indexOf(routeName), 1);
+                return true;
+            }
+        });
+        
+    };
+    
+    $scope.userRoutes = [
+        
+    ];
+    
     $scope.exampleRoutes = [
         {
             "name":"Example Route: Scientific Cruise around the Siberian Shelf - 2014",
-            "filename":"correctly_filtered.csv"
+            "filename":"correctly_filtered.csv",
+            "start":"69.572655, 17.089641"
         },
         {
             "name":"Example Route: Tour of the Arctic circle from Svalbard to Severny Island - 2016",
-            "filename":"example_route_2.csv"
+            "filename":"example_route_2.csv",
+            "start":"77.791601, 10.977841"
         }
     ];
     
@@ -369,31 +392,49 @@ angular.module('app.controllers', [])
 
 })
 
-.controller('routeTrackCtrl', function($scope, $state, $ionicPlatform, $cordovaToast, $ionicPopup, $window, $cordovaGeolocation, $interval, $ionicLoading, routeService, $ionicActionSheet){
-
-	$scope.lat_geo = "Loading Lat...";
-  	$scope.long_geo = "Loading Long...";
+.controller('routeTrackCtrl', function($scope, $state, $ionicPlatform, $cordovaToast, $ionicPopup, $window, $cordovaGeolocation, $interval, $ionicLoading, routeService, $ionicActionSheet, $cordovaFile){
     
+    $scope.fileDir = null;
+
     $scope.data = {
         showDelete: false
     };
     
     $scope.itemDelete = function(routeName){
-        $scope.data.showDelete = false;
         
         $ionicActionSheet.show({
             buttons: [],
             destructiveText: ' Delete',
             titleText: 'Confirm delete?',
             cancelText: 'Cancel',
-            cancel: function(){},
+            cancel: function(){ $scope.data.showDelete = false; },
             destructiveButtonClicked: function(){
+                $scope.data.showDelete = false;
                 $scope.exampleRoutes.splice($scope.exampleRoutes.indexOf(routeName), 1);
                 return true;
             }
         });
         
     };
+    
+    $scope.userDelete = function(routeName){
+        
+        $ionicActionSheet.show({
+            buttons: [],
+            destructiveText: ' Delete',
+            titleText: 'Confirm delete?',
+            cancelText: 'Cancel',
+            cancel: function(){ $scope.data.showDelete = false; },
+            destructiveButtonClicked: function(){
+                $scope.data.showDelete = false;
+                $scope.userRoutes.splice($scope.userRoutes.indexOf(routeName), 1);
+                return true;
+            }
+        });
+        
+    };
+    
+    $scope.userRoutes = [];
     
     $scope.exampleRoutes = [
         {
@@ -417,6 +458,12 @@ angular.module('app.controllers', [])
 
   	$ionicPlatform.ready(function(){
   		console.log("[IONIC PLATFORM IS NOW READY]");
+        
+        if(ionic.Platform.isAndroid()){
+            console.log('Platform is Android');
+            console.log('cordova.file.dataDirectory: ' + cordova.file.dataDirectory);
+            $scope.fileDir = cordova.file.dataDirectory;
+        };
 
   		var bgGeo = window.plugins.backgroundLocationServices;
 
@@ -427,11 +474,10 @@ angular.module('app.controllers', [])
 
   		$cordovaGeolocation.getCurrentPosition(optionsGeo).then(function(position){
 	  		console.log('[GEOLOCAL JS1] Location from Geolocation.');
-	  		$scope.lat_geo = position.coords.latitude;
-	  		$scope.long_geo = position.coords.longitude;
 	  	});
 
 	  	$scope.isRecording = false;
+        $scope.current_route = [[],[]];
 
 	  	bgGeo.configure({
 	     	//Both
@@ -450,6 +496,8 @@ angular.module('app.controllers', [])
 
 		bgGeo.registerForLocationUpdates(function(location) {
 	     	console.log("[BackgroundGeo] Location updated - Position:  " + JSON.stringify(location));
+            $scope.current_route[0].push(location.latitude);
+            $scope.current_route[1].push(location.longitude);
 		}, function(err) {
 	     	console.log("[BackgroundGeo] Error: Didnt get an update.", err);
 		});
@@ -466,8 +514,8 @@ angular.module('app.controllers', [])
 	  			if($scope.isRecording){
 	  				$cordovaGeolocation.getCurrentPosition(optionsGeo).then(function(position){
 	  					console.log('[ForegroundGeo] Location updated - Position: latitude - ' + position.coords.latitude + ', longitude - ' + position.coords.longitude);
-	  					$scope.lat_geo = position.coords.latitude;
-	  					$scope.long_geo = position.coords.longitude;
+                        $scope.current_route[0].push(position.coords.latitude);
+                        $scope.current_route[1].push(position.coords.longitude);
 	  				})
 	  			} else {
 	  				console.log('[ForegroundGeo] getLocation called, location tracking disabled.')
@@ -490,10 +538,17 @@ angular.module('app.controllers', [])
 		   	});
 		   	confirmPopup.then(function(res) {
 		   		if(res){
-		   			bgGeo.start();
-                    $scope.isRecording = true;
-		            console.log('[BackgroundGeo] Tracking started.');
-		            onResume();
+                    $cordovaFile.createFile($scope.fileDir, "test.txt", true).then(function(success){
+                        $cordovaFile.checkFile($scope.fileDir, "test.txt").then(function(success){
+                            console.log('File exists: ' + success);
+                        });
+                        bgGeo.start();
+                        $scope.isRecording = true;
+                        console.log('[BackgroundGeo] Tracking started.');
+                        console.log('File created.')
+                        $scope.current_route = [[],[]]
+                        onResume();
+                    });
 		        } else {
 		        	//return
 		        	console.log('[BackgroundGeo] Begin tracking cancelled by user.');
@@ -518,8 +573,9 @@ angular.module('app.controllers', [])
                                 alert('You have to name your route before you can save it!')
                                 e.preventDefault();
                             } else {
+                                console.log($scope.current_route[0]);
                                 return $scope.data.name;
-                            }
+                            };
                         }
                     }
                 ]

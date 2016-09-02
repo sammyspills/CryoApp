@@ -78,6 +78,10 @@
   stroke: #fff;
   stroke-width: .5px;
 }
+#map {
+	width: 100%;
+	height: 100%;
+}
     
 </style>
 <ion-view title="Sea Ice Thickness" id="iceScreen" class=" ">
@@ -100,11 +104,25 @@
                 <svg id="sea-ice-vis" width="100%" height="100%"></svg>
             </div>
         </div>
-        <ion-list>
-            <ion-item class="item-icon-left shady item-text-wrap" ui-sref="menu.maps">
-    		    <i class="icon ion-ios-location-outline"></i>
-    		    Example Track: Scientific Cruise around the Siberian Shelf - 2014
-    		</ion-item>
-        </ion-list>
+        <div class="list card" id="sea-ice-card">
+            <div class="item-divider item-button-right" style="padding-left:20px;">
+                    <h4 style="text-align:left;font-size:18px">Previous Routes:</h4>
+                    <button class="button button-positive" ng-click="data.showDelete = !data.showDelete">Edit</button>
+            </div>
+            <ion-list show-delete="data.showDelete">
+                <ion-item class="item-icon-left shady item-text-wrap" ng-repeat="route in userRoutes" ng click="mapScreen(route.filename)">
+                    <i class="icon ion-ios-location-outline"></i>
+                    {{route.name}}
+                    <ion-delete-button class="ion-minus-circled" ng-click="userDelete(route)">
+                    </ion-delete-button>
+                </ion-item>
+                <ion-item class="item-icon-left shady item-text-wrap" ng-repeat="route in exampleRoutes" ng-click="mapScreen(route.filename)">
+                    <i class="icon ion-ios-location-outline"></i>
+                    {{route.name}}
+                    <ion-delete-button class="ion-minus-circled" ng-click="itemDelete(route)">
+                    </ion-delete-button>
+                </ion-item>
+            </ion-list>
+        </div>
     </ion-content>
 </ion-view>

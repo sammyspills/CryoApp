@@ -12,25 +12,28 @@ angular.module('app.controllers', [])
 
 })
    
-.controller('mapsCtrl', function($scope, $state, $cordovaGeolocation) {
+.controller('mapsCtrl', function($scope, $state, $ionicPlatform, $ionicLoading, routeService) {
+    
+    var routeFile = routeService.selectedRoute;
+    console.log(routeFile);
     
     var topoDiv = document.getElementById("topo-div");
     var topoHeight = topoDiv.offsetHeight;
     var topoWidth = topoDiv.offsetWidth;
-    
+
     var topoFunc = function(data){
-        
+
         var route_points = [[],[]];
         data.forEach(function(d){
             route_points[0].push(d.lat);
             route_points[1].push(d.lon);
         });
-        
+
         var vis = d3.select("#topo-vis"),
             WIDTH = topoWidth,
             HEIGHT = topoHeight,
             PADDING = 0;
-        
+
         var minDim = Math.min(WIDTH, HEIGHT);
         var maxDim = Math.max(WIDTH, HEIGHT);
         var Arctic = {
@@ -43,17 +46,17 @@ angular.module('app.controllers', [])
                             "name": "Arctic"
                           }
                     };
-        
+
         var projection = d3.geoStereographic()
             .rotate([0, -90])
             .center([0, 90])
             .fitSize([WIDTH,HEIGHT],Arctic)
             .precision(1);
-        
+
         vis.append("svg")
             .attr("width", WIDTH)
             .attr("height", HEIGHT);
-        
+
         vis.append("svg:image")
             .attr('width', WIDTH)
             .attr('height', HEIGHT)
@@ -61,21 +64,21 @@ angular.module('app.controllers', [])
             .attr('y','-4%')
             .attr("transform", "scale(1.08)")
             .attr("xlink:href","img/ice_thickness/28_spring_2016.png");
-        
+
         var path = d3.geoPath()
             .projection(projection);
-        
+
         var graticule = d3.geoGraticule();
-        
+
         vis.append("path")
             .datum(graticule)
             .attr("class", "graticule")
             .attr("d", path);
-        
+
         for(var i=0, len=route_points[0].length-1;i<len;i++){
             var start_point = [route_points[1][i], route_points[0][i]];
             var end_point = [route_points[1][i+1], route_points[0][i+1]];
-            
+
             var route = {
                 type: "LineString",
                 coordinates: [
@@ -88,9 +91,9 @@ angular.module('app.controllers', [])
                 .attr("class", "arc")
                 .attr("d", path);
         };
-        
+
         var g = vis.append("g");
-        
+
         d3.json("json/world-110m.json", function(error, world) {
               if (error) throw error;
 
@@ -104,16 +107,16 @@ angular.module('app.controllers', [])
                 .attr("class", "boundary")
                 .attr("d", path);
         });
-        
+
         return vis;
     };
-    
+
     var chartDiv = document.getElementById('chart-div');
     var divHeight = chartDiv.offsetHeight;
     var divWidth = chartDiv.offsetWidth;
-    
+
     var padding = "30";
-    
+
     //Initialise distance calculating function:
 //    var getDistance = function(latlon){
 //        var lat_point = latlon[0];
@@ -142,24 +145,24 @@ angular.module('app.controllers', [])
 //        };
 //        console.log(latlon[3]);
 //    };
-    
+
     var scatterFunc = function(data){
         //Initialise 2D array for lat, lon, dist., cum. dist.
         var route_array_scientific = [[],[]];
-        
+
         //append appropriate data to array
         data.forEach(function(d){
             if(d.thick >= 0){
                 route_array_scientific[1].push(d.cumdist);
                 route_array_scientific[0].push(d.thick);
             } else {
-                
+
             }
         });
-        
+
         var xData = route_array_scientific[1];
         var yData = route_array_scientific[0];
-        
+
         var vis = d3.select("#visualisation"),
             WIDTH = divWidth,
             HEIGHT = divHeight,
@@ -177,7 +180,7 @@ angular.module('app.controllers', [])
             .range([HEIGHT - MARGINS.bottom, MARGINS.top])
             .domain([0, Math.max(...yData)]),
 
-            xAxis = d3.axisBottom().scale(xScale).tickArguments([20, "s"]),
+            xAxis = d3.axisBottom().scale(xScale).tickArguments([10, "s"]),
             yAxis = d3.axisLeft().scale(yScale).tickArguments([5, "s"]);
 
         vis.append("svg:g")
@@ -201,10 +204,10 @@ angular.module('app.controllers', [])
         vis.append("svg:path")
         .attr("class", "line")
         .attr("stroke", "#00376d")
-        .attr('stroke-width', .5)
+        .attr('stroke-width', 0.5)
         .attr("d", lineGen(xData))
         .attr("fill", "none");
-        
+
         vis.selectAll(".dot")
         .data(xData)
         .enter().append("circle")
@@ -212,14 +215,14 @@ angular.module('app.controllers', [])
         .attr('cx', function(d, i) { return xScale(xData[i]); })
         .attr('cy', function(d, i) { return yScale(yData[i]); })
         .attr('r', .8)
-        
+
         vis.append("text")
         .attr("class", "legend")
         .attr("text-anchor", "middle")
         .attr("x", MARGINS.left + (WIDTH-MARGINS.left-MARGINS.right)/2)
         .attr("y", HEIGHT-(MARGINS.bottom/3))
         .text("Distance Along Route (m)");
-        
+
         vis.append("text")
         .attr("class", "legend")
         .attr("text-anchor", "middle")
@@ -227,14 +230,20 @@ angular.module('app.controllers', [])
         .attr("x", -MARGINS.top-(HEIGHT-MARGINS.top-MARGINS.bottom)/2)
         .attr("transform", "rotate(-90)")
         .text("Sea Ice Thickness (m)");
+        
+        console.log('Done loading')
+        $ionicLoading.hide();
 
     };
-    
-    d3.csv("res/scientific_route.csv", function(d){
-        scatterFunc(d);
-        vis = topoFunc(d);
-    });
         
+    $ionicPlatform.ready(function(){
+
+        d3.csv("res/" + routeFile, function(d){
+            scatterFunc(d);
+            vis = topoFunc(d);
+        });
+        
+    });
 
 })
    
@@ -242,12 +251,77 @@ angular.module('app.controllers', [])
 
 })
 
-.controller('seaIceCtrl', function($scope, $state){
+.controller('seaIceCtrl', function($scope, $state, $ionicLoading, routeService, $ionicActionSheet, $cordovaGeolocation){
+    
+    $scope.data = {
+        showDelete: false
+    };
+    
+    $scope.itemDelete = function(routeName){
+        
+        $ionicActionSheet.show({
+            buttons: [],
+            destructiveText: ' Delete',
+            titleText: 'Confirm delete?',
+            cancelText: 'Cancel',
+            cancel: function(){ $scope.data.showDelete = false; },
+            destructiveButtonClicked: function(){
+                $scope.data.showDelete = false;
+                $scope.exampleRoutes.splice($scope.exampleRoutes.indexOf(routeName), 1);
+                return true;
+            }
+        });
+        
+    };
+    
+    $scope.userDelete = function(routeName){
+        
+        $ionicActionSheet.show({
+            buttons: [],
+            destructiveText: ' Delete',
+            titleText: 'Confirm delete?',
+            cancelText: 'Cancel',
+            cancel: function(){ $scope.data.showDelete = false; },
+            destructiveButtonClicked: function(){
+                $scope.data.showDelete = false;
+                $scope.userRoutes.splice($scope.userRoutes.indexOf(routeName), 1);
+                return true;
+            }
+        });
+        
+    };
+    
+    $scope.userRoutes = [
+        
+    ];
+    
+    $scope.exampleRoutes = [
+        {
+            "name":"Example Route: Scientific Cruise around the Siberian Shelf - 2014",
+            "filename":"correctly_filtered.csv",
+            "start":"69.572655, 17.089641"
+        },
+        {
+            "name":"Example Route: Tour of the Arctic circle from Svalbard to Severny Island - 2016",
+            "filename":"example_route_2.csv",
+            "start":"77.791601, 10.977841"
+        }
+    ];
+    
+    var loadingTemplate = "<div style='margin:-20px;padding:15px;border-radius:7px;background-color:#00376d'>Processing...</div>"
+    $scope.mapScreen = function(filename){
+        $ionicLoading.show({
+            template: loadingTemplate
+        });
+        routeService.selectedRoute = filename;
+        $state.go('menu.maps');    
+    };
+    
     var mapDiv = document.getElementById("sea-ice-div");
     var mapHeight = mapDiv.offsetHeight;
     var mapWidth = mapDiv.offsetWidth;
     
-    var mapFunc = function(data){
+    var mapFunc = function(){
         
         var vis = d3.select("#sea-ice-vis"),
             WIDTH = mapWidth,
@@ -313,16 +387,72 @@ angular.module('app.controllers', [])
         
         return vis;
     };
-    
-    d3.csv("res/scientific_route.csv", function(d){
-        vis = mapFunc(d);
-    });
+
+    var vis = mapFunc();
+
 })
 
-.controller('routeTrackCtrl', function($scope, $ionicPlatform, $cordovaToast, $ionicPopup, $window, $cordovaGeolocation, $interval){
+.controller('routeTrackCtrl', function($scope, $state, $ionicPlatform, $cordovaToast, $ionicPopup, $window, $cordovaGeolocation, $interval, $ionicLoading, routeService, $ionicActionSheet){
 
-	$scope.lat_geo = "Loading Lat...";
-  	$scope.long_geo = "Loading Long...";
+    $scope.data = {
+        showDelete: false
+    };
+    
+    $scope.itemDelete = function(routeName){
+        
+        $ionicActionSheet.show({
+            buttons: [],
+            destructiveText: ' Delete',
+            titleText: 'Confirm delete?',
+            cancelText: 'Cancel',
+            cancel: function(){ $scope.data.showDelete = false; },
+            destructiveButtonClicked: function(){
+                $scope.data.showDelete = false;
+                $scope.exampleRoutes.splice($scope.exampleRoutes.indexOf(routeName), 1);
+                return true;
+            }
+        });
+        
+    };
+    
+    $scope.userDelete = function(routeName){
+        
+        $ionicActionSheet.show({
+            buttons: [],
+            destructiveText: ' Delete',
+            titleText: 'Confirm delete?',
+            cancelText: 'Cancel',
+            cancel: function(){ $scope.data.showDelete = false; },
+            destructiveButtonClicked: function(){
+                $scope.data.showDelete = false;
+                $scope.userRoutes.splice($scope.userRoutes.indexOf(routeName), 1);
+                return true;
+            }
+        });
+        
+    };
+    
+    $scope.userRoutes = [];
+    
+    $scope.exampleRoutes = [
+        {
+            "name":"Example Route: Scientific Cruise around the Siberian Shelf - 2014",
+            "filename":"correctly_filtered.csv"
+        },
+        {
+            "name":"Example Route: Tour of the Arctic circle from Svalbard to Severny Island - 2016",
+            "filename":"example_route_2.csv"
+        }
+    ];
+    
+    var loadingTemplate = "<div style='margin:-20px;padding:15px;border-radius:7px;background-color:#00376d'>Processing...</div>"
+    $scope.mapScreen = function(filename){
+        $ionicLoading.show({
+            template: loadingTemplate
+        });
+        routeService.selectedRoute = filename;
+        $state.go('menu.maps');
+    };
 
   	$ionicPlatform.ready(function(){
   		console.log("[IONIC PLATFORM IS NOW READY]");
@@ -336,11 +466,10 @@ angular.module('app.controllers', [])
 
   		$cordovaGeolocation.getCurrentPosition(optionsGeo).then(function(position){
 	  		console.log('[GEOLOCAL JS1] Location from Geolocation.');
-	  		$scope.lat_geo = position.coords.latitude;
-	  		$scope.long_geo = position.coords.longitude;
 	  	});
 
 	  	$scope.isRecording = false;
+        $scope.current_route = [[],[]];
 
 	  	bgGeo.configure({
 	     	//Both
@@ -359,6 +488,8 @@ angular.module('app.controllers', [])
 
 		bgGeo.registerForLocationUpdates(function(location) {
 	     	console.log("[BackgroundGeo] Location updated - Position:  " + JSON.stringify(location));
+            $scope.current_route[0].push(location.latitude);
+            $scope.current_route[1].push(location.longitude);
 		}, function(err) {
 	     	console.log("[BackgroundGeo] Error: Didnt get an update.", err);
 		});
@@ -375,8 +506,8 @@ angular.module('app.controllers', [])
 	  			if($scope.isRecording){
 	  				$cordovaGeolocation.getCurrentPosition(optionsGeo).then(function(position){
 	  					console.log('[ForegroundGeo] Location updated - Position: latitude - ' + position.coords.latitude + ', longitude - ' + position.coords.longitude);
-	  					$scope.lat_geo = position.coords.latitude;
-	  					$scope.long_geo = position.coords.longitude;
+                        $scope.current_route[0].push(position.coords.latitude);
+                        $scope.current_route[1].push(position.coords.longitude);
 	  				})
 	  			} else {
 	  				console.log('[ForegroundGeo] getLocation called, location tracking disabled.')
@@ -402,6 +533,7 @@ angular.module('app.controllers', [])
 		   			bgGeo.start();
                     $scope.isRecording = true;
 		            console.log('[BackgroundGeo] Tracking started.');
+                    $scope.current_route = [[],[]]
 		            onResume();
 		        } else {
 		        	//return
@@ -412,13 +544,30 @@ angular.module('app.controllers', [])
 		};
 
 		$scope.stopGeolocation = function(){
-			var confirmPopup = $ionicPopup.confirm({
-		     	title: 'Location Tracking',
-		     	template: 'Are you sure you want to stop recording your location?'
-		   	});
-		   	confirmPopup.then(function(res) {
-		   		if(res){
-		   			bgGeo.stop();
+			var confirmPopup = $ionicPopup.show({
+                template: '<input type="text" name="namer" ng-model="data.name" required>',
+                title: 'Location Tracking',
+                subTitle: 'Please enter a name for this track to stop recording:',
+                scope: $scope,
+                buttons: [
+                    { text: 'Cancel' },
+                    {
+                        text: '<b>Save</b>',
+                        type: 'button-bright',
+                        onTap: function(e){
+                            if(!$scope.data.name){
+                                alert('You have to name your route before you can save it!')
+                                e.preventDefault();
+                            } else {
+                                return $scope.data.name;
+                            }
+                        }
+                    }
+                ]
+            });
+		    confirmPopup.then(function(res) {
+                if(res){
+                    bgGeo.stop();
                     $scope.isRecording = false;
 		            console.log('[BackgroundGeo] Tracking stopped.');
 		        } else {
@@ -441,43 +590,43 @@ angular.module('app.controllers', [])
 		window.open("http://www.cpom.ucl.ac.uk/csopr/seaice.html", '_system');
 	};
     
-//    $ionicPlatform.ready(function(){
-//        cordova.plugins.email.isAvailable(function(isAvailable){
-//            if(isAvailable){
-//                var bodyText = "<h1 style='text-align:center; color:lightgrey; font-family:sans-serif'>Feedback about CPOM App!</h1>"
-//                console.log('[SendMail] Email plugin is available');
-//                $scope.feedbackMail = function(){
-//                    cordova.plugins.email.open({
-//                        to: ["py14sts@leeds.ac.uk"],
-//                        cc: null,
-//                        bcc: null,
-//                        attachments: null,
-//                        subject: "Feedback about CPOM App!",
-//                        body: bodyText,
-//                        isHtml: true,
-//                    }, function(){
-//                        console.log('[SendMail] Email window closed.');
-//                    });
-//                };
-//                
-//                $scope.cpomMail = function(mailAddress){
-//                    cordova.plugins.email.open({
-//                        to: [mailAddress],
-//                        cc: null,
-//                        bcc: null,
-//                        attachments: null,
-//                        subject: "Email from user of CPOM App!",
-//                        body: null,
-//                        isHtml: true,
-//                    }, function(){
-//                        console.log('[SendMail] Email window closed.');
-//                    });
-//                }
-//            } else {
-//                console.log('[SendMail] Email plugin is not available');
-//            };
-//        });
-//    });
+    $ionicPlatform.ready(function(){
+        cordova.plugins.email.isAvailable(function(isAvailable){
+            if(isAvailable){
+                var bodyText = "<h1 style='text-align:center; color:lightgrey; font-family:sans-serif'>Feedback about CPOM App!</h1>"
+                console.log('[SendMail] Email plugin is available');
+                $scope.feedbackMail = function(){
+                    cordova.plugins.email.open({
+                        to: ["py14sts@leeds.ac.uk"],
+                        cc: null,
+                        bcc: null,
+                        attachments: null,
+                        subject: "Feedback about CPOM App!",
+                        body: bodyText,
+                        isHtml: true,
+                    }, function(){
+                        console.log('[SendMail] Email window closed.');
+                    });
+                };
+                
+                $scope.cpomMail = function(mailAddress){
+                    cordova.plugins.email.open({
+                        to: [mailAddress],
+                        cc: null,
+                        bcc: null,
+                        attachments: null,
+                        subject: "Email from user of CPOM App!",
+                        body: "",
+                        isHtml: false,
+                    }, function(){
+                        console.log('[SendMail] Email window closed.');
+                    });
+                }
+            } else {
+                console.log('[SendMail] Email plugin is not available');
+            };
+        });
+    });
     
 })
 

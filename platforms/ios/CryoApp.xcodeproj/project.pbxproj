@@ -34,6 +34,9 @@
 		74D6F5DEC12E436BA9F12419 /* CDVBackgroundLocationServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = 181D9900709045F79118E014 /* CDVBackgroundLocationServices.swift */; };
 		B524DF2337664EB59FB4881A /* APPEmailComposer.m in Sources */ = {isa = PBXBuildFile; fileRef = E000098BAD324807AF6C7FFE /* APPEmailComposer.m */; };
 		0E170C245B5745F38CD13075 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C6CC519E192A432490A1182A /* MessageUI.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		EC74FAAA80AE490F86275F98 /* CDVFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 25AF96C5FB9147EDA5948695 /* CDVFile.m */; };
+		B6CD125D01DA4EDBB3BD3989 /* CDVLocalFilesystem.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B6013F6E72A465E8BFED3CF /* CDVLocalFilesystem.m */; };
+		3B1F7AC43DF94E1292BFB224 /* CDVAssetLibraryFilesystem.m in Sources */ = {isa = PBXBuildFile; fileRef = EE58F90926744E3EBD6F2D54 /* CDVAssetLibraryFilesystem.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -101,6 +104,12 @@
 		E000098BAD324807AF6C7FFE /* APPEmailComposer.m */ = {isa = PBXFileReference; name = "APPEmailComposer.m"; path = "cordova-plugin-email/APPEmailComposer.m"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; explicitFileType = undefined; includeInIndex = 0; };
 		FD17C848B1164FF08F13868D /* APPEmailComposer.h */ = {isa = PBXFileReference; name = "APPEmailComposer.h"; path = "cordova-plugin-email/APPEmailComposer.h"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; explicitFileType = undefined; includeInIndex = 0; };
 		C6CC519E192A432490A1182A /* MessageUI.framework */ = {isa = PBXFileReference; name = "MessageUI.framework"; path = "System/Library/Frameworks/MessageUI.framework"; sourceTree = SDKROOT; fileEncoding = undefined; lastKnownFileType = wrapper.framework; explicitFileType = undefined; includeInIndex = 0; };
+		25AF96C5FB9147EDA5948695 /* CDVFile.m */ = {isa = PBXFileReference; name = "CDVFile.m"; path = "cordova-plugin-file/CDVFile.m"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; explicitFileType = undefined; includeInIndex = 0; };
+		9B6013F6E72A465E8BFED3CF /* CDVLocalFilesystem.m */ = {isa = PBXFileReference; name = "CDVLocalFilesystem.m"; path = "cordova-plugin-file/CDVLocalFilesystem.m"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; explicitFileType = undefined; includeInIndex = 0; };
+		EE58F90926744E3EBD6F2D54 /* CDVAssetLibraryFilesystem.m */ = {isa = PBXFileReference; name = "CDVAssetLibraryFilesystem.m"; path = "cordova-plugin-file/CDVAssetLibraryFilesystem.m"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; explicitFileType = undefined; includeInIndex = 0; };
+		1987F2DED52D45BBBED927CE /* CDVFile.h */ = {isa = PBXFileReference; name = "CDVFile.h"; path = "cordova-plugin-file/CDVFile.h"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; explicitFileType = undefined; includeInIndex = 0; };
+		FCAAF547A32D4E6D98995059 /* CDVLocalFilesystem.h */ = {isa = PBXFileReference; name = "CDVLocalFilesystem.h"; path = "cordova-plugin-file/CDVLocalFilesystem.h"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; explicitFileType = undefined; includeInIndex = 0; };
+		70F886629D0043629ABF3CB0 /* CDVAssetLibraryFilesystem.h */ = {isa = PBXFileReference; name = "CDVAssetLibraryFilesystem.h"; path = "cordova-plugin-file/CDVAssetLibraryFilesystem.h"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -239,6 +248,12 @@
 				373C04C008D94898B0F56EB3 /* Loc-Bridging-Header.h */,
 				E000098BAD324807AF6C7FFE /* APPEmailComposer.m */,
 				FD17C848B1164FF08F13868D /* APPEmailComposer.h */,
+				25AF96C5FB9147EDA5948695 /* CDVFile.m */,
+				9B6013F6E72A465E8BFED3CF /* CDVLocalFilesystem.m */,
+				EE58F90926744E3EBD6F2D54 /* CDVAssetLibraryFilesystem.m */,
+				1987F2DED52D45BBBED927CE /* CDVFile.h */,
+				FCAAF547A32D4E6D98995059 /* CDVLocalFilesystem.h */,
+				70F886629D0043629ABF3CB0 /* CDVAssetLibraryFilesystem.h */,
 			);
 			name = Plugins;
 			path = "CryoApp/Plugins";
@@ -364,6 +379,9 @@
 				ADE09D1A110C4DC7A4A07419 /* Toast.m in Sources */,
 				74D6F5DEC12E436BA9F12419 /* CDVBackgroundLocationServices.swift in Sources */,
 				B524DF2337664EB59FB4881A /* APPEmailComposer.m in Sources */,
+				EC74FAAA80AE490F86275F98 /* CDVFile.m in Sources */,
+				B6CD125D01DA4EDBB3BD3989 /* CDVLocalFilesystem.m in Sources */,
+				3B1F7AC43DF94E1292BFB224 /* CDVAssetLibraryFilesystem.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
