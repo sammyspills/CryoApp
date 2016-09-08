@@ -93,3 +93,4 @@ angular.module('app.services', [])
 .service('routeService', [function(){
     this.selectedRoute;
 }]);
+

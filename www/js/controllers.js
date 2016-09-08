@@ -387,7 +387,7 @@ angular.module('app.controllers', [])
         
         return vis;
     };
-
+    
     var vis = mapFunc();
 
 })
@@ -434,7 +434,9 @@ angular.module('app.controllers', [])
         
     };
     
-    $scope.userRoutes = [];
+    $scope.userRoutes = [
+        
+    ];
     
     $scope.exampleRoutes = [
         {
@@ -462,8 +464,14 @@ angular.module('app.controllers', [])
         if(ionic.Platform.isAndroid()){
             console.log('Platform is Android');
             console.log('cordova.file.dataDirectory: ' + cordova.file.dataDirectory);
-            $scope.fileDir = cordova.file.dataDirectory;
+            $scope.fileDir = cordova.file.externalDataDirectory;
         };
+        
+        $cordovaFile.readAsText($scope.fileDir, "userRoutes.json").then(function(success){
+            $scope.userRoutes = JSON.parse(success);
+        }, function(error){
+            console.log("userRoutes file doesn't exist yet!")
+        });
 
   		var bgGeo = window.plugins.backgroundLocationServices;
 
@@ -524,7 +532,7 @@ angular.module('app.controllers', [])
 	  		};
 
 	  		console.log('[ForegroundGeo] onResume success.');
-	  		$interval(getLocation, 5000);
+	  		foregroundGeo = $interval(getLocation, 5000);
 
 		};
 
@@ -538,10 +546,13 @@ angular.module('app.controllers', [])
 		   	});
 		   	confirmPopup.then(function(res) {
 		   		if(res){
-                    $cordovaFile.createFile($scope.fileDir, "test.txt", true).then(function(success){
-                        $cordovaFile.checkFile($scope.fileDir, "test.txt").then(function(success){
-                            console.log('File exists: ' + success.);
-                        });
+                    var year = new Date().getFullYear();
+                    var date = new Date().getDate();
+                    var month = new Date().getMonth();
+                    var date_string = date + "_" + month + "_" + year;
+                    $scope.fileName = "route_" + date_string + ".txt";
+                    
+                    $cordovaFile.createFile($scope.fileDir, $scope.fileName, true).then(function(success){
                         bgGeo.start();
                         $scope.isRecording = true;
                         console.log('[BackgroundGeo] Tracking started.');
@@ -559,6 +570,7 @@ angular.module('app.controllers', [])
 
 		$scope.stopGeolocation = function(){
 			var confirmPopup = $ionicPopup.show({
+    
                 template: '<input type="text" name="namer" ng-model="data.name" required>',
                 title: 'Location Tracking',
                 subTitle: 'Please enter a name for this track to stop recording:',
@@ -573,7 +585,21 @@ angular.module('app.controllers', [])
                                 alert('You have to name your route before you can save it!')
                                 e.preventDefault();
                             } else {
-                                console.log($scope.data.name);
+                                var json_entry = {"name": $scope.data.name,"filename": $scope.fileDir + $scope.fileName};
+                                $cordovaFile.checkFile($scope.fileDir, "userRoutes.json").then(function(success){
+                                    //Write to db
+                                }, function(error){
+                                    var initial_entry = "[" + JSON.stringify(json_entry) + "]"
+                                    $cordovaFile.writeFile($scope.fileDir, "userRoutes.json", initial_entry, true).then(function(){
+                                        $cordovaFile.readAsText($scope.fileDir, "userRoutes.json").then(function(success){
+                                            console.log("User Routes read.");
+                                            $scope.userRoutes = JSON.parse(success);
+                                        }, function(error){
+                                            console.log("Error reading userRoutes.json as text.");
+                                            console.log("Error: " + error);
+                                        })
+                                    });
+                                });
                                 return $scope.data.name;
                             };
                         }
@@ -584,6 +610,7 @@ angular.module('app.controllers', [])
                 if(res){
                     bgGeo.stop();
                     $scope.isRecording = false;
+                    $interval.cancel(foregroundGeo);
 		            console.log('[BackgroundGeo] Tracking stopped.');
 		        } else {
 		        	//return
