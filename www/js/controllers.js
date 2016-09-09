@@ -15,7 +15,7 @@ angular.module('app.controllers', [])
 .controller('mapsCtrl', function($scope, $state, $ionicPlatform, $ionicLoading, routeService) {
     
     var routeFile = routeService.selectedRoute;
-    console.log(routeFile);
+    console.log(routeFile); 
     
     var topoDiv = document.getElementById("topo-div");
     var topoHeight = topoDiv.offsetHeight;
@@ -60,10 +60,12 @@ angular.module('app.controllers', [])
         vis.append("svg:image")
             .attr('width', WIDTH)
             .attr('height', HEIGHT)
-            .attr('x','-4%')
-            .attr('y','-4%')
+            .attr('x','-3.9%')
+            .attr('y','-3.9%')
             .attr("transform", "scale(1.08)")
-            .attr("xlink:href","img/ice_thickness/28_spring_2016.png");
+            .attr("xlink:href","img/ice_thickness/" + routeService.selectedIce);
+        
+        console.log("Image used: img/ice_thickness/" + routeService.selectedIce);
 
         var path = d3.geoPath()
             .projection(projection);
@@ -95,12 +97,15 @@ angular.module('app.controllers', [])
         var g = vis.append("g");
 
         d3.json("json/world-110m.json", function(error, world) {
-              if (error) throw error;
+            if (error){ console.log(error) };
+            console.log('json called');
 
             vis.insert("path", ".graticule")
                 .datum(topojson.feature(world, world.objects.land))
                 .attr("class", "land")
                 .attr("d", path);
+            
+            console.log('JSON Features added.');
 
             vis.insert("path", ".graticule")
                 .datum(topojson.mesh(world, world.objects.countries, function(a, b) { return a !== b; }))
@@ -114,7 +119,6 @@ angular.module('app.controllers', [])
     var chartDiv = document.getElementById('chart-div');
     var divHeight = chartDiv.offsetHeight;
     var divWidth = chartDiv.offsetWidth;
-
     var padding = "30";
 
     //Initialise distance calculating function:
@@ -237,12 +241,34 @@ angular.module('app.controllers', [])
     };
         
     $ionicPlatform.ready(function(){
-
-        d3.csv("res/" + routeFile, function(d){
-            scatterFunc(d);
-            vis = topoFunc(d);
-        });
         
+        $scope.iceFile = routeService.selectedIce;
+        
+        $scope.selectedSeaIce = function(mySelect){
+            var iceData = mySelect;
+
+            if(iceData == "Spring 2016"){
+                routeService.selectedIce = "28_spring_2016.png";
+                console.log("selectedIce: " + routeService.selectedIce);
+            } else if(iceData == "Spring 2012"){
+                routeService.selectedIce = "spring_2012.png";
+                console.log("selectedIce: " + routeService.selectedIce);
+            } else {
+                routeService.selectedIce = "28_spring_2016.png";
+                console.log("selectedIce: " + routeService.selectedIce);
+            };
+            
+            d3.csv("res/" + routeFile, function(d){
+                scatterFunc(d);
+                vis = topoFunc(d);
+            });
+        };
+
+    });
+    
+    d3.csv("res/" + routeFile, function(d){
+        scatterFunc(d);
+        vis = topoFunc(d);
     });
 
 })
@@ -298,13 +324,19 @@ angular.module('app.controllers', [])
     $scope.exampleRoutes = [
         {
             "name":"Example Route: Scientific Cruise around the Siberian Shelf - 2014",
-            "filename":"correctly_filtered.csv",
-            "start":"69.572655, 17.089641"
+            "filename":"correctly_filtered.csv"
         },
         {
             "name":"Example Route: Tour of the Arctic circle from Svalbard to Severny Island - 2016",
-            "filename":"example_route_2.csv",
-            "start":"77.791601, 10.977841"
+            "filename":"example_route_2.csv"
+        },
+        {
+            "name": "North West Passage - Northern Route - 2012",
+            "filename":"NWP_north_app.csv"
+        },
+        {
+            "name":"North West Passage - Southern Route - 2012",
+            "filename":"NWP_south_app.csv"
         }
     ];
     
@@ -314,6 +346,7 @@ angular.module('app.controllers', [])
             template: loadingTemplate
         });
         routeService.selectedRoute = filename;
+        routeService.selectedIce = "spring_2012.png";
         $state.go('menu.maps');    
     };
     
@@ -446,6 +479,14 @@ angular.module('app.controllers', [])
         {
             "name":"Example Route: Tour of the Arctic circle from Svalbard to Severny Island - 2016",
             "filename":"example_route_2.csv"
+        },
+        {
+            "name": "North West Passage - Northern Route - 2012",
+            "filename":"NWP_north_app.csv"
+        },
+        {
+            "name":"North West Passage - Southern Route - 2012",
+            "filename":"NWP_south_app.csv"
         }
     ];
     
@@ -455,6 +496,7 @@ angular.module('app.controllers', [])
             template: loadingTemplate
         });
         routeService.selectedRoute = filename;
+        routeService.selectedIce = "spring_2012.png";
         $state.go('menu.maps');
     };
 

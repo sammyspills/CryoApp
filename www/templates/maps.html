@@ -80,8 +80,9 @@
                 <div class="input-label">
                     Sea Ice Data:
                 </div>
-                <select>
-                    <option selected>Spring 2016</option>
+                <select id="seaIceSelect" ng-model="mySelect" ng-change="selectedSeaIce(mySelect)">
+                    <option id="28_spring_2016.png" selected="selected">Spring 2016</option>
+                    <option id="spring_2012.png">Spring 2012</option>
                 </select>
             </label>
         </div>
