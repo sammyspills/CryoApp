@@ -1,14 +1,24 @@
 angular.module('app.controllers', [])
   
-.controller('homeCtrl', function($scope) {
+.controller('homeCtrl', function($scope, $state, $ionicHistory) {
 
-    //Links to external sites
-	$scope.cryosatSite = function(){
-		window.open("http://www.esa.int/Our_Activities/Observing_the_Earth/CryoSat/Facts_and_figures", '_system');
-	};
-
-	$scope.blogSite = function(){
-		window.open("http://cpom.leeds.ac.uk/cpom-blog/", '_system');
+    $scope.trackScreen = function(){
+        $ionicHistory.nextViewOptions({
+          disableBack: true
+        });
+        $state.go('menu.routeTrack');
+    };
+    $scope.iceScreen = function(){
+        $ionicHistory.nextViewOptions({
+          disableBack: true
+        });
+        $state.go('menu.seaIce');
+    };
+    $scope.aboutScreen = function(){
+        $ionicHistory.nextViewOptions({
+            disableBack: true
+        });
+        $state.go('menu.about');
     };
 
 })
@@ -82,15 +92,19 @@ angular.module('app.controllers', [])
             .attr("height", HEIGHT);
 
         //Add background ice image
-        vis.append("svg:image")
-            .attr('width', WIDTH)
-            .attr('height', HEIGHT)
-            .attr('x','-3.9%')
-            .attr('y','-3.9%')
-            .attr("transform", "scale(1.08)")
-            .attr("xlink:href","img/ice_thickness/" + routeService.selectedIce);
-        
-        console.log("Image used: img/ice_thickness/" + routeService.selectedIce);
+        try {
+            vis.append("svg:image")
+                .attr('width', WIDTH)
+                .attr('height', HEIGHT)
+                .attr('x','-3.9%')
+                .attr('y','-3.9%')
+                .attr("transform", "scale(1.08)")
+                .attr("xlink:href","img/ice_thickness/" + routeService.selectedIce);
+
+            console.log("Image used: img/ice_thickness/" + routeService.selectedIce);
+        } catch(err) {
+            console.log("No image selected");    
+        };
 
         var path = d3.geoPath()
             .projection(projection);
@@ -339,11 +353,7 @@ angular.module('app.controllers', [])
 
 })
 
-.controller('seaIceCtrl', function($scope, $state, $ionicLoading, routeService, $ionicActionSheet, $cordovaGeolocation, $ionicPlatform){
-    
-    $scope.data = {
-        showDelete: false
-    };
+.controller('seaIceCtrl', function($scope, $state, $ionicLoading, routeService, $ionicActionSheet, $cordovaGeolocation, $ionicPlatform, $ionicListDelegate){
     
     //Object to hold ice data options for drop-down select.
     $scope.iceOptions = [
@@ -357,42 +367,6 @@ angular.module('app.controllers', [])
             "file":"spring_2012.png"
         }
     ];
-    
-    //Function to remove data on delete of example route
-    $scope.itemDelete = function(routeName){
-        
-        $ionicActionSheet.show({
-            buttons: [],
-            destructiveText: ' Delete',
-            titleText: 'Confirm delete?',
-            cancelText: 'Cancel',
-            cancel: function(){ $scope.data.showDelete = false; },
-            destructiveButtonClicked: function(){
-                $scope.data.showDelete = false;
-                $scope.exampleRoutes.splice($scope.exampleRoutes.indexOf(routeName), 1);
-                return true;
-            }
-        });
-        
-    };
-    
-    //Function to remove data on delete of user route
-    $scope.userDelete = function(routeName){
-        
-        $ionicActionSheet.show({
-            buttons: [],
-            destructiveText: ' Delete',
-            titleText: 'Confirm delete?',
-            cancelText: 'Cancel',
-            cancel: function(){ $scope.data.showDelete = false; },
-            destructiveButtonClicked: function(){
-                $scope.data.showDelete = false;
-                $scope.userRoutes.splice($scope.userRoutes.indexOf(routeName), 1);
-                return true;
-            }
-        });
-        
-    };
     
     //Object to hold user route names and filenames
     $scope.userRoutes = [
@@ -418,6 +392,63 @@ angular.module('app.controllers', [])
             "filename":"NWP_south_app.csv"
         }
     ];
+    
+    //Function to handle edit of items
+    $scope.editItem = function(route){
+        $ionicActionSheet.show({
+            
+            buttons: [
+                {text: "Share with us!"}
+            ],
+            destructiveText: 'Delete',
+            titleText: route.name,
+            cancelText: 'Cancel',
+            cancel: function() { $ionicListDelegate.closeOptionButtons(); },
+            buttonClicked: function(index, button){
+                if(index == 0){
+                    alert('Send route to CPOM!');
+                    //TODO: Add file upload to CPOM here
+                };
+                
+                $ionicListDelegate.closeOptionButtons();
+                return true;
+            },
+            destructiveButtonClicked: function(){
+                $scope.exampleRoutes.splice($scope.exampleRoutes.indexOf(route), 1);
+                return true;
+            }
+            
+        });
+        
+    };
+    
+    $scope.editUser = function(route){
+        $ionicActionSheet.show({
+            
+            buttons: [
+                {text: "Share with us!"}
+            ],
+            destructiveText: 'Delete',
+            titleText: route.name,
+            cancelText: 'Cancel',
+            cancel: function() { $ionicListDelegate.closeOptionButtons(); },
+            buttonClicked: function(index, button){
+                if(index == 0){
+                    alert('Send route to CPOM!');
+                    //TODO: Add file upload to CPOM here
+                };
+                
+                $ionicListDelegate.closeOptionButtons();
+                return true;
+            },
+            destructiveButtonClicked: function(){
+                $scope.userRoutes.splice($scope.userRoutes.indexOf(route), 1);
+                return true;
+            }
+            
+        });
+        
+    };
     
     //Function to set routeService selected route and display map screen.
     var loadingTemplate = "<div style='margin:-20px;padding:15px;border-radius:7px;background-color:#00376d'>Processing...</div>"
@@ -748,9 +779,9 @@ angular.module('app.controllers', [])
             HEIGHT = chartHeight,
             MARGINS = {
                 top: 15,
-                right: 20,
-                bottom: 100,
-                left: 70
+                right: 30,
+                bottom: 90,
+                left: 50
             },
             xScale = d3.scaleTime()
             .range([MARGINS.left, WIDTH - MARGINS.right])
@@ -880,7 +911,7 @@ angular.module('app.controllers', [])
 
 })
 
-.controller('routeTrackCtrl', function($scope, $state, $ionicPlatform, $cordovaToast, $ionicPopup, $window, $cordovaGeolocation, $interval, $ionicLoading, routeService, $ionicActionSheet, $cordovaFile){
+.controller('routeTrackCtrl', function($scope, $state, $ionicPlatform, $cordovaToast, $ionicPopup, $window, $cordovaGeolocation, $interval, $ionicLoading, routeService, $ionicActionSheet, $cordovaFile, $ionicListDelegate){
     
     $scope.fileDir = null;
 
@@ -889,37 +920,58 @@ angular.module('app.controllers', [])
     };
     
     //Function to remove data on delete of example route
-    $scope.itemDelete = function(routeName){
-        
+    $scope.editItem = function(route){
         $ionicActionSheet.show({
-            buttons: [],
-            destructiveText: ' Delete',
-            titleText: 'Confirm delete?',
+            
+            buttons: [
+                {text: "Share with us!"}
+            ],
+            destructiveText: 'Delete',
+            titleText: route.name,
             cancelText: 'Cancel',
-            cancel: function(){ $scope.data.showDelete = false; },
+            cancel: function() { $ionicListDelegate.closeOptionButtons(); },
+            buttonClicked: function(index, button){
+                if(index == 0){
+                    alert('Send route to CPOM!');
+                    //TODO: Add file upload to CPOM here
+                };
+                
+                $ionicListDelegate.closeOptionButtons();
+                return true;
+            },
             destructiveButtonClicked: function(){
-                $scope.data.showDelete = false;
-                $scope.exampleRoutes.splice($scope.exampleRoutes.indexOf(routeName), 1);
+                $scope.exampleRoutes.splice($scope.exampleRoutes.indexOf(route), 1);
                 return true;
             }
+            
         });
         
     };
     
-    //Function to remove data on delete of user route
-    $scope.userDelete = function(routeName){
-        
+    $scope.editUser = function(route){
         $ionicActionSheet.show({
-            buttons: [],
-            destructiveText: ' Delete',
-            titleText: 'Confirm delete?',
+            
+            buttons: [
+                {text: "Share with us!"}
+            ],
+            destructiveText: 'Delete',
+            titleText: route.name,
             cancelText: 'Cancel',
-            cancel: function(){ $scope.data.showDelete = false; },
+            cancel: function() { $ionicListDelegate.closeOptionButtons(); },
+            buttonClicked: function(index, button){
+                if(index == 0){
+                    alert('Send route to CPOM!');
+                    //TODO: Add file upload to CPOM here
+                };
+                
+                $ionicListDelegate.closeOptionButtons();
+                return true;
+            },
             destructiveButtonClicked: function(){
-                $scope.data.showDelete = false;
-                $scope.userRoutes.splice($scope.userRoutes.indexOf(routeName), 1);
+                $scope.userRoutes.splice($scope.userRoutes.indexOf(route), 1);
                 return true;
             }
+            
         });
         
     };
@@ -966,12 +1018,14 @@ angular.module('app.controllers', [])
         //Get directory from appropriate filesystem
         if(ionic.Platform.isAndroid()){
             console.log('Platform is Android');
-            console.log('cordova.file.dataDirectory: ' + cordova.file.dataDirectory);
+            console.log('cordova.file.dataDirectory: ' + cordova.file.externalDataDirectory);
+            $scope.fileDir = cordova.file.externalDataDirectory;
         };
         
         //Parse json file holding user route names and filenames
         $cordovaFile.readAsText($scope.fileDir, "userRoutes.json").then(function(success){
-            $scope.userRoutes = JSON.parse(success);
+            var routes_json = '[' + success + ']';
+            $scope.userRoutes = JSON.parse(routes_json);
         }, function(error){
             console.log("userRoutes file doesn't exist yet!")
         });
@@ -1030,6 +1084,8 @@ angular.module('app.controllers', [])
 	  					console.log('[ForegroundGeo] Location updated - Position: latitude - ' + position.coords.latitude + ', longitude - ' + position.coords.longitude);
                         $scope.current_route[0].push(position.coords.latitude);
                         $scope.current_route[1].push(position.coords.longitude);
+                        var coordEntry = position.coords.latitude + "," + position.coords.longitude + "\n";
+                        $cordovaFile.writeExistingFile($scope.fileDir, $scope.fileName, coordEntry, true).then()
 	  				})
 	  			} else {
 	  				console.log('[ForegroundGeo] getLocation called, location tracking disabled.')
@@ -1094,20 +1150,45 @@ angular.module('app.controllers', [])
                                 e.preventDefault();
                             } else {
                                 var json_entry = {"name": $scope.data.name,"filename": $scope.fileDir + $scope.fileName};
+                                //Check route database exists
                                 $cordovaFile.checkFile($scope.fileDir, "userRoutes.json").then(function(success){
-                                    //Write to db
+                                    //Read it in it's current state
+                                    $cordovaFile.readAsText($scope.fileDir, "userRoutes.json").then(function(success){
+                                        //Add new string to existing state
+                                        var updated_text = success + ',' + JSON.stringify(json_entry);
+                                        //Write updated string to file
+                                        $cordovaFile.writeFile($scope.fileDir, "userRoutes.json", updated_text, true).then(function(){
+                                            //Re-read file and parse to a json object for list
+                                            $cordovaFile.readAsText($scope.fileDir, "userRoutes.json").then(function(success){
+                                                console.log("User Routes read.");
+                                                var route_json = '[' + success + ']';
+                                                $scope.userRoutes = JSON.parse(route_json);
+                                            }, function(error){
+                                                console.log("Error reading userRoutes.json as text: " + error);
+                                            });
+                                        });
+                                    });
+                                    
                                 }, function(error){
-                                    var initial_entry = "[" + JSON.stringify(json_entry) + "]"
+                                    var initial_entry = JSON.stringify(json_entry)
                                     $cordovaFile.writeFile($scope.fileDir, "userRoutes.json", initial_entry, true).then(function(){
                                         $cordovaFile.readAsText($scope.fileDir, "userRoutes.json").then(function(success){
+                                            
                                             console.log("User Routes read.");
-                                            $scope.userRoutes = JSON.parse(success);
+                                            var route_json = '[' + success + ']';
+                                            $scope.userRoutes = JSON.parse(route_json);
+                                            
                                         }, function(error){
+                                            
                                             console.log("Error reading userRoutes.json as text.");
                                             console.log("Error: " + error);
-                                        })
+                                            
+                                        });
+                                        
                                     });
+                                    
                                 });
+                                
                                 return $scope.data.name;
                             };
                         }
@@ -1140,6 +1221,12 @@ angular.module('app.controllers', [])
 	$scope.uclSite = function(){
 		window.open("http://www.cpom.ucl.ac.uk/csopr/seaice.html", '_system');
 	};
+	$scope.cryosatSite = function(){
+		window.open("http://www.esa.int/Our_Activities/Observing_the_Earth/CryoSat/Facts_and_figures", '_system');
+	};
+	$scope.blogSite = function(){
+		window.open("http://cpom.leeds.ac.uk/cpom-blog/", '_system');
+    };
     
     //Email providers
     $ionicPlatform.ready(function(){
@@ -1176,6 +1263,7 @@ angular.module('app.controllers', [])
                 }
             } else {
                 console.log('[SendMail] Email plugin is not available');
+                alert("This feature is currently not working on your device. Please email me at py14sts@leeds.ac.uk");
             };
         });
     });
