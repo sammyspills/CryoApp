@@ -30,16 +30,6 @@ angular.module('app.routes', [])
     }
   })
 
-  .state('menu.marineTraffic', {
-    url: '/trafficScreen',
-    views: {
-      'side-menu21': {
-        templateUrl: 'templates/marineTraffic.html',
-        controller: 'marineTrafficCtrl'
-      }
-    }
-  })
-
   .state('menu', {
     url: '/side-menu21',
     templateUrl: 'templates/menu.html',
@@ -75,15 +65,15 @@ angular.module('app.routes', [])
       }
     }
   })
-
-  .state('menu.settings', {
-    url: '/settingScreen',
-    views: {
-      'side-menu21': {
-        templateUrl: 'templates/settings.html',
-        controller: 'settingsCtrl'
+  
+  .state('menu.download', {
+      url: '/downloadScreen',
+      views: {
+          'side-menu21': {
+              templateUrl: 'templates/download.html',
+              controller: 'dlCtrl'
+          }
       }
-    }
   })
 
 $urlRouterProvider.otherwise('/side-menu21/homeScreen')

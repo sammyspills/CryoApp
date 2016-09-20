@@ -51,6 +51,9 @@
         },
         "cordova-plugin-file": {
             "PACKAGE_NAME": "com.ionicframework.cryoapp544768"
+        },
+        "cordova-plugin-file-transfer": {
+            "PACKAGE_NAME": "com.ionicframework.cryoapp544768"
         }
     },
     "dependent_plugins": {

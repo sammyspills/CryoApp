@@ -277,6 +277,22 @@ module.exports = [
             "cordova"
         ],
         "runs": true
+    },
+    {
+        "id": "cordova-plugin-file-transfer.FileTransferError",
+        "file": "plugins/cordova-plugin-file-transfer/www/FileTransferError.js",
+        "pluginId": "cordova-plugin-file-transfer",
+        "clobbers": [
+            "window.FileTransferError"
+        ]
+    },
+    {
+        "id": "cordova-plugin-file-transfer.FileTransfer",
+        "file": "plugins/cordova-plugin-file-transfer/www/FileTransfer.js",
+        "pluginId": "cordova-plugin-file-transfer",
+        "clobbers": [
+            "window.FileTransfer"
+        ]
     }
 ];
 module.exports.metadata = 
@@ -297,7 +313,8 @@ module.exports.metadata =
     "cordova-plugin-x-toast": "2.5.2",
     "org.flybuy.cordova.background-location-services": "1.0.4",
     "cordova-plugin-email": "1.1.1",
-    "cordova-plugin-file": "4.2.0"
+    "cordova-plugin-file": "4.2.0",
+    "cordova-plugin-file-transfer": "1.6.0"
 };
 // BOTTOM OF METADATA
 });

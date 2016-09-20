@@ -22,22 +22,24 @@
         <div class="list card" id="sea-ice-card">
             <div class="item-divider item-button-right" style="padding-left:20px;">
                     <h4 style="text-align:left;font-size:18px">Previous Routes:</h4>
-                    <button class="button button-positive" style="margin-top:5px" ng-click="data.showDelete = !data.showDelete">Edit</button>
             </div>
             <ion-list show-delete="data.showDelete">
                 
             </ion-list>
-            <ion-list show-delete="data.showDelete">
+            <ion-list>
                 <ion-item class="item-icon-left shady item-text-wrap" ng-repeat="route in userRoutes" ng-click="mapScreen(route.filename)">
                     <i class="icon ion-ios-location-outline"></i>
-                    <ion-delete-button class="ion-minus-circled" ng-click="userDelete(route)">
-                    </ion-delete-button>
+                    {{route.name}}
+                    <ion-option-button class="button-assertive" ng-click="editUser(route)">
+                        Edit
+                    </ion-option-button>
                 </ion-item>
                 <ion-item class="item-icon-left shady item-text-wrap" ng-repeat="route in exampleRoutes" ng-click="mapScreen(route.filename)">
                     <i class="icon ion-ios-location-outline"></i>
                     {{route.name}}
-                    <ion-delete-button class="ion-minus-circled" ng-click="itemDelete(route)">
-                    </ion-delete-button>   
+                    <ion-option-button class="button-assertive" ng-click="editItem(route)">
+                        Edit
+                    </ion-option-button>   
                 </ion-item>
             </ion-list>
         </div>

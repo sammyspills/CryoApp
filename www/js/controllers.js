@@ -916,7 +916,18 @@ angular.module('app.controllers', [])
     $scope.fileDir = null;
 
     $scope.data = {
-        showDelete: false
+        
+    };
+    
+    var userDelete = function(route){
+        console.log("Old JSON: " + JSON.stringify($scope.userRoutes));
+        $scope.userRoutes.splice($scope.userRoutes.indexOf(route), 1);
+        console.log("New JSON: " + JSON.stringify($scope.userRoutes));
+        var newJson = JSON.stringify($scope.userRoutes);
+        newJson = newJson.slice(1,-1);
+        $cordovaFile.writeFile($scope.fileDir, "userRoutes.json", newJson, true);
+        var filename = route.filename;
+        $cordovaFile.removeFile($scope.fileDir, route.file);
     };
     
     //Function to remove data on delete of example route
@@ -948,6 +959,7 @@ angular.module('app.controllers', [])
         
     };
     
+    //Function to handle deleting user route
     $scope.editUser = function(route){
         $ionicActionSheet.show({
             
@@ -968,7 +980,7 @@ angular.module('app.controllers', [])
                 return true;
             },
             destructiveButtonClicked: function(){
-                $scope.userRoutes.splice($scope.userRoutes.indexOf(route), 1);
+                userDelete(route);
                 return true;
             }
             
@@ -1003,6 +1015,8 @@ angular.module('app.controllers', [])
     
     //Function to set routeService selected route and show map screen
     var loadingTemplate = "<div style='margin:-20px;padding:15px;border-radius:7px;background-color:#00376d'>Processing...</div>"
+    
+    //Function to display example routes
     $scope.mapScreen = function(filename){
         $ionicLoading.show({
             template: loadingTemplate
@@ -1018,7 +1032,7 @@ angular.module('app.controllers', [])
         //Get directory from appropriate filesystem
         if(ionic.Platform.isAndroid()){
             console.log('Platform is Android');
-            console.log('cordova.file.dataDirectory: ' + cordova.file.externalDataDirectory);
+            console.log('cordova.file.externalDataDirectory: ' + cordova.file.externalDataDirectory);
             $scope.fileDir = cordova.file.externalDataDirectory;
         };
         
@@ -1065,8 +1079,10 @@ angular.module('app.controllers', [])
 	     	console.log("[BackgroundGeo] Location updated - Position:  " + JSON.stringify(location));
             $scope.current_route[0].push(location.latitude);
             $scope.current_route[1].push(location.longitude);
+            var coordEntry = location.latitude + ',' + location.longitude + '\n';
+            $cordovaFile.writeExistingFile($scope.fileDir, $scope.fileName, coordEntry, true);
 		}, function(err) {
-	     	console.log("[BackgroundGeo] Error: Didnt get an update.", err);
+	     	console.log("[BackgroundGeo] Error: Didnt get an update: " + err);
 		});
 
         //onPause, onResume to handle app moving to/from foreground and switch geolocation provider
@@ -1098,17 +1114,18 @@ angular.module('app.controllers', [])
 
 		};
 
+        //onPause and onResume listeners
 		document.addEventListener("pause", onPause, false);
   		document.addEventListener("resume", onResume, false);
 
         //Start Geolocation on button press
   		$scope.startGeolocation = function(){
-			var confirmPopup = $ionicPopup.confirm({
-		     	title: 'Location Tracking',
-		     	template: 'Do you want to begin recording your location?'
-		   	});
-		   	confirmPopup.then(function(res) {
-		   		if(res){
+            var confirmPopup = $ionicPopup.confirm({
+		        title: 'Location Tracking',
+		        template: 'Do you want to begin recording your location?'
+            });
+            confirmPopup.then(function(res) {
+                if(res){
                     var year = new Date().getFullYear();
                     var date = new Date().getDate();
                     var month = new Date().getMonth();
@@ -1149,12 +1166,12 @@ angular.module('app.controllers', [])
                                 alert('You have to name your route before you can save it!')
                                 e.preventDefault();
                             } else {
-                                var json_entry = {"name": $scope.data.name,"filename": $scope.fileDir + $scope.fileName};
+                                var json_entry = {"name": $scope.data.name,"filename": $scope.fileDir + $scope.fileName,"file": $scope.fileName};
                                 //Check route database exists
                                 $cordovaFile.checkFile($scope.fileDir, "userRoutes.json").then(function(success){
                                     //Read it in it's current state
                                     $cordovaFile.readAsText($scope.fileDir, "userRoutes.json").then(function(success){
-                                        //Add new string to existing state
+                                        //Add new string to existing string
                                         var updated_text = success + ',' + JSON.stringify(json_entry);
                                         //Write updated string to file
                                         $cordovaFile.writeFile($scope.fileDir, "userRoutes.json", updated_text, true).then(function(){
@@ -1270,6 +1287,34 @@ angular.module('app.controllers', [])
     
 })
 
-.controller('settingsCtrl', function($scope){
+.controller('dlCtrl', function($scope, $http, $ionicLoading){
 	
+    var url = "http://www.cpom.ucl.ac.uk/csopr/sidata/";
+    
+    var toObj = function(arr){
+        obj = {};
+        for (var i = 0; i < arr.length; i++){
+            if(arr[i] != "\n" | "\n<"){
+                obj[i] = arr[i];
+            };
+        };
+        return obj;
+    };
+    
+//    var string = '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">\n<!-- saved from url=(0039)http://www.cpom.ucl.ac.uk/csopr/sidata/ -->\n<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">\n<title>Index of /csopr/sidata</title>\n</head>\n<body>';
+//    var list = string.split("\n");
+//    $scope.obj = toObj(list);
+//    console.log($scope.obj);
+    
+    $ionicLoading.show();
+    $http.get(url).then(function(result){
+    
+        var resultText = JSON.stringify(result.data);
+        console.log(resultText);
+        var list = resultText.split(/\n|li>/);
+        $scope.obj = toObj(list);
+        $ionicLoading.hide();
+        
+    });
+    
 })
