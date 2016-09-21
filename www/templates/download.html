@@ -2,8 +2,8 @@
     <ion-content padding="true" class="has-header">
     	<div id="download" data-tap-disabled="true">
     	    <div class="list card">
-    	        <ion-item class="item item-divider">This is a test</ion-item>
-    	        <ion-item class="item item-icon-right item-text-wrap" collection-repeat="item in obj">
+    	        <ion-item class="item item-divider">Sea Ice Datasets Available:</ion-item>
+    	        <ion-item class="item item-icon-right item-text-wrap" ng-repeat="item in obj">
     	            <i class="icon ion-ios-download"></i>{{item}}
     	        </ion-item>
     	    </div>
