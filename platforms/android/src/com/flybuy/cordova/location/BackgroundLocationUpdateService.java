@@ -78,7 +78,7 @@ public class BackgroundLocationUpdateService
         extends Service
         implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
-    private static final String TAG = "BgLocationUDService";
+    private static final String TAG = "BackgroundLocationUpdateService";
 
     private Location lastLocation;
     private DetectedActivity lastActivity;
@@ -96,7 +96,7 @@ public class BackgroundLocationUpdateService
     private Integer activitiesInterval = 1000;
 
     private static final Integer SECONDS_PER_MINUTE      = 60;
-    private static final Integer MILLISECONDS_PER_SECOND = 1000;
+    private static final Integer MILLISECONDS_PER_SECOND = 60;
 
     private long  interval             = (long)  SECONDS_PER_MINUTE * MILLISECONDS_PER_SECOND * 5;
     private long  fastestInterval      = (long)  SECONDS_PER_MINUTE * MILLISECONDS_PER_SECOND;
@@ -168,12 +168,12 @@ public class BackgroundLocationUpdateService
             distanceFilter = Integer.parseInt(intent.getStringExtra("distanceFilter"));
             desiredAccuracy = Integer.parseInt(intent.getStringExtra("desiredAccuracy"));
 
-            interval             = Integer.valueOf(5000);
+            interval             = Integer.parseInt(intent.getStringExtra("interval"));
             fastestInterval      = Integer.parseInt(intent.getStringExtra("fastestInterval"));
             aggressiveInterval   = Integer.parseInt(intent.getStringExtra("aggressiveInterval"));
             activitiesInterval   = Integer.parseInt(intent.getStringExtra("activitiesInterval"));
 
-            isDebugging = Boolean.TRUE;
+            isDebugging = Boolean.parseBoolean(intent.getStringExtra("isDebugging"));
             notificationTitle = intent.getStringExtra("notificationTitle");
             notificationText = intent.getStringExtra("notificationText");
 

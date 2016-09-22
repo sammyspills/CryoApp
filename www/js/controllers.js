@@ -23,7 +23,7 @@ angular.module('app.controllers', [])
 
 })
    
-.controller('mapsCtrl', function($scope, $state, $ionicPlatform, $ionicLoading, routeService, $cordovaFile) { 
+.controller('mapsCtrl', function($scope, $state, $ionicPlatform, $ionicLoading, routeService, $cordovaFile, $http) { 
     
     //Object to store options for drop-down selector
     $scope.iceOptions = [];
@@ -454,20 +454,25 @@ angular.module('app.controllers', [])
         //Check for ice-options file
         $cordovaFile.checkFile($scope.fileDir, "iceFile.json").then(function(success){
             //On success, parse to iceOptions object
-            var json_data = '[' + success + ']';
-            $scope.iceOption = JSON.parse(json_data);
+            $cordovaFile.readAsText($scope.fileDir, "iceFile.json").then(function(success){
+                var json_data = '[' + success + ']';
+                $scope.iceOptions = JSON.parse(json_data);
+                mapInit();
+            });
             
         }, function(error){
             //On fail, create file, write initial entry, parse to iceOptions object
             $cordovaFile.createFile($scope.fileDir, "iceFile.json", true).then(function(){
                 
-                var initialEntry = '{"name":"Spring 2012","file":"spring_2012.png","data":"thk_2012_marapr.map.txt","loc":"res/ice/"}';
+                console
+                var initialEntry = '{"name":"Spring 2012","file":"spring_2012.png","data":"thk_2012_spring.csv","loc":"' + $scope.fileDir + '"}';
                 $cordovaFile.writeFile($scope.fileDir, "iceFile.json", initialEntry, true).then(function(){
                     
                     $cordovaFile.readAsText($scope.fileDir, "iceFile.json").then(function(success){
                         
                         var json_data = '[' + success + ']';
                         $scope.iceOptions = JSON.parse(json_data);
+                        mapInit();
                         
                     });
                     
@@ -478,34 +483,59 @@ angular.module('app.controllers', [])
         });
         
         //Service to handle selected route and ice between views
-        var routeFile = routeService.selectedRoute.file;
-        console.log(routeFile);
-        
-        if(routeService.type == "usr"){
-            $scope.fileDir = cordova.file.externalDataDirectory;
-            $cordovaFile.readAsText($scope.fileDir, routeFile).then(function(success){
-                var data = JSON.parse(success);
-                try{
-                    data[0][$scope.iceName];
-                } catch {
-                    //TODO: Insert processData function here;
-                };
-                vis = topoFunc(data);
-                scatterFuncUser(data);
-                $ionicLoading.hide();
+        var mapInit = function(){
+            var routeFile = routeService.selectedRoute.file;
+            console.log(routeFile);
 
-            }, function(error){
-                console.log("Error: " + JSON.stringify(error));
-            });
-        } else if(routeService.type == "eg"){
-            d3.json("res/" + routeFile, function(error, data){
-                if(error){ console.log(error) };
+            if(routeService.type == "usr"){
+                $scope.fileDir = cordova.file.externalDataDirectory;
+                $cordovaFile.readAsText($scope.fileDir, routeFile).then(function(success){
+                    var data = JSON.parse(success);
+                    if(data[0].hasOwnProperty($scope.iceName)){
+                        console.log(data[0][$scope.iceName]);
+                    } else {
+                        console.log("Ice data not found in route file");
+                        console.log(JSON.stringify($scope.iceOptions));
+                        for(var i = 0; i < $scope.iceOptions.length; i++){
+                            var fileLoc = $scope.iceOptions[i].loc;
+                            var fileName = $scope.iceOptions[i].data;
+                            var ice_lat = [],
+                                ice_lon = [],
+                                thick = [];
+                            console.log(i);
 
-                scatterFunc(data);
-                vis = topoFunc(data);
-                $ionicLoading.hide();
+//                            $cordovaFile.readAsText(fileLoc, fileName).then(function(success){
+//                                var inter = JSON.stringify(success.split("\\n"));
+//                                console.log(inter);
+//                                $ionicLoading.hide();
+//                            }, function(error){
+//                                console.log("Error reading ice file: " + JSON.stringify(error));
+//                            });
+                            d3.csv(fileLoc + fileName, function(data){
+                                console.log("Ice File Read.");
+                                data.forEach(function(d){
+                                    //TODO: processData function goes here
+                                });
+                            });
+                        };
+                    };
+//                    vis = topoFunc(data);
+//                    scatterFuncUser(data);
+//                    $ionicLoading.hide();
 
-            });
+                }, function(error){
+                    console.log("Error: " + JSON.stringify(error));
+                });
+            } else if(routeService.type == "eg"){
+                d3.json("res/" + routeFile, function(error, data){
+                    if(error){ console.log(error) };
+
+                    scatterFunc(data);
+                    vis = topoFunc(data);
+                    $ionicLoading.hide();
+
+                });
+            };
         };
         
         $scope.selectedSeaIce = function(mySelect){
