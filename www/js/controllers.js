@@ -482,41 +482,112 @@ angular.module('app.controllers', [])
             
         });
         
+        //Function to calculate distance between two points
+        var pointDistance = function(route_lat, route_lon, ice_lat, ice_lon){
+            var deg2rad = Math.PI/180.;
+            
+            //phi = 90 - latitude
+            var phi1 = (90. - route_lat) * deg2rad;
+            var phi2 = (90. - ice_lat) * deg2rad;
+            
+            //theta = longitude
+            var theta1 = route_lat * deg2rad;
+            var theta2 = ice_lat * deg2rad;
+            
+            //Compute spherical distance from spherical coords
+            var cos = (Math.sin(phi1)* Math.sin(phi2)*Math.cos(theta1 - theta2)) + (Math.cos(phi1)*Math.cos(phi2));
+            var arc = Math.acos(cos)*6371;
+            return arc;
+        };
+        
+        //Function to find index of minimum value in array
+        var indexOfMin = function(arr){
+            var min = arr[0];
+            var minIndex = 0;
+
+            for(var i = 1; i < arr.length; i++){
+                if(arr[i] < min){
+                    minIndex = i;
+                    min = arr[i]
+                };
+            };
+
+            return minIndex;
+        };
+        
+        //Function to find closest thickness
+        var appendThickness = function(ice_data, route_data){
+            
+            var route_lat = [], route_lon = [], route_thick = [], ice_lat = [], ice_lon = [], ice_thick = [];
+            //Get route lat/lons
+            route_data.forEach(function(d){
+                route_lat.push(d.lat);
+                route_lon.push(d.lon);
+            });
+            console.log("Route data ingested.");
+            
+            //Get ice lat/lons:
+            ice_data.forEach(function(d){
+                ice_lat.push(d.lat);
+                ice_lon.push(d.lon);
+                ice_thick.push(d.thick);
+            });
+            console.log("Ice data ingested");
+            
+            for(var i = 0, len = route_lat.length; i < len; i++){
+                var lat_diff = ice_lat.map(function(num){
+                    return Math.abs(num - route_lat[i]);
+                });
+                var lon_diff = ice_lon.map(function(num){
+                    return Math.abs(num - route_lon[i]);
+                });
+                
+                var diff_array = lat_diff + lon_diff;
+                
+                var min_index = indexOfMin(diff_array);
+                
+                if(Math.abs(pointDistance(route_lat[i], route_lon[i], ice_lat[min_index], ice_lon[min_index])) >= 5.){
+                        route_thick.push(-1);
+                    } else if(ice_thick[min_index] <= .1){
+                        route_thick.push(-1);
+                    } else {
+                        route_thick.push(ice_thick[min_index]);
+                    };
+            }
+            $ionicLoading.hide();
+            console.log("Ice thickness found: " + JSON.stringify(route_thick));
+        };
+        
         //Service to handle selected route and ice between views
         var mapInit = function(){
             var routeFile = routeService.selectedRoute.file;
             console.log(routeFile);
-
+            
+            //If route is user route, needs processing
             if(routeService.type == "usr"){
                 $scope.fileDir = cordova.file.externalDataDirectory;
+                //Read route file and parse to JSON object
                 $cordovaFile.readAsText($scope.fileDir, routeFile).then(function(success){
-                    var data = JSON.parse(success);
-                    if(data[0].hasOwnProperty($scope.iceName)){
-                        console.log(data[0][$scope.iceName]);
+                    var route_data = JSON.parse(success);
+                    //Check if it already has thickness data
+                    if(route_data[0].hasOwnProperty($scope.iceName)){
+                        //TODO: Add function for if already processed.
+                        console.log(route_data[0][$scope.iceName]);
                     } else {
+                        //Read ice data, x-process.
                         console.log("Ice data not found in route file");
                         console.log(JSON.stringify($scope.iceOptions));
+                        
+                        //For each ice file, read ice file and process
                         for(var i = 0; i < $scope.iceOptions.length; i++){
                             var fileLoc = $scope.iceOptions[i].loc;
                             var fileName = $scope.iceOptions[i].data;
-                            var ice_lat = [],
-                                ice_lon = [],
-                                thick = [];
-                            console.log(i);
 
-//                            $cordovaFile.readAsText(fileLoc, fileName).then(function(success){
-//                                var inter = JSON.stringify(success.split("\\n"));
-//                                console.log(inter);
-//                                $ionicLoading.hide();
-//                            }, function(error){
-//                                console.log("Error reading ice file: " + JSON.stringify(error));
-//                            });
-                            d3.csv(fileLoc + fileName, function(data){
+                            d3.csv(fileLoc + fileName, function(ice_data){
                                 console.log("Ice File Read.");
-                                data.forEach(function(d){
-                                    //TODO: processData function goes here
-                                });
+                                appendThickness(ice_data, route_data)
                             });
+                            
                         };
                     };
 //                    vis = topoFunc(data);
@@ -1314,16 +1385,98 @@ angular.module('app.controllers', [])
   			console.log('[BackgroundGeo] onPause success.')
 
 		};
+        
+        //Function to calculate distance between two points
+        var pointDistance = function(route_lat, route_lon, ice_lat, ice_lon){
+            var deg2rad = Math.PI/180.;
+            
+            //phi = 90 - latitude
+            var phi1 = (90. - route_lat) * deg2rad;
+            var phi2 = (90. - ice_lat) * deg2rad;
+            
+            //theta = longitude
+            var theta1 = route_lat * deg2rad;
+            var theta2 = ice_lat * deg2rad;
+            
+            //Compute spherical distance from spherical coords
+            var cos = (Math.sin(phi1)* Math.sin(phi2)*Math.cos(theta1 - theta2)) + (Math.cos(phi1)*Math.cos(phi2));
+            var arc = Math.acos(cos)*6371;
+            return arc;
+        };
+        
+        //Function to find index of minimum value in array
+        var indexOfMin = function(arr){
+            
+            var copy = arr.slice(0);
+            arr.sort( function(a, b) { return a - b } );
+            
+            var min_val = arr[0];
+            var minIndex = copy.indexOf(min_val);
+
+            return minIndex;
+        };
+        
+        //Function to find closest thickness
+        var appendThickness = function(ice_data, route_lat, route_lon){
+            
+            var route_thick = [], ice_lat = [], ice_lon = [], ice_thick = [];
+            
+            //Get ice lat/lons:
+            ice_data.forEach(function(d){
+                ice_lat.push(d.lat);
+                ice_lon.push(d.lon);
+                ice_thick.push(d.thick);
+            });
+            console.log("Ice data ingested");
+            
+            var lat_diff = ice_lat.map(function(num){
+                return Math.abs(num - route_lat);
+            });
+            var lon_diff = ice_lon.map(function(num){
+                return Math.abs(num - route_lon);
+            });
+
+            var diff_array = lat_diff + lon_diff;
+
+            var min_index = indexOfMin(diff_array);
+
+            if(Math.abs(pointDistance(route_lat, route_lon, ice_lat[min_index], ice_lon[min_index])) >= 5.){
+                return -1;
+            } else if(ice_thick[min_index] <= .1){
+                return -1;
+            } else {
+                return ice_thick[min_index];
+            };
+            console.log("Thickness appended.");
+        };
+        
+        $scope.fileDir = cordova.file.externalDataDirectory;
+        $cordovaFile.readAsText($scope.fileDir, "iceFile.json").then(function(success){
+            var json_data = '[' + success + ']';
+            $scope.iceOptions = JSON.parse(json_data);
+        });
 
 		var onResume = function(){
 
 	  		var getLocation = function(){
 	  			if($scope.isRecording){
+                    
 	  				$cordovaGeolocation.getCurrentPosition(optionsGeo).then(function(position){
 	  					console.log('[ForegroundGeo] Location updated - Position: latitude - ' + position.coords.latitude + ', longitude - ' + position.coords.longitude);
-                        var coordEntry = '{"lat":"' + location.latitude + '","lon":"' + location.longitude + '"},';
-                        $cordovaFile.writeExistingFile($scope.fileDir, $scope.fileName, coordEntry, true).then()
-	  				})
+                        var coordEntry = '{"lat":"' + position.coords.latitude + '","lon":"' + position.coords.longitude + '"}'
+                        var jsonCoord = JSON.parse('[' + coordEntry + ']');
+                        for(var i = 0; i < $scope.iceOptions.length; i++){
+                            var fileLoc = $scope.iceOptions[i].loc;
+                            var fileName = $scope.iceOptions[i].data;
+                            var iceName = $scope.iceOptions[i].name;
+
+                            d3.csv(fileLoc + fileName, function(ice_data){
+                                jsonCoord[iceName] = appendThickness(ice_data, position.coords.latitude, position.coords.longitude);
+                            });
+                        };
+                        coordEntry = JSON.stringify(jsonCoord).slice(1,-1) + ',';
+                        $cordovaFile.writeExistingFile($scope.fileDir, $scope.fileName, coordEntry, true);
+	  				});
 	  			} else {
 	  				console.log('[ForegroundGeo] getLocation called, location tracking disabled.')
 	  			}	  			
@@ -1331,7 +1484,7 @@ angular.module('app.controllers', [])
 	  		};
 
 	  		console.log('[ForegroundGeo] onResume success.');
-	  		foregroundGeo = $interval(getLocation, 5000);
+	  		foregroundGeo = $interval(getLocation, 60000);
 
 		};
 
