@@ -13,13 +13,10 @@
         "cordova-plugin-device": {
             "PACKAGE_NAME": "com.ionicframework.cryoapp544768"
         },
-        "cordova-plugin-splashscreen": {
+        "cordova-plugin-email": {
             "PACKAGE_NAME": "com.ionicframework.cryoapp544768"
         },
-        "cordova-plugin-statusbar": {
-            "PACKAGE_NAME": "com.ionicframework.cryoapp544768"
-        },
-        "cordova-plugin-whitelist": {
+        "cordova-plugin-file": {
             "PACKAGE_NAME": "com.ionicframework.cryoapp544768"
         },
         "cordova-plugin-geolocation": {
@@ -31,28 +28,28 @@
         "cordova-plugin-network-information": {
             "PACKAGE_NAME": "com.ionicframework.cryoapp544768"
         },
-        "cordova-sqlite-storage": {
+        "cordova-plugin-splashscreen": {
             "PACKAGE_NAME": "com.ionicframework.cryoapp544768"
         },
-        "me.rahul.plugins.sqlDB": {
+        "cordova-plugin-statusbar": {
             "PACKAGE_NAME": "com.ionicframework.cryoapp544768"
         },
-        "ionic-plugin-keyboard": {
+        "cordova-plugin-whitelist": {
             "PACKAGE_NAME": "com.ionicframework.cryoapp544768"
         },
         "cordova-plugin-x-toast": {
             "PACKAGE_NAME": "com.ionicframework.cryoapp544768"
         },
+        "cordova-sqlite-storage": {
+            "PACKAGE_NAME": "com.ionicframework.cryoapp544768"
+        },
+        "ionic-plugin-keyboard": {
+            "PACKAGE_NAME": "com.ionicframework.cryoapp544768"
+        },
+        "me.rahul.plugins.sqlDB": {
+            "PACKAGE_NAME": "com.ionicframework.cryoapp544768"
+        },
         "org.flybuy.cordova.background-location-services": {
-            "PACKAGE_NAME": "com.ionicframework.cryoapp544768"
-        },
-        "cordova-plugin-email": {
-            "PACKAGE_NAME": "com.ionicframework.cryoapp544768"
-        },
-        "cordova-plugin-file": {
-            "PACKAGE_NAME": "com.ionicframework.cryoapp544768"
-        },
-        "cordova-plugin-file-transfer": {
             "PACKAGE_NAME": "com.ionicframework.cryoapp544768"
         }
     },

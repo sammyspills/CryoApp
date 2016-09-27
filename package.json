@@ -21,7 +21,8 @@
     "cordova-plugin-splashscreen",
     "cordova-plugin-statusbar",
     "cordova-plugin-inappbrowser",
-    "ionic-plugin-keyboard"
+    "ionic-plugin-keyboard",
+    "cordova-plugin-file"
   ],
   "cordovaPlatforms": [
     "android",

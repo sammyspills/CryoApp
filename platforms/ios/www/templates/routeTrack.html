@@ -27,18 +27,18 @@
                 
             </ion-list>
             <ion-list>
-                <ion-item class="item-icon-left shady item-text-wrap" ng-repeat="route in userRoutes" ng-click="mapScreen(route.filename)">
+                <ion-item class="item-icon-left shady item-text-wrap" ng-repeat="route in userRoutes" ng-click="mapScreenUser(route)">
                     <i class="icon ion-ios-location-outline"></i>
                     {{route.name}}
-                    <ion-option-button class="button-assertive" ng-click="editUser(route)">
-                        Edit
+                    <ion-option-button class="button-calm" ng-click="editUser(route)">
+                        More
                     </ion-option-button>
                 </ion-item>
-                <ion-item class="item-icon-left shady item-text-wrap" ng-repeat="route in exampleRoutes" ng-click="mapScreen(route.filename)">
+                <ion-item class="item-icon-left shady item-text-wrap" ng-repeat="route in exampleRoutes" ng-click="mapScreenExample(route)">
                     <i class="icon ion-ios-location-outline"></i>
                     {{route.name}}
-                    <ion-option-button class="button-assertive" ng-click="editItem(route)">
-                        Edit
+                    <ion-option-button class="button-calm" ng-click="editItem(route)">
+                        More
                     </ion-option-button>   
                 </ion-item>
             </ion-list>

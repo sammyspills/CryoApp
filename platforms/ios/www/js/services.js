@@ -93,5 +93,7 @@ angular.module('app.services', [])
 .service('routeService', [function(){
     this.selectedRoute;
     this.selectedIce;
+    this.type;
+    this.iceData;
 }]);
 

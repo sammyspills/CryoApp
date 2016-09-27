@@ -23,23 +23,10 @@ angular.module('app.controllers', [])
 
 })
    
-.controller('mapsCtrl', function($scope, $state, $ionicPlatform, $ionicLoading, routeService) {
-    
-    //Service to handle selected route and ice between views
-    var routeFile = routeService.selectedRoute;
-    console.log(routeFile); 
+.controller('mapsCtrl', function($scope, $state, $ionicPlatform, $ionicLoading, routeService, $cordovaFile, $http) { 
     
     //Object to store options for drop-down selector
-    $scope.iceOptions = [
-        {
-            "name":"Spring 2016",
-            "file":"28_spring_2016.png"
-        },
-        {
-            "name":"Spring 2012",
-            "file":"spring_2012.png"
-        }
-    ];
+    $scope.iceOptions = [];
     
     //Get dimens of map div
     var topoDiv = document.getElementById("topo-div");
@@ -49,7 +36,7 @@ angular.module('app.controllers', [])
     //Function to display map
     var topoFunc = function(data){
 
-        //Read data to arrays from CSV
+        //Read data to arrays from JSON
         var route_points = [[],[]];
         data.forEach(function(d){
             route_points[0].push(d.lat);
@@ -191,6 +178,10 @@ angular.module('app.controllers', [])
 //        };
 //        console.log(latlon[3]);
 //    };
+    
+    var processFunc = function(data){
+        
+    };
 
     //Function to draw scatter plot
     var scatterFunc = function(data){
@@ -281,6 +272,139 @@ angular.module('app.controllers', [])
         .attr('cx', function(d, i) { return xScale(xData[i]); })
         .attr('cy', function(d, i) { return yScale(yData[i]); })
         .style("stroke", "rgba(0, 55, 109, 0)")
+        .style("fill", "rgba(0, 55, 109, 0)")
+        .attr('r', 6);
+        
+        //On point click, highlight point and display thickness at that point
+        var points = vis.selectAll(".dot");
+        points.on("click", function(d, i){
+            
+            points.attr('r', 6)
+                .style("fill", "rgba(0, 55, 109, 0)")
+                .style("stroke", "rgba(0, 55, 109, 0)");
+            
+            thickness = +yData[i];
+            distance = +xData[i];
+            
+            div.text("Thickness: " + thickness.toPrecision(4) + "m");
+            distText.text("Distance: " + distance.toPrecision(4) + "km")
+            
+            d3.select(this)
+                .attr('r', 5)
+                .style("fill", "#ffffff")
+                .style("stroke", "#ff0707");
+            
+        });
+
+        vis.append("text")
+        .attr("class", "legend")
+        .attr("text-anchor", "middle")
+        .attr("x", MARGINS.left + (WIDTH-MARGINS.left-MARGINS.right)/2)
+        .attr("y", HEIGHT-(MARGINS.bottom/3))
+        .text("Distance Along Route (km)");
+
+        vis.append("text")
+        .attr("class", "legend")
+        .attr("text-anchor", "middle")
+        .attr("y", MARGINS.left/2.5)
+        .attr("x", -MARGINS.top-(HEIGHT-MARGINS.top-MARGINS.bottom)/2)
+        .attr("transform", "rotate(-90)")
+        .text("Sea Ice Thickness (m)");
+        
+        console.log('Done loading')
+        //$ionicLoading.hide();
+
+    };
+    
+    var scatterFuncUser = function(data){
+        //Initialise 2D array for thickness, cum. dist.
+        var route_array_scientific = [[],[]];
+
+        //append appropriate data to array
+        data.forEach(function(d){
+            if(d.thick >= 0){
+                route_array_scientific[1].push(d.cumdist);
+                route_array_scientific[0].push(d.thick);
+            } else {
+
+            }
+        });
+
+        var xData = route_array_scientific[1];
+        var yData = route_array_scientific[0];
+
+        //Init SVG container, scales, axes
+        var vis = d3.select("#visualisation"),
+            WIDTH = divWidth,
+            HEIGHT = divHeight,
+            MARGINS = {
+                top: 15,
+                right: 20,
+                bottom: 50,
+                left: 60
+            },
+            xScale = d3.scaleLinear()
+            .range([MARGINS.left, WIDTH - MARGINS.right])
+            .domain([0, Math.max(...xData)]),
+
+            yScale = d3.scaleLinear()
+            .range([HEIGHT - MARGINS.bottom, MARGINS.top])
+            .domain([0, Math.max(...yData)]),
+
+            xAxis = d3.axisBottom().scale(xScale).tickArguments([10, "s"]),
+            yAxis = d3.axisLeft().scale(yScale).tickArguments([5, "s"]);
+        
+        //Clear all SVG elements. Ensures new chart drawn on new ice data selection.
+        vis.selectAll("svg > *").remove();
+
+        vis.append("svg:g")
+            .attr("class","axis")
+            .attr("transform", "translate(0," +(HEIGHT - (MARGINS.bottom))+ ")")
+            .call(xAxis);
+
+        vis.append("svg:g")
+            .attr("class","axis")
+            .attr("transform", "translate(" + (MARGINS.left) + ",0)")
+            .call(yAxis);
+
+        //Function to draw points. Transforms from data value to SVG coordinate using set scale.
+        var lineGen = d3.line().x(function(d, i) {
+                return xScale(xData[i]);
+            })
+            .y(function(d, i) {
+                return yScale(yData[i]);
+            });
+
+        // Add the valueline path.
+        vis.append("svg:path")
+        .attr("class", "line")
+        .attr("stroke", "#00376d")
+        .attr('stroke-width', 0.5)
+        .attr("d", lineGen(xData))
+        .attr("fill", "none");
+        
+        //Add labels, points, thickness label
+        var div = vis.append("text")
+            .attr("x", WIDTH - MARGINS.right)
+            .attr("y", MARGINS.top * 2)
+            .attr("class", "tooltip")
+            .attr("text-anchor", "end")
+            .html("Click a point to view thickness!");
+        
+        var distText = vis.append("text")
+                .attr('x', WIDTH - MARGINS.right)
+                .attr('y', (MARGINS.top * 2) + 17)
+                .attr("class", "tooltip")
+                .attr("text-anchor", "end");
+
+        vis.selectAll(".dot")
+        .data(xData)
+        .enter().append("circle")
+        .attr('class', 'dot')
+        .attr('cx', function(d, i) { return xScale(xData[i]); })
+        .attr('cy', function(d, i) { return yScale(yData[i]); })
+        .style("fill", "rgba(0, 55, 109, 0)")
+        .style("stroke", "rgba(0, 55, 109, 0)")
         .attr('r', 6);
         
         //On point click, highlight point and display thickness at that point
@@ -326,30 +450,206 @@ angular.module('app.controllers', [])
         
     $ionicPlatform.ready(function(){
         
+        $scope.iceName = "Spring 2012";
+        $scope.fileDir = cordova.file.dataDirectory;
+        //Check for ice-options file
+        $cordovaFile.checkFile($scope.fileDir, "iceFile.json").then(function(success){
+            //On success, parse to iceOptions object
+            $cordovaFile.readAsText($scope.fileDir, "iceFile.json").then(function(success){
+                var json_data = '[' + success + ']';
+                $scope.iceOptions = JSON.parse(json_data);
+                mapInit();
+            });
+            
+        }, function(error){
+            //On fail, create file, write initial entry, parse to iceOptions object
+            $cordovaFile.createFile($scope.fileDir, "iceFile.json", true).then(function(){
+                
+                console
+                var initialEntry = '{"name":"Spring 2012","file":"spring_2012.png","data":"thk_2012_spring.csv","loc":"' + $scope.fileDir + '"}';
+                $cordovaFile.writeFile($scope.fileDir, "iceFile.json", initialEntry, true).then(function(){
+                    
+                    $cordovaFile.readAsText($scope.fileDir, "iceFile.json").then(function(success){
+                        
+                        var json_data = '[' + success + ']';
+                        $scope.iceOptions = JSON.parse(json_data);
+                        mapInit();
+                        
+                    });
+                    
+                });
+                
+            });
+            
+        });
+        
+        //Function to calculate distance between two points
+        var pointDistance = function(route_lat, route_lon, ice_lat, ice_lon){
+            var deg2rad = Math.PI/180.;
+            
+            //phi = 90 - latitude
+            var phi1 = (90. - route_lat) * deg2rad;
+            var phi2 = (90. - ice_lat) * deg2rad;
+            
+            //theta = longitude
+            var theta1 = route_lat * deg2rad;
+            var theta2 = ice_lat * deg2rad;
+            
+            //Compute spherical distance from spherical coords
+            var cos = (Math.sin(phi1)* Math.sin(phi2)*Math.cos(theta1 - theta2)) + (Math.cos(phi1)*Math.cos(phi2));
+            var arc = Math.acos(cos)*6371;
+            return arc;
+        };
+        
+        //Function to find index of minimum value in array
+        var indexOfMin = function(arr){
+            var min = arr[0];
+            var minIndex = 0;
+
+            for(var i = 1; i < arr.length; i++){
+                if(arr[i] < min){
+                    minIndex = i;
+                    min = arr[i]
+                };
+            };
+
+            return minIndex;
+        };
+        
+        //Function to find closest thickness
+        var appendThickness = function(ice_data, route_data){
+            
+            var route_lat = [], route_lon = [], route_thick = [], ice_lat = [], ice_lon = [], ice_thick = [];
+            //Get route lat/lons
+            route_data.forEach(function(d){
+                route_lat.push(d.lat);
+                route_lon.push(d.lon);
+            });
+            console.log("Route data ingested.");
+            
+            //Get ice lat/lons:
+            ice_data.forEach(function(d){
+                ice_lat.push(d.lat);
+                ice_lon.push(d.lon);
+                ice_thick.push(d.thick);
+            });
+            console.log("Ice data ingested");
+            
+            for(var i = 0, len = route_lat.length; i < len; i++){
+                var lat_diff = ice_lat.map(function(num){
+                    return Math.abs(num - route_lat[i]);
+                });
+                var lon_diff = ice_lon.map(function(num){
+                    return Math.abs(num - route_lon[i]);
+                });
+                
+                var diff_array = lat_diff + lon_diff;
+                
+                var min_index = indexOfMin(diff_array);
+                
+                if(Math.abs(pointDistance(route_lat[i], route_lon[i], ice_lat[min_index], ice_lon[min_index])) >= 5.){
+                        route_thick.push(-1);
+                    } else if(ice_thick[min_index] <= .1){
+                        route_thick.push(-1);
+                    } else {
+                        route_thick.push(ice_thick[min_index]);
+                    };
+            }
+            $ionicLoading.hide();
+            console.log("Ice thickness found: " + JSON.stringify(route_thick));
+        };
+        
+        //Service to handle selected route and ice between views
+        var mapInit = function(){
+            var routeFile = routeService.selectedRoute.file;
+            console.log(routeFile);
+            
+            //If route is user route, needs processing
+            if(routeService.type == "usr"){
+                $scope.fileDir = cordova.file.dataDirectory;
+                //Read route file and parse to JSON object
+                $cordovaFile.readAsText($scope.fileDir, routeFile).then(function(success){
+                    var route_data = JSON.parse(success);
+                    //Check if it already has thickness data
+                    if(route_data[0].hasOwnProperty($scope.iceName)){
+                        //TODO: Add function for if already processed.
+                        console.log(route_data[0][$scope.iceName]);
+                    } else {
+                        //Read ice data, x-process.
+                        console.log("Ice data not found in route file");
+                        console.log(JSON.stringify($scope.iceOptions));
+                        
+                        //For each ice file, read ice file and process
+                        for(var i = 0; i < $scope.iceOptions.length; i++){
+                            var fileLoc = $scope.iceOptions[i].loc;
+                            var fileName = $scope.iceOptions[i].data;
+
+                            d3.csv(fileLoc + fileName, function(ice_data){
+                                console.log("Ice File Read.");
+                                appendThickness(ice_data, route_data)
+                            });
+                            
+                        };
+                    };
+//                    vis = topoFunc(data);
+//                    scatterFuncUser(data);
+//                    $ionicLoading.hide();
+
+                }, function(error){
+                    console.log("Error: " + JSON.stringify(error));
+                });
+            } else if(routeService.type == "eg"){
+                d3.json("res/" + routeFile, function(error, data){
+                    if(error){ console.log(error) };
+
+                    scatterFunc(data);
+                    vis = topoFunc(data);
+                    $ionicLoading.hide();
+
+                });
+            };
+        };
+        
         $scope.selectedSeaIce = function(mySelect){
 
             routeService.selectedIce = mySelect.file;
+            routeService.iceData = mySelect.loc + mySelect.data;
+            $scope.iceName = mySelect.name;
             
             //On new ice data selected, read route data file, show loading screen, draw charts, hide loading screen.
-            d3.csv("res/" + routeFile, function(d){
-                var loadingTemplate = "<div style='margin:-20px;padding:15px;border-radius:7px;background-color:#00376d'>Processing...</div>"
-                $ionicLoading.show({
-                    template: loadingTemplate
+            if(routeService.type == "usr"){
+                $scope.fileDir = cordova.file.dataDirectory;
+                $cordovaFile.readAsText($scope.fileDir, routeFile).then(function(success){
+                    var data = JSON.parse(success);
+                    vis = topoFunc(data);
+                    scatterFuncUser(data);
+                    $ionicLoading.hide();
+
+                }, function(error){
+                    console.log("Error: " + JSON.stringify(error));
                 });
-                scatterFunc(d);
-                var vis = topoFunc(d);
-                $ionicLoading.hide();
-            });
+            } else if(routeService.type == "eg"){
+                d3.json("res/" + routeFile, function(error, data){
+                    if(error){ console.log(error) };
+
+                    scatterFunc(data);
+                    vis = topoFunc(data);
+                    $ionicLoading.hide();
+
+                });
+            };
         };
 
     });
     
     //Initial plot before sea ice data change
-    d3.csv("res/" + routeFile, function(d){
-        scatterFunc(d);
-        vis = topoFunc(d);
-        $ionicLoading.hide();
-    });
+//    d3.csv("res/" + routeFile, function(d){
+//        scatterFunc(d);
+//        vis = topoFunc(d);
+//        $ionicLoading.hide();
+//        console.log(JSON.stringify(d));
+//    });
+    
 
 })
 
@@ -377,19 +677,19 @@ angular.module('app.controllers', [])
     $scope.exampleRoutes = [
         {
             "name":"Example Route: Scientific Cruise around the Siberian Shelf - 2014",
-            "filename":"correctly_filtered.csv"
+            "filename":"correctly_filtered.json"
         },
         {
             "name":"Example Route: Tour of the Arctic circle from Svalbard to Severny Island - 2016",
-            "filename":"example_route_2.csv"
+            "filename":"example_route_2.json"
         },
         {
             "name": "Example Route: North West Passage - Northern Route - 2012",
-            "filename":"NWP_north_app.csv"
+            "filename":"NWP_north_app.json"
         },
         {
             "name":"Example Route: North West Passage - Southern Route - 2012",
-            "filename":"NWP_south_app.csv"
+            "filename":"NWP_south_app.json"
         }
     ];
     
@@ -397,22 +697,11 @@ angular.module('app.controllers', [])
     $scope.editItem = function(route){
         $ionicActionSheet.show({
             
-            buttons: [
-                {text: "Share with us!"}
-            ],
+            buttons: [],
             destructiveText: 'Delete',
             titleText: route.name,
             cancelText: 'Cancel',
             cancel: function() { $ionicListDelegate.closeOptionButtons(); },
-            buttonClicked: function(index, button){
-                if(index == 0){
-                    alert('Send route to CPOM!');
-                    //TODO: Add file upload to CPOM here
-                };
-                
-                $ionicListDelegate.closeOptionButtons();
-                return true;
-            },
             destructiveButtonClicked: function(){
                 $scope.exampleRoutes.splice($scope.exampleRoutes.indexOf(route), 1);
                 return true;
@@ -452,12 +741,22 @@ angular.module('app.controllers', [])
     
     //Function to set routeService selected route and display map screen.
     var loadingTemplate = "<div style='margin:-20px;padding:15px;border-radius:7px;background-color:#00376d'>Processing...</div>"
-    $scope.mapScreen = function(filename){
+    $scope.mapScreenExample = function(filename){
         $ionicLoading.show({
             template: loadingTemplate
         });
         routeService.selectedRoute = filename;
         routeService.selectedIce = "spring_2012.png";
+        routeService.type = "eg";
+        $state.go('menu.maps');    
+    };
+    $scope.mapScreenUser = function(filename){
+        $ionicLoading.show({
+            template: loadingTemplate
+        });
+        routeService.selectedRoute = filename;
+        routeService.selectedIce = "spring_2012.png";
+        routeService.type = "usr";
         $state.go('menu.maps');    
     };
     
@@ -921,10 +1220,17 @@ angular.module('app.controllers', [])
     
     var userDelete = function(route){
         console.log("Old JSON: " + JSON.stringify($scope.userRoutes));
-        $scope.userRoutes.splice($scope.userRoutes.indexOf(route), 1);
-        console.log("New JSON: " + JSON.stringify($scope.userRoutes));
-        var newJson = JSON.stringify($scope.userRoutes);
-        newJson = newJson.slice(1,-1);
+        if($scope.userRoutes.length == 1){
+            var newJson = "";
+            $scope.userRoutes.splice($scope.userRoutes.indexOf(route), 1);
+            console.log("New JSON: " + newJson);
+        } else {
+            $scope.userRoutes.splice($scope.userRoutes.indexOf(route), 1);
+            var newJson = JSON.stringify($scope.userRoutes);
+            console.log("New JSON: " + newJson);
+            newJson = newJson.slice(1,-1);
+        };
+        
         $cordovaFile.writeFile($scope.fileDir, "userRoutes.json", newJson, true);
         var filename = route.filename;
         $cordovaFile.removeFile($scope.fileDir, route.file);
@@ -934,22 +1240,11 @@ angular.module('app.controllers', [])
     $scope.editItem = function(route){
         $ionicActionSheet.show({
             
-            buttons: [
-                {text: "Share with us!"}
-            ],
+            buttons: [],
             destructiveText: 'Delete',
             titleText: route.name,
             cancelText: 'Cancel',
             cancel: function() { $ionicListDelegate.closeOptionButtons(); },
-            buttonClicked: function(index, button){
-                if(index == 0){
-                    alert('Send route to CPOM!');
-                    //TODO: Add file upload to CPOM here
-                };
-                
-                $ionicListDelegate.closeOptionButtons();
-                return true;
-            },
             destructiveButtonClicked: function(){
                 $scope.exampleRoutes.splice($scope.exampleRoutes.indexOf(route), 1);
                 return true;
@@ -997,19 +1292,19 @@ angular.module('app.controllers', [])
     $scope.exampleRoutes = [
         {
             "name":"Example Route: Scientific Cruise around the Siberian Shelf - 2014",
-            "filename":"correctly_filtered.csv"
+            "file":"correctly_filtered.json"
         },
         {
             "name":"Example Route: Tour of the Arctic circle from Svalbard to Severny Island - 2016",
-            "filename":"example_route_2.csv"
+            "file":"example_route_2.json"
         },
         {
             "name": "Example Route: North West Passage - Northern Route - 2012",
-            "filename":"NWP_north_app.csv"
+            "file":"NWP_north_app.json"
         },
         {
             "name":"Example Route: North West Passage - Southern Route - 2012",
-            "filename":"NWP_south_app.csv"
+            "file":"NWP_south_app.json"
         }
     ];
     
@@ -1017,12 +1312,22 @@ angular.module('app.controllers', [])
     var loadingTemplate = "<div style='margin:-20px;padding:15px;border-radius:7px;background-color:#00376d'>Processing...</div>"
     
     //Function to display example routes
-    $scope.mapScreen = function(filename){
+    $scope.mapScreenUser = function(route){
         $ionicLoading.show({
             template: loadingTemplate
         });
-        routeService.selectedRoute = filename;
+        routeService.selectedRoute = route;
         routeService.selectedIce = "spring_2012.png";
+        routeService.type = "usr";
+        $state.go('menu.maps');
+    };
+    $scope.mapScreenExample = function(route){
+        $ionicLoading.show({
+            template: loadingTemplate
+        });
+        routeService.selectedRoute = route;
+        routeService.selectedIce = "spring_2012.png";
+        routeService.type = "eg";
         $state.go('menu.maps');
     };
 
@@ -1032,8 +1337,8 @@ angular.module('app.controllers', [])
         //Get directory from appropriate filesystem
         if(ionic.Platform.isAndroid()){
             console.log('Platform is Android');
-            console.log('cordova.file.externalDataDirectory: ' + cordova.file.externalDataDirectory);
-            $scope.fileDir = cordova.file.externalDataDirectory;
+            console.log('cordova.file.dataDirectory: ' + cordova.file.dataDirectory);
+            $scope.fileDir = cordova.file.dataDirectory;
         };
         
         //Parse json file holding user route names and filenames
@@ -1058,7 +1363,6 @@ angular.module('app.controllers', [])
 	  	});
 
 	  	$scope.isRecording = false;
-        $scope.current_route = [[],[]];
 
 	  	bgGeo.configure({
 	     	//Both
@@ -1077,9 +1381,7 @@ angular.module('app.controllers', [])
 
 		bgGeo.registerForLocationUpdates(function(location) {
 	     	console.log("[BackgroundGeo] Location updated - Position:  " + JSON.stringify(location));
-            $scope.current_route[0].push(location.latitude);
-            $scope.current_route[1].push(location.longitude);
-            var coordEntry = location.latitude + ',' + location.longitude + '\n';
+            var coordEntry = '{"lat":"' + location.latitude + '","lon":"' + location.longitude + '"},';
             $cordovaFile.writeExistingFile($scope.fileDir, $scope.fileName, coordEntry, true);
 		}, function(err) {
 	     	console.log("[BackgroundGeo] Error: Didnt get an update: " + err);
@@ -1091,18 +1393,98 @@ angular.module('app.controllers', [])
   			console.log('[BackgroundGeo] onPause success.')
 
 		};
+        
+        //Function to calculate distance between two points
+        var pointDistance = function(route_lat, route_lon, ice_lat, ice_lon){
+            var deg2rad = Math.PI/180.;
+            
+            //phi = 90 - latitude
+            var phi1 = (90. - route_lat) * deg2rad;
+            var phi2 = (90. - ice_lat) * deg2rad;
+            
+            //theta = longitude
+            var theta1 = route_lat * deg2rad;
+            var theta2 = ice_lat * deg2rad;
+            
+            //Compute spherical distance from spherical coords
+            var cos = (Math.sin(phi1)* Math.sin(phi2)*Math.cos(theta1 - theta2)) + (Math.cos(phi1)*Math.cos(phi2));
+            var arc = Math.acos(cos)*6371;
+            return arc;
+        };
+        
+        //Function to find index of minimum value in array
+        var indexOfMin = function(arr){
+            
+            var copy = arr.slice(0);
+            arr.sort( function(a, b) { return a - b } );
+            
+            var min_val = arr[0];
+            var minIndex = copy.indexOf(min_val);
+
+            return minIndex;
+        };
+        
+        //Function to find closest thickness
+        var appendThickness = function(ice_data, route_lat, route_lon){
+            
+            var route_thick = [], ice_lat = [], ice_lon = [], ice_thick = [];
+            
+            //Get ice lat/lons:
+            ice_data.forEach(function(d){
+                ice_lat.push(d.lat);
+                ice_lon.push(d.lon);
+                ice_thick.push(d.thick);
+            });
+            console.log("Ice data ingested");
+            
+            var lat_diff = ice_lat.map(function(num){
+                return Math.abs(num - route_lat);
+            });
+            var lon_diff = ice_lon.map(function(num){
+                return Math.abs(num - route_lon);
+            });
+
+            var diff_array = lat_diff + lon_diff;
+
+            var min_index = indexOfMin(diff_array);
+
+            if(Math.abs(pointDistance(route_lat, route_lon, ice_lat[min_index], ice_lon[min_index])) >= 5.){
+                return -1;
+            } else if(ice_thick[min_index] <= .1){
+                return -1;
+            } else {
+                return ice_thick[min_index];
+            };
+            console.log("Thickness appended.");
+        };
+        
+        $scope.fileDir = cordova.file.dataDirectory;
+        $cordovaFile.readAsText($scope.fileDir, "iceFile.json").then(function(success){
+            var json_data = '[' + success + ']';
+            $scope.iceOptions = JSON.parse(json_data);
+        });
 
 		var onResume = function(){
 
 	  		var getLocation = function(){
 	  			if($scope.isRecording){
+                    
 	  				$cordovaGeolocation.getCurrentPosition(optionsGeo).then(function(position){
 	  					console.log('[ForegroundGeo] Location updated - Position: latitude - ' + position.coords.latitude + ', longitude - ' + position.coords.longitude);
-                        $scope.current_route[0].push(position.coords.latitude);
-                        $scope.current_route[1].push(position.coords.longitude);
-                        var coordEntry = position.coords.latitude + "," + position.coords.longitude + "\n";
-                        $cordovaFile.writeExistingFile($scope.fileDir, $scope.fileName, coordEntry, true).then()
-	  				})
+                        var coordEntry = '{"lat":"' + position.coords.latitude + '","lon":"' + position.coords.longitude + '"}'
+                        var jsonCoord = JSON.parse('[' + coordEntry + ']');
+                        for(var i = 0; i < $scope.iceOptions.length; i++){
+                            var fileLoc = $scope.iceOptions[i].loc;
+                            var fileName = $scope.iceOptions[i].data;
+                            var iceName = $scope.iceOptions[i].name;
+
+                            d3.csv(fileLoc + fileName, function(ice_data){
+                                jsonCoord[iceName] = appendThickness(ice_data, position.coords.latitude, position.coords.longitude);
+                            });
+                        };
+                        coordEntry = JSON.stringify(jsonCoord).slice(1,-1) + ',';
+                        $cordovaFile.writeExistingFile($scope.fileDir, $scope.fileName, coordEntry, true);
+	  				});
 	  			} else {
 	  				console.log('[ForegroundGeo] getLocation called, location tracking disabled.')
 	  			}	  			
@@ -1110,7 +1492,7 @@ angular.module('app.controllers', [])
 	  		};
 
 	  		console.log('[ForegroundGeo] onResume success.');
-	  		foregroundGeo = $interval(getLocation, 5000);
+	  		foregroundGeo = $interval(getLocation, 60000);
 
 		};
 
@@ -1130,14 +1512,13 @@ angular.module('app.controllers', [])
                     var date = new Date().getDate();
                     var month = new Date().getMonth();
                     var date_string = date + "_" + month + "_" + year;
-                    $scope.fileName = "route_" + date_string + ".txt";
+                    $scope.fileName = "route_" + date_string + ".json";
                     
                     $cordovaFile.createFile($scope.fileDir, $scope.fileName, true).then(function(success){
                         bgGeo.start();
                         $scope.isRecording = true;
                         console.log('[BackgroundGeo] Tracking started.');
                         console.log('File created.')
-                        $scope.current_route = [[],[]]
                         onResume();
                     });
 		        } else {
@@ -1287,13 +1668,34 @@ angular.module('app.controllers', [])
     
 })
 
-.controller('dlCtrl', function($scope, $http){
+.controller('dlCtrl', function($scope, $http, $ionicLoading){
 	
-    $http.get("http://www.cpom.ucl.ac.uk/csopr/sidata/").success(function(data){
-        console.log(success);
-    })
-    .error(function(error){
-        console.log(error);
-    });
+    var url = "http://www.cpom.ucl.ac.uk/csopr/sidata/";
+    
+    var toObj = function(arr){
+        obj = [];
+        for (var i = 0; i < arr.length; i++){
+            var item = arr[i].slice(3,-17);
+            console.log(i);
+            obj.push(item);
+        };
+        return obj;
+    };
+    
+    
+    $scope.obj = ["Result", "From", "HTTP", "Request", "Will", "Go", "Here"];
+    console.log($scope.obj);
+    
+//    $ionicLoading.show();
+//    $http.get(url).then(function(result){
+//    
+//        var resultText = JSON.stringify(result.data);
+//        console.log(resultText);
+//        var list = resultText.split("href");
+//        list = list.slice(5,-18);
+//        $scope.obj = toObj(list);
+//        $ionicLoading.hide();
+//        
+//    });
     
 })

@@ -272,6 +272,7 @@ angular.module('app.controllers', [])
         .attr('cx', function(d, i) { return xScale(xData[i]); })
         .attr('cy', function(d, i) { return yScale(yData[i]); })
         .style("stroke", "rgba(0, 55, 109, 0)")
+        .style("fill", "rgba(0, 55, 109, 0)")
         .attr('r', 6);
         
         //On point click, highlight point and display thickness at that point
@@ -450,7 +451,7 @@ angular.module('app.controllers', [])
     $ionicPlatform.ready(function(){
         
         $scope.iceName = "Spring 2012";
-        $scope.fileDir = cordova.file.externalDataDirectory;
+        $scope.fileDir = cordova.file.dataDirectory;
         //Check for ice-options file
         $cordovaFile.checkFile($scope.fileDir, "iceFile.json").then(function(success){
             //On success, parse to iceOptions object
@@ -565,7 +566,7 @@ angular.module('app.controllers', [])
             
             //If route is user route, needs processing
             if(routeService.type == "usr"){
-                $scope.fileDir = cordova.file.externalDataDirectory;
+                $scope.fileDir = cordova.file.dataDirectory;
                 //Read route file and parse to JSON object
                 $cordovaFile.readAsText($scope.fileDir, routeFile).then(function(success){
                     var route_data = JSON.parse(success);
@@ -617,7 +618,7 @@ angular.module('app.controllers', [])
             
             //On new ice data selected, read route data file, show loading screen, draw charts, hide loading screen.
             if(routeService.type == "usr"){
-                $scope.fileDir = cordova.file.externalDataDirectory;
+                $scope.fileDir = cordova.file.dataDirectory;
                 $cordovaFile.readAsText($scope.fileDir, routeFile).then(function(success){
                     var data = JSON.parse(success);
                     vis = topoFunc(data);
@@ -1219,10 +1220,17 @@ angular.module('app.controllers', [])
     
     var userDelete = function(route){
         console.log("Old JSON: " + JSON.stringify($scope.userRoutes));
-        $scope.userRoutes.splice($scope.userRoutes.indexOf(route), 1);
-        console.log("New JSON: " + JSON.stringify($scope.userRoutes));
-        var newJson = JSON.stringify($scope.userRoutes);
-        newJson = newJson.slice(1,-1);
+        if($scope.userRoutes.length == 1){
+            var newJson = "";
+            $scope.userRoutes.splice($scope.userRoutes.indexOf(route), 1);
+            console.log("New JSON: " + newJson);
+        } else {
+            $scope.userRoutes.splice($scope.userRoutes.indexOf(route), 1);
+            var newJson = JSON.stringify($scope.userRoutes);
+            console.log("New JSON: " + newJson);
+            newJson = newJson.slice(1,-1);
+        };
+        
         $cordovaFile.writeFile($scope.fileDir, "userRoutes.json", newJson, true);
         var filename = route.filename;
         $cordovaFile.removeFile($scope.fileDir, route.file);
@@ -1329,8 +1337,8 @@ angular.module('app.controllers', [])
         //Get directory from appropriate filesystem
         if(ionic.Platform.isAndroid()){
             console.log('Platform is Android');
-            console.log('cordova.file.externalDataDirectory: ' + cordova.file.externalDataDirectory);
-            $scope.fileDir = cordova.file.externalDataDirectory;
+            console.log('cordova.file.dataDirectory: ' + cordova.file.dataDirectory);
+            $scope.fileDir = cordova.file.dataDirectory;
         };
         
         //Parse json file holding user route names and filenames
@@ -1450,7 +1458,7 @@ angular.module('app.controllers', [])
             console.log("Thickness appended.");
         };
         
-        $scope.fileDir = cordova.file.externalDataDirectory;
+        $scope.fileDir = cordova.file.dataDirectory;
         $cordovaFile.readAsText($scope.fileDir, "iceFile.json").then(function(success){
             var json_data = '[' + success + ']';
             $scope.iceOptions = JSON.parse(json_data);
