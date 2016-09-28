@@ -1221,17 +1221,17 @@ angular.module('app.controllers', [])
     var userDelete = function(route){
         console.log("Old JSON: " + JSON.stringify($scope.userRoutes));
         if($scope.userRoutes.length == 1){
-            var newJson = "";
             $scope.userRoutes.splice($scope.userRoutes.indexOf(route), 1);
+            var newJson = JSON.stringify($scope.userRoutes);
             console.log("New JSON: " + newJson);
+            cordova.removeFile($scope.fileDir, "userRoutes.json");
         } else {
             $scope.userRoutes.splice($scope.userRoutes.indexOf(route), 1);
             var newJson = JSON.stringify($scope.userRoutes);
             console.log("New JSON: " + newJson);
             newJson = newJson.slice(1,-1);
+            $cordovaFile.writeFile($scope.fileDir, "userRoutes.json", newJson, true);
         };
-        
-        $cordovaFile.writeFile($scope.fileDir, "userRoutes.json", newJson, true);
         var filename = route.filename;
         $cordovaFile.removeFile($scope.fileDir, route.file);
     };
