@@ -451,7 +451,7 @@ angular.module('app.controllers', [])
     $ionicPlatform.ready(function(){
         
         $scope.iceName = "Spring 2012";
-        $scope.fileDir = cordova.file.dataDirectory;
+        $scope.fileDir = cordova.file.externalDataDirectory;
         //Check for ice-options file
         $cordovaFile.checkFile($scope.fileDir, "iceFile.json").then(function(success){
             //On success, parse to iceOptions object
@@ -566,7 +566,7 @@ angular.module('app.controllers', [])
             
             //If route is user route, needs processing
             if(routeService.type == "usr"){
-                $scope.fileDir = cordova.file.dataDirectory;
+                $scope.fileDir = cordova.file.externalDataDirectory;
                 //Read route file and parse to JSON object
                 $cordovaFile.readAsText($scope.fileDir, routeFile).then(function(success){
                     var route_data = JSON.parse(success);
@@ -618,7 +618,7 @@ angular.module('app.controllers', [])
             
             //On new ice data selected, read route data file, show loading screen, draw charts, hide loading screen.
             if(routeService.type == "usr"){
-                $scope.fileDir = cordova.file.dataDirectory;
+                $scope.fileDir = cordova.file.externalDataDirectory;
                 $cordovaFile.readAsText($scope.fileDir, routeFile).then(function(success){
                     var data = JSON.parse(success);
                     vis = topoFunc(data);
@@ -667,77 +667,6 @@ angular.module('app.controllers', [])
             "file":"spring_2012.png"
         }
     ];
-    
-    //Object to hold user route names and filenames
-    $scope.userRoutes = [
-        
-    ];
-    
-    //Object to hold example route names and filenames
-    $scope.exampleRoutes = [
-        {
-            "name":"Example Route: Scientific Cruise around the Siberian Shelf - 2014",
-            "filename":"correctly_filtered.json"
-        },
-        {
-            "name":"Example Route: Tour of the Arctic circle from Svalbard to Severny Island - 2016",
-            "filename":"example_route_2.json"
-        },
-        {
-            "name": "Example Route: North West Passage - Northern Route - 2012",
-            "filename":"NWP_north_app.json"
-        },
-        {
-            "name":"Example Route: North West Passage - Southern Route - 2012",
-            "filename":"NWP_south_app.json"
-        }
-    ];
-    
-    //Function to handle edit of items
-    $scope.editItem = function(route){
-        $ionicActionSheet.show({
-            
-            buttons: [],
-            destructiveText: 'Delete',
-            titleText: route.name,
-            cancelText: 'Cancel',
-            cancel: function() { $ionicListDelegate.closeOptionButtons(); },
-            destructiveButtonClicked: function(){
-                $scope.exampleRoutes.splice($scope.exampleRoutes.indexOf(route), 1);
-                return true;
-            }
-            
-        });
-        
-    };
-    
-    $scope.editUser = function(route){
-        $ionicActionSheet.show({
-            
-            buttons: [
-                {text: "Share with us!"}
-            ],
-            destructiveText: 'Delete',
-            titleText: route.name,
-            cancelText: 'Cancel',
-            cancel: function() { $ionicListDelegate.closeOptionButtons(); },
-            buttonClicked: function(index, button){
-                if(index == 0){
-                    alert('Send route to CPOM!');
-                    //TODO: Add file upload to CPOM here
-                };
-                
-                $ionicListDelegate.closeOptionButtons();
-                return true;
-            },
-            destructiveButtonClicked: function(){
-                $scope.userRoutes.splice($scope.userRoutes.indexOf(route), 1);
-                return true;
-            }
-            
-        });
-        
-    };
     
     //Function to set routeService selected route and display map screen.
     var loadingTemplate = "<div style='margin:-20px;padding:15px;border-radius:7px;background-color:#00376d'>Processing...</div>"
@@ -1221,17 +1150,17 @@ angular.module('app.controllers', [])
     var userDelete = function(route){
         console.log("Old JSON: " + JSON.stringify($scope.userRoutes));
         if($scope.userRoutes.length == 1){
-            var newJson = "";
-            $scope.userRoutes.splice($scope.userRoutes.indexOf(route), 1);
-            console.log("New JSON: " + newJson);
+            console.log("userRoutes has length 1");
+            $scope.userRoutes = [];
+            $cordovaFile.removeFile($scope.fileDir, "userRoutes.json");
         } else {
+            console.log("userRoutes has length " + $scope.userRoutes.length);
             $scope.userRoutes.splice($scope.userRoutes.indexOf(route), 1);
             var newJson = JSON.stringify($scope.userRoutes);
             console.log("New JSON: " + newJson);
             newJson = newJson.slice(1,-1);
+            $cordovaFile.writeFile($scope.fileDir, "userRoutes.json", newJson, true);
         };
-        
-        $cordovaFile.writeFile($scope.fileDir, "userRoutes.json", newJson, true);
         var filename = route.filename;
         $cordovaFile.removeFile($scope.fileDir, route.file);
     };
@@ -1283,11 +1212,6 @@ angular.module('app.controllers', [])
         
     };
     
-    //Object to hold names and filenames of user routes
-    $scope.userRoutes = [
-        
-    ];
-    
     //Object to hold names and filenames of example routes
     $scope.exampleRoutes = [
         {
@@ -1337,8 +1261,8 @@ angular.module('app.controllers', [])
         //Get directory from appropriate filesystem
         if(ionic.Platform.isAndroid()){
             console.log('Platform is Android');
-            console.log('cordova.file.dataDirectory: ' + cordova.file.dataDirectory);
-            $scope.fileDir = cordova.file.dataDirectory;
+            console.log('cordova.file.externalDataDirectory: ' + cordova.file.externalDataDirectory);
+            $scope.fileDir = cordova.file.externalDataDirectory;
         };
         
         //Parse json file holding user route names and filenames
@@ -1346,7 +1270,8 @@ angular.module('app.controllers', [])
             var routes_json = '[' + success + ']';
             $scope.userRoutes = JSON.parse(routes_json);
         }, function(error){
-            console.log("userRoutes file doesn't exist yet!")
+            console.log("userRoutes file doesn't exist yet!");
+            $scope.userRoutes = [];
         });
 
         //Init backgroundGeolocation
@@ -1458,7 +1383,7 @@ angular.module('app.controllers', [])
             console.log("Thickness appended.");
         };
         
-        $scope.fileDir = cordova.file.dataDirectory;
+        $scope.fileDir = cordova.file.externalDataDirectory;
         $cordovaFile.readAsText($scope.fileDir, "iceFile.json").then(function(success){
             var json_data = '[' + success + ']';
             $scope.iceOptions = JSON.parse(json_data);
@@ -1666,6 +1591,24 @@ angular.module('app.controllers', [])
         });
     });
     
+})
+
+.controller('menuCtrl', function($scope){
+    $scope.menuLink = function(site){
+        if(site == "bas"){
+            window.open("https://www.bas.ac.uk/", '_system');
+        } else if(site == "noc"){
+            window.open("http://noc.ac.uk/", '_system');
+        } else if(site == "nceo"){
+            window.open("https://www.nceo.ac.uk/", '_system');
+        } else if(site == "nerc"){
+            window.open("http://www.nerc.ac.uk/", '_system');
+        } else if(site == "esa"){
+            window.open("http://www.esa.int/ESA", '_system');
+        } else if(site == "ionic"){
+            window.open("http://ionicframework.com/", '_system');
+        };
+    };
 })
 
 .controller('dlCtrl', function($scope, $http, $ionicLoading){
