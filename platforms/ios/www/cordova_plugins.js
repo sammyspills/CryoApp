@@ -207,6 +207,22 @@ module.exports = [
         "runs": true
     },
     {
+        "id": "cordova-plugin-file-transfer.FileTransferError",
+        "file": "plugins/cordova-plugin-file-transfer/www/FileTransferError.js",
+        "pluginId": "cordova-plugin-file-transfer",
+        "clobbers": [
+            "window.FileTransferError"
+        ]
+    },
+    {
+        "id": "cordova-plugin-file-transfer.FileTransfer",
+        "file": "plugins/cordova-plugin-file-transfer/www/FileTransfer.js",
+        "pluginId": "cordova-plugin-file-transfer",
+        "clobbers": [
+            "window.FileTransfer"
+        ]
+    },
+    {
         "id": "cordova-plugin-geolocation.Coordinates",
         "file": "plugins/cordova-plugin-geolocation/www/Coordinates.js",
         "pluginId": "cordova-plugin-geolocation",
@@ -334,6 +350,7 @@ module.exports.metadata =
     "cordova-plugin-device": "1.1.2",
     "cordova-plugin-email": "1.1.1",
     "cordova-plugin-file": "4.3.0",
+    "cordova-plugin-file-transfer": "1.6.0",
     "cordova-plugin-geolocation": "2.2.0",
     "cordova-plugin-inappbrowser": "1.4.0",
     "cordova-plugin-network-information": "1.2.1",

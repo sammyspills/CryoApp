@@ -48,6 +48,9 @@
     <feature name="BackgroundLocationServices">
         <param name="android-package" value="com.flybuy.cordova.location.BackgroundLocationServicesPlugin" />
     </feature>
+    <feature name="FileTransfer">
+        <param name="android-package" value="org.apache.cordova.filetransfer.FileTransfer" />
+    </feature>
     <name>CryoApp</name>
     <description>
         An Ionic Framework and Cordova project.

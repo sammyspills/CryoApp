@@ -291,6 +291,22 @@ module.exports = [
         "clobbers": [
             "plugins.backgroundLocationServices"
         ]
+    },
+    {
+        "id": "cordova-plugin-file-transfer.FileTransferError",
+        "file": "plugins/cordova-plugin-file-transfer/www/FileTransferError.js",
+        "pluginId": "cordova-plugin-file-transfer",
+        "clobbers": [
+            "window.FileTransferError"
+        ]
+    },
+    {
+        "id": "cordova-plugin-file-transfer.FileTransfer",
+        "file": "plugins/cordova-plugin-file-transfer/www/FileTransfer.js",
+        "pluginId": "cordova-plugin-file-transfer",
+        "clobbers": [
+            "window.FileTransfer"
+        ]
     }
 ];
 module.exports.metadata = 
@@ -311,7 +327,8 @@ module.exports.metadata =
     "cordova-sqlite-storage": "1.4.6",
     "ionic-plugin-keyboard": "2.2.1",
     "me.rahul.plugins.sqlDB": "1.0.3",
-    "org.flybuy.cordova.background-location-services": "1.0.4"
+    "org.flybuy.cordova.background-location-services": "1.0.4",
+    "cordova-plugin-file-transfer": "1.6.0"
 };
 // BOTTOM OF METADATA
 });

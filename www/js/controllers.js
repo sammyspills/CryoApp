@@ -178,10 +178,6 @@ angular.module('app.controllers', [])
 //        };
 //        console.log(latlon[3]);
 //    };
-    
-    var processFunc = function(data){
-        
-    };
 
     //Function to draw scatter plot
     var scatterFunc = function(data){
@@ -451,7 +447,7 @@ angular.module('app.controllers', [])
     $ionicPlatform.ready(function(){
         
         $scope.iceName = "Spring 2012";
-        $scope.fileDir = cordova.file.externalDataDirectory;
+        $scope.fileDir = cordova.file.dataDirectory;
         //Check for ice-options file
         $cordovaFile.checkFile($scope.fileDir, "iceFile.json").then(function(success){
             //On success, parse to iceOptions object
@@ -566,7 +562,7 @@ angular.module('app.controllers', [])
             
             //If route is user route, needs processing
             if(routeService.type == "usr"){
-                $scope.fileDir = cordova.file.externalDataDirectory;
+                $scope.fileDir = cordova.file.dataDirectory;
                 //Read route file and parse to JSON object
                 $cordovaFile.readAsText($scope.fileDir, routeFile).then(function(success){
                     var route_data = JSON.parse(success);
@@ -578,18 +574,6 @@ angular.module('app.controllers', [])
                         //Read ice data, x-process.
                         console.log("Ice data not found in route file");
                         console.log(JSON.stringify($scope.iceOptions));
-                        
-                        //For each ice file, read ice file and process
-                        for(var i = 0; i < $scope.iceOptions.length; i++){
-                            var fileLoc = $scope.iceOptions[i].loc;
-                            var fileName = $scope.iceOptions[i].data;
-
-                            d3.csv(fileLoc + fileName, function(ice_data){
-                                console.log("Ice File Read.");
-                                appendThickness(ice_data, route_data)
-                            });
-                            
-                        };
                     };
 //                    vis = topoFunc(data);
 //                    scatterFuncUser(data);
@@ -618,7 +602,7 @@ angular.module('app.controllers', [])
             
             //On new ice data selected, read route data file, show loading screen, draw charts, hide loading screen.
             if(routeService.type == "usr"){
-                $scope.fileDir = cordova.file.externalDataDirectory;
+                $scope.fileDir = cordova.file.dataDirectory;
                 $cordovaFile.readAsText($scope.fileDir, routeFile).then(function(success){
                     var data = JSON.parse(success);
                     vis = topoFunc(data);
@@ -1262,8 +1246,8 @@ angular.module('app.controllers', [])
         //Get directory from appropriate filesystem
         if(ionic.Platform.isAndroid()){
             console.log('Platform is Android');
-            console.log('cordova.file.externalDataDirectory: ' + cordova.file.externalDataDirectory);
-            $scope.fileDir = cordova.file.externalDataDirectory;
+            console.log('cordova.file.externalDataDirectory: ' + cordova.file.dataDirectory);
+            $scope.fileDir = cordova.file.dataDirectory;
         };
         
         //Parse json file holding user route names and filenames
@@ -1320,71 +1304,7 @@ angular.module('app.controllers', [])
 
 		};
         
-        //Function to calculate distance between two points
-        var pointDistance = function(route_lat, route_lon, ice_lat, ice_lon){
-            var deg2rad = Math.PI/180.;
-            
-            //phi = 90 - latitude
-            var phi1 = (90. - route_lat) * deg2rad;
-            var phi2 = (90. - ice_lat) * deg2rad;
-            
-            //theta = longitude
-            var theta1 = route_lat * deg2rad;
-            var theta2 = ice_lat * deg2rad;
-            
-            //Compute spherical distance from spherical coords
-            var cos = (Math.sin(phi1)* Math.sin(phi2)*Math.cos(theta1 - theta2)) + (Math.cos(phi1)*Math.cos(phi2));
-            var arc = Math.acos(cos)*6371;
-            return arc;
-        };
-        
-        //Function to find index of minimum value in array
-        var indexOfMin = function(arr){
-            
-            var copy = arr.slice(0);
-            arr.sort( function(a, b) { return a - b } );
-            
-            var min_val = arr[0];
-            var minIndex = copy.indexOf(min_val);
-
-            return minIndex;
-        };
-        
-        //Function to find closest thickness
-        var appendThickness = function(ice_data, route_lat, route_lon){
-            
-            var route_thick = [], ice_lat = [], ice_lon = [], ice_thick = [];
-            
-            //Get ice lat/lons:
-            ice_data.forEach(function(d){
-                ice_lat.push(d.lat);
-                ice_lon.push(d.lon);
-                ice_thick.push(d.thick);
-            });
-            console.log("Ice data ingested");
-            
-            var lat_diff = ice_lat.map(function(num){
-                return Math.abs(num - route_lat);
-            });
-            var lon_diff = ice_lon.map(function(num){
-                return Math.abs(num - route_lon);
-            });
-
-            var diff_array = lat_diff + lon_diff;
-
-            var min_index = indexOfMin(diff_array);
-
-            if(Math.abs(pointDistance(route_lat, route_lon, ice_lat[min_index], ice_lon[min_index])) >= 5.){
-                return -1;
-            } else if(ice_thick[min_index] <= .1){
-                return -1;
-            } else {
-                return ice_thick[min_index];
-            };
-            console.log("Thickness appended.");
-        };
-        
-        $scope.fileDir = cordova.file.externalDataDirectory;
+        $scope.fileDir = cordova.file.dataDirectory;
         $cordovaFile.readAsText($scope.fileDir, "iceFile.json").then(function(success){
             var json_data = '[' + success + ']';
             $scope.iceOptions = JSON.parse(json_data);
