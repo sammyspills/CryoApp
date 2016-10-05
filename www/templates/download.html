@@ -1,0 +1,36 @@
+<style>
+    .wrapper {
+        text-align: center;
+        margin-top: 10px;
+    }
+    
+    #loading-bar .bar {
+        position: relative !important;
+        height: 10px !important;
+        background: #00376d !important;
+    }
+    
+    .load-cont {
+        margin-top: -5px;
+    }
+</style>
+
+<ion-view title="Download" id="downloadScreen" class=" ">
+    <ion-content padding="false" class="has-header" id="loading-bar-container">
+        <div id="bar-cont" class="load-cont"></div>
+    	<div id="download" class="padding" data-tap-disabled="true">
+            <div class="wrapper">
+                <button class="button button-positive" ng-click="onClick()">Get Remote Object</button>
+            </div>
+    	    <div class="list card">
+    	        <ion-item class="item item-divider">Sea Ice Datasets Available:</ion-item>
+    	        <ion-item class="item item-icon-right item-text-wrap" ng-repeat="obj in data" ng-click="itemClick(obj)">
+    	            <i class="icon ion-ios-download"></i>Lat: {{obj.lat}} <br>Lon: {{obj.lon}} <br>Dist: {{obj.dist}}km
+    	        </ion-item>
+    	    </div>
+    	    <div>
+    	    </div>
+    	</div>
+    </ion-content>
+</ion-view>
+

@@ -90,6 +90,10 @@ angular.module('app.services', [])
 
 }])
 
-.service('BlankService', [function(){
-
+.service('routeService', [function(){
+    this.selectedRoute;
+    this.selectedIce;
+    this.type;
+    this.iceData;
 }]);
+

@@ -20,7 +20,7 @@
         </ion-nav-bar>
         <ion-nav-view name="side-menu21"></ion-nav-view>
     </ion-side-menu-content>
-    <ion-side-menu side="left" id="side-menu21">
+    <ion-side-menu side="left" id="side-menu21" ng-controller="menuCtrl">
         <ion-header-bar class="header-bar" style="background: #00376e">
             <div class="title item-text-center" style="color: #fff; text-align: center">Menu</div>
         </ion-header-bar>
@@ -37,6 +37,9 @@
                     <i class="icon ion-earth"></i>Sea Ice</ion-item>               
                 <ion-item class="item-icon-left positive" id="menu-item-track" ui-sref="menu.routeTrack" menu-close="" style="color: #00367d">
                     <i class="icon ion-compass"></i>Route Tracking</ion-item>
+                <ion-item class="item-icon-left positive" id="menu-item-dl" ui-sref="menu.download" menu-close="" style="color: #00376d">
+                    <i class="icon ion-ios-download-outline"></i>Download
+                </ion-item>
 
                 <ion-item class="item-divider" style="color:#808080">More</ion-item>
                 
@@ -45,22 +48,22 @@
                 <ion-item class="item-divider" style="color: #808080">Partners</ion-item>
                 
                 <div class="padding" id="partner-list">
-                    <div class="item" style="padding: 5px" align="center">
+                    <div class="item" style="padding: 5px" align="center" ng-click="menuLink('bas')">
                         <img src="img/baslogo200.gif" class="image-list-thumb">
                     </div>
-                    <div class="item" style="padding: 5px" align="center">
+                    <div class="item" style="padding: 5px" align="center" ng-click="menuLink('noc')">
                         <img src="img/noclogo200.png" class="image-list-thumb">
                     </div>
-                    <div class="item" style="padding: 5px" align="center">
+                    <div class="item" style="padding: 5px" align="center" ng-click="menuLink('nceo')">
                         <img src="img/nceologo200.gif" class="image-list-thumb">
                     </div>
-                    <div class="item" style="padding: 5px" align="center">
+                    <div class="item" style="padding: 5px" align="center" ng-click="menuLink('nerc')">
                         <img src="img/nerc-long-logo-200.png" class="image-list-thumb">
                     </div>
-                    <div class="item" style="padding: 5px" align="center">
+                    <div class="item" style="padding: 5px" align="center" ng-click="menuLink('esa')">
                         <img src="img/img_colorlogo_darkblue-300x131.gif" class="image-list-thumb">
                     </div>
-                    <div class="item" style="padding: 5px" align="center">
+                    <div class="item" style="padding: 5px" align="center" ng-click="menuLink('ionic')">
                         <img class="image-list-thumb" src="img/ionic.png">
                     </div>
                 </div>
