@@ -1,3 +1,4 @@
+
 TODO:
 
 |================================================================================|
@@ -22,3 +23,66 @@ TODO:
   - Create signed build for both platforms and submit for review (Creating builds: 1wk, Review: up to 2months).
   - Receive review feedback (Can't see a reason for it not being accepted. Stores will provide feedback if not accepted)
   - After acceptance, publish to both stores.
+
+|================================================================================|
+  Arctic Segments:
+  
+  - Segment 1: Lon bounds: -90° to 180°
+               Lat bounds: 80° to 90°
+               
+  - Segment 2: Lon bounds: 180° to 90°
+               Lat bounds: 80° to 90°
+               
+  - Segment 3: Lon bounds: 90° to 0°
+               Lat bounds: 80° to 90°
+               
+  - Segment 4: Lon bounds: 0° to -90°
+               Lat bounds: 80° to 90°
+               
+  - Segment 5: Lon bounds: -90° to -135°
+               Lat bounds: 70° to 80°
+               
+  - Segment 6: Lon bounds: -135° to 180°
+               Lat bounds: 70° to 80°
+               
+  - Segment 7: Lon bounds: 180° to 135°
+               Lat bounds: 70° to 80°
+               
+  - Segment 8: Lon bounds: 135° to 90°
+               Lat bounds: 70° to 80°
+               
+  - Segment 9: Lon bounds: 90° to 45°
+               Lat bounds: 70° to 80°
+               
+  - Segment 10: Lon bounds: 45° to 0°
+                Lat bounds: 70° to 80°
+                
+  - Segment 11: Lon bounds: 0° to -45°
+                Lat bounds: 70° to 80°
+                
+  - Segment 12: Lon bounds: -45° to -90°
+                Lat bounds: 70° to 80°
+                
+  - Segment 13: Lon bounds: -90° to -135°
+                Lat bounds: 60° to 70°
+               
+  - Segment 14: Lon bounds: -135° to 180°
+                Lat bounds: 60° to 70°
+               
+  - Segment 15: Lon bounds: 180° to 135°
+                Lat bounds: 60° to 70°
+               
+  - Segment 16: Lon bounds: 135° to 90°
+                Lat bounds: 60° to 70°
+               
+  - Segment 17: Lon bounds: 90° to 45°
+                Lat bounds: 60° to 70°
+               
+  - Segment 18: Lon bounds: 45° to 0°
+                Lat bounds: 60° to 70°
+                
+  - Segment 19: Lon bounds: 0° to -45°
+                Lat bounds: 60° to 70°
+                
+  - Segment 20: Lon bounds: -45° to -90°
+                Lat bounds: 60° to 70°
