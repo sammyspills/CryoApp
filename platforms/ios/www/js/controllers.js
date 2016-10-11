@@ -1,4 +1,9 @@
-angular.module('app.controllers', [])
+angular.module('app.controllers', ['angular-loading-bar'])
+
+.config(['cfpLoadingBarProvider', function(cfpLoadingBarProvider){
+    cfpLoadingBarProvider.includeSpinner = false;
+    cfpLoadingBarProvider.parentSelector = '#bar-cont';
+}])
   
 .controller('homeCtrl', function($scope, $state, $ionicHistory) {
 
@@ -19,6 +24,12 @@ angular.module('app.controllers', [])
             disableBack: true
         });
         $state.go('menu.about');
+    };
+    $scope.downloadScreen = function(){
+        $ionicHistory.nextViewOptions({
+            disableBack: true
+        });
+        $state.go('menu.download');
     };
 
 })
@@ -42,6 +53,10 @@ angular.module('app.controllers', [])
             route_points[0].push(d.lat);
             route_points[1].push(d.lon);
         });
+        
+        //Get start and end coords
+        var startPoint = [route_points[1][0], route_points[0][0]],
+            endPoint = [route_points[1][route_points[1].length - 1], route_points[0][route_points[0].length - 1]];
 
         //Init svg container
         var vis = d3.select("#topo-vis"),
@@ -52,8 +67,10 @@ angular.module('app.controllers', [])
         //Clear all current SVG elements. Ensures JSON land shows on new ice data selection
         vis.selectAll("svg > *").remove();
 
-        var minDim = Math.min(WIDTH, HEIGHT);
-        var maxDim = Math.max(WIDTH, HEIGHT);
+        //Determine which of the dimensions is largest/smallest
+        var minDim = Math.min(WIDTH, HEIGHT),
+            maxDim = Math.max(WIDTH, HEIGHT);
+        
         //Arctic object holds coords of Arctic area, used to fitSize
         var Arctic = {
                           "type": "Feature",
@@ -93,9 +110,11 @@ angular.module('app.controllers', [])
             console.log("No image selected");    
         };
 
+        //D3 Path Generator
         var path = d3.geoPath()
             .projection(projection);
 
+        //D3 Graticule Generator
         var graticule = d3.geoGraticule();
 
         vis.append("path")
@@ -120,6 +139,18 @@ angular.module('app.controllers', [])
                 .attr("class", "arc")
                 .attr("d", path);
         };
+        
+        //Add Start/End text
+        console.log(projection(startPoint));
+        console.log(projection(endPoint));
+        
+        vis.selectAll("circle")
+            .data([startPoint,endPoint]).enter()
+            .append("text")
+            .attr("cx", function (d) { console.log(projection(d)); return projection(d)[0]; })
+            .attr("cy", function (d) { return projection(d)[1]; })
+            .attr("r","8px")
+            .attr("fill","red");
 
         var g = vis.append("g");
 
@@ -150,37 +181,9 @@ angular.module('app.controllers', [])
     var divWidth = chartDiv.offsetWidth;
     var padding = "30";
 
-    //Initialise distance calculating function:
-//    var getDistance = function(latlon){
-//        var lat_point = latlon[0];
-//        var lon_point = latlon[1];
-//        var deg2rad = Math.pi/180;
-//        
-//        for(i = 0; i = (latlon[0].length - 1); i++){
-//            console.log((i*100/latlon[0].length) + "%");
-//            
-//            //phi = 90 - lat
-//            var phi1 = (90.0 - lat_point[i]) * deg2rad;
-//            var phi2 = (90.0 - lat_point[i-1]) * deg2rad;
-//            
-//            //theta = lon
-//            var theta1 = lon_point[i] * deg2rad;
-//            var theta2 = lon_point[i-1] * deg2rad;
-//            
-//            var cos = (Math.sin(phi1) * Math.sin(phi2) * Math.cos(theta1 - theta2)) + (Math.cos(phi1) * Math.cos(phi2));
-//            var arc = Math.acos(cos)*6371; //Radius of Earth.
-//            latlon[2].push(arc);
-//        };
-//        
-//        for(i = 1; i = (latlon[0].length - 1); i++){
-//            var x = latlon[3][i-1] + latlon[2][i];
-//            latlon[3].push(x);
-//        };
-//        console.log(latlon[3]);
-//    };
-
     //Function to draw scatter plot
     var scatterFunc = function(data){
+        
         //Initialise 2D array for thickness, cum. dist.
         var route_array_scientific = [[],[]];
 
@@ -461,8 +464,7 @@ angular.module('app.controllers', [])
             //On fail, create file, write initial entry, parse to iceOptions object
             $cordovaFile.createFile($scope.fileDir, "iceFile.json", true).then(function(){
                 
-                console
-                var initialEntry = '{"name":"Spring 2012","file":"spring_2012.png","data":"thk_2012_spring.csv","loc":"' + $scope.fileDir + '"}';
+                var initialEntry = '{"name":"Spring 2012","file":"spring_2012.png"}, {"name":"Spring 2016","file":"28_spring_2016.png"}';
                 $cordovaFile.writeFile($scope.fileDir, "iceFile.json", initialEntry, true).then(function(){
                     
                     $cordovaFile.readAsText($scope.fileDir, "iceFile.json").then(function(success){
@@ -478,82 +480,6 @@ angular.module('app.controllers', [])
             });
             
         });
-        
-        //Function to calculate distance between two points
-        var pointDistance = function(route_lat, route_lon, ice_lat, ice_lon){
-            var deg2rad = Math.PI/180.;
-            
-            //phi = 90 - latitude
-            var phi1 = (90. - route_lat) * deg2rad;
-            var phi2 = (90. - ice_lat) * deg2rad;
-            
-            //theta = longitude
-            var theta1 = route_lat * deg2rad;
-            var theta2 = ice_lat * deg2rad;
-            
-            //Compute spherical distance from spherical coords
-            var cos = (Math.sin(phi1)* Math.sin(phi2)*Math.cos(theta1 - theta2)) + (Math.cos(phi1)*Math.cos(phi2));
-            var arc = Math.acos(cos)*6371;
-            return arc;
-        };
-        
-        //Function to find index of minimum value in array
-        var indexOfMin = function(arr){
-            var min = arr[0];
-            var minIndex = 0;
-
-            for(var i = 1; i < arr.length; i++){
-                if(arr[i] < min){
-                    minIndex = i;
-                    min = arr[i]
-                };
-            };
-
-            return minIndex;
-        };
-        
-        //Function to find closest thickness
-        var appendThickness = function(ice_data, route_data){
-            
-            var route_lat = [], route_lon = [], route_thick = [], ice_lat = [], ice_lon = [], ice_thick = [];
-            //Get route lat/lons
-            route_data.forEach(function(d){
-                route_lat.push(d.lat);
-                route_lon.push(d.lon);
-            });
-            console.log("Route data ingested.");
-            
-            //Get ice lat/lons:
-            ice_data.forEach(function(d){
-                ice_lat.push(d.lat);
-                ice_lon.push(d.lon);
-                ice_thick.push(d.thick);
-            });
-            console.log("Ice data ingested");
-            
-            for(var i = 0, len = route_lat.length; i < len; i++){
-                var lat_diff = ice_lat.map(function(num){
-                    return Math.abs(num - route_lat[i]);
-                });
-                var lon_diff = ice_lon.map(function(num){
-                    return Math.abs(num - route_lon[i]);
-                });
-                
-                var diff_array = lat_diff + lon_diff;
-                
-                var min_index = indexOfMin(diff_array);
-                
-                if(Math.abs(pointDistance(route_lat[i], route_lon[i], ice_lat[min_index], ice_lon[min_index])) >= 5.){
-                        route_thick.push(-1);
-                    } else if(ice_thick[min_index] <= .1){
-                        route_thick.push(-1);
-                    } else {
-                        route_thick.push(ice_thick[min_index]);
-                    };
-            }
-            $ionicLoading.hide();
-            console.log("Ice thickness found: " + JSON.stringify(route_thick));
-        };
         
         //Service to handle selected route and ice between views
         var mapInit = function(){
@@ -596,6 +522,9 @@ angular.module('app.controllers', [])
         
         $scope.selectedSeaIce = function(mySelect){
 
+            console.log(JSON.stringify(mySelect));
+            var routeFile = routeService.selectedRoute.file;
+            console.log(routeFile);
             routeService.selectedIce = mySelect.file;
             routeService.iceData = mySelect.loc + mySelect.data;
             $scope.iceName = mySelect.name;
@@ -1167,6 +1096,11 @@ angular.module('app.controllers', [])
         });
         
     };
+
+    var shareRoute = function(route){
+        //TODO: Add route sharing here.
+        console.log("Share: " + route.name);
+    };
     
     //Function to handle deleting user route
     $scope.editUser = function(route){
@@ -1182,7 +1116,7 @@ angular.module('app.controllers', [])
             buttonClicked: function(index, button){
                 if(index == 0){
                     alert('Send route to CPOM!');
-                    //TODO: Add file upload to CPOM here
+                    shareRoute(route);
                 };
                 
                 $ionicListDelegate.closeOptionButtons();
@@ -1532,7 +1466,7 @@ angular.module('app.controllers', [])
     };
 })
 
-.controller('dlCtrl', function($scope, $http, $ionicLoading){
+.controller('dlCtrl', function($scope, $http, $ionicLoading, $ionicPlatform){
 	
     var url = "http://www.cpom.ucl.ac.uk/csopr/sidata/";
     
@@ -1546,20 +1480,134 @@ angular.module('app.controllers', [])
         return obj;
     };
     
+    var dataObj = [
+        {lat:66.234, lon:76.986},
+        {lat:67.234, lon:77.986},
+        {lat:68.234, lon:78.986},
+        {lat:69.234, lon:79.986},
+        {lat:70.234, lon:80.986},
+        {lat:71.234, lon:81.986},
+        {lat:72.234, lon:82.986},
+        {lat:73.234, lon:83.986},
+        {lat:74.234, lon:84.986},
+        {lat:75.234, lon:85.986},
+        {lat:76.234, lon:86.986},
+        {lat:77.234, lon:87.986},
+        {lat:78.234, lon:88.986},
+        {lat:79.234, lon:89.986},
+        {lat:80.234, lon:90.986},
+        {lat:81.234, lon:91.986},
+        {lat:82.234, lon:92.986},
+        {lat:83.234, lon:93.986},
+        {lat:84.234, lon:94.986},
+        {lat:85.234, lon:95.986},
+        {lat:86.234, lon:96.986},
+        {lat:87.234, lon:97.986},
+        {lat:88.234, lon:98.986},
+        {lat:89.234, lon:99.986},
+        {lat:90.234, lon:100.986},
+        {lat:89.234, lon:99.986},
+        {lat:88.234, lon:98.986},
+        {lat:87.234, lon:97.986},
+        {lat:86.234, lon:96.986},
+        {lat:85.234, lon:95.986},
+        {lat:84.234, lon:94.986},
+        {lat:83.234, lon:93.986},
+        {lat:82.234, lon:92.986},
+        {lat:81.234, lon:91.986},
+        {lat:80.234, lon:90.986},
+        {lat:79.234, lon:89.986},
+        {lat:78.234, lon:88.986},
+        {lat:77.234, lon:87.986},
+        {lat:76.234, lon:86.986},
+        {lat:75.234, lon:85.986},
+        {lat:74.234, lon:84.986},
+        {lat:73.234, lon:83.986},
+        {lat:72.234, lon:82.986},
+        {lat:71.234, lon:81.986},
+        {lat:70.234, lon:80.986},
+        {lat:69.234, lon:79.986},
+        {lat:68.234, lon:78.986},
+        {lat:67.234, lon:77.986},
+        {lat:66.234, lon:76.986},
+        {lat:65.234, lon:75.986},
+        {lat:64.234, lon:74.986}
+    ];
     
-    $scope.obj = ["Result", "From", "HTTP", "Request", "Will", "Go", "Here"];
-    console.log($scope.obj);
+    var pointDist = function(pos0, pos1){
+        var lat1 = pos0.lat,
+            lat2 = pos1.lat,
+            lon1 = pos0.lon,
+            lon2 = pos1.lon,
+            deg2rad = Math.PI / 180;
+        var R = 6371e3; // metres
+        var φ1 = lat1 * deg2rad;
+        var φ2 = lat2 * deg2rad;
+        var Δφ = (lat2-lat1) * deg2rad;
+        var Δλ = (lon2-lon1) * deg2rad;
+
+        var a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+                Math.cos(φ1) * Math.cos(φ2) *
+                Math.sin(Δλ/2) * Math.sin(Δλ/2);
+        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+        var d = R * c;
+        return d;
+    }
     
-//    $ionicLoading.show();
-//    $http.get(url).then(function(result){
-//    
-//        var resultText = JSON.stringify(result.data);
-//        console.log(resultText);
-//        var list = resultText.split("href");
-//        list = list.slice(5,-18);
-//        $scope.obj = toObj(list);
-//        $ionicLoading.hide();
-//        
-//    });
+    $scope.postReq= function(){
+        console.log("Button clicked. Sending POST request.");
+        var url = "http://localhost:8080/post1";
+        $http({
+            method: 'POST',
+            url: url,
+            headers: 'application/json',
+            data: dataObj}).then(function(success){
+                console.log("POST request success.");
+                console.log(success);
+                //TODO: Add file write here to save ice list
+        }, function(error){
+            console.log("error: " + JSON.stringify(error));
+            alert("The remote server could not be accessed.");
+        });
+    };
+    
+    $scope.postReq2 = function(){
+        var url = "http://localhost:8080/post2"
+        $http({
+            method: 'POST',
+            url: url,
+            headers: 'application/json',
+            data: [{test:"thisisa"}]
+        }).then(function(success){
+            console.log(success.data);
+        }, function(error){
+            console.log("error: " + error);
+        });
+    };
+    
+    $scope.getRequest = function(){
+        $scope.$broadcast('scroll.refreshComplete');
+        var url = "http://localhost:8080/getData";
+        $http({
+            method: 'GET',
+            url: url,
+        }).then(function(success){
+            $scope.data = success.data;
+        }, function(error){
+            console.log("error: " + JSON.stringify(error));
+            alert("The remote server could not be accessed.");
+        });
+    };
+    
+    $scope.itemClick = function(object){
+        var index = $scope.data.indexOf(object);
+        alert("This will download the " + $scope.data[index].name + " dataset.");
+        //TODO: Download ice image here. POST2 Request.
+    };
+    
+    $ionicPlatform.ready(function(){
+        $scope.getRequest();
+    });
     
 })

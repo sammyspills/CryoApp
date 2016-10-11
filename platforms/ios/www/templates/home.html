@@ -4,37 +4,47 @@
         overflow: hidden;
     }
     .background {
-        background: url('img/berg_bg.JPG') no-repeat center;
+/*        background: url('img/berg_bg.JPG') no-repeat center;*/
+        background: #6dbdc3;
         background-size: cover;
     }
 </style>
 <ion-view title="CryoApp" id="homeScreen">
     <ion-content padding="false" class="has-header background">
         
-        <div class="list card" style="background-color:#00376d; margin:30px;margin-top:50px; border-radius:20px;" ng-click="trackScreen()">
-            <div class="item item-image" style="height:26vh">
-                <img src="img/home_track.png" style="height:26vh"/>
+        <div class="list card" style="background-color:#00376d; margin:0 0 0 0; display:block; border-radius-bottom-left:15px; border-radius-bottom-right:15px" ng-click="trackScreen()">
+            <div class="item item-image" style="height:20vh">
+                <img src="img/home_track.png" style="display:block"/>
             </div>
-            <div class="item item-divider">
+            <div class="item item-divider" style="height:5vh">
                 <h3 style="text-align:center; font-size:18px">Track Your Route!</h3>
             </div>
         </div>
         
-        <div class="list card" style="background-color:#00376d; margin:30px; border-radius:20px" ng-click="iceScreen()">
-            <div class="item item-image" style="margin: 0 auto">
+        <div class="list card" style="background-color:#00376d; margin:3vh 0 0 0; display:block" ng-click="iceScreen()">
+            <div class="item item-image" style="margin: 0 auto; height:20vh">
                 <img src="img/home_ice.png" style=""/>
             </div>
-            <div class="item item-divider">
+            <div class="item item-divider" style="height:5vh">
                 <h3 style="text-align:center; font-size:18px">View Sea Ice Conditions!</h3>
             </div>
         </div>
         
-        <div class="list card" style="background-color:#00376d; margin:30px;margin-bottom:70px; border-radius:20px" ng-click="aboutScreen()">
-            <div class="item item-image" style="margin:0 auto">
+        <div class="list card" style="background-color:#00376d; margin:3vh 0 0 0; display:block;" ng-click="aboutScreen()">
+            <div class="item item-image" style="margin:0 auto; height:20vh">
                 <img src="img/home_logo.png"/>
             </div>
-            <div class="item item-divider">
+            <div class="item item-divider" style="height:5vh">
                 <h3 style="text-align:center; font-size:18px">Find Out More!</h3>
+            </div>
+        </div>
+        
+        <div class="list card" style="background-color:#00376d; margin:3vh 0 0 0; display:block;" ng-click="downloadScreen()">
+            <div class="item item-image" style="margin:0 auto; height:20vh">
+                <img src="img/home_logo.png"/>
+            </div>
+            <div class="item item-divider" style="height:5vh">
+                <h3 style="text-align:center; font-size:18px">Download Data!</h3>
             </div>
         </div>
 

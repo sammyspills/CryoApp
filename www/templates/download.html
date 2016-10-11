@@ -17,15 +17,21 @@
 
 <ion-view title="Download" id="downloadScreen" class=" ">
     <ion-content padding="false" class="has-header" id="loading-bar-container">
+        <ion-refresher
+                       pulling-text="Pull to refresh..."
+                       on-refresh="getRequest()">
+        </ion-refresher>
         <div id="bar-cont" class="load-cont"></div>
     	<div id="download" class="padding" data-tap-disabled="true">
             <div class="wrapper">
-                <button class="button button-positive" ng-click="onClick()">Get Remote Object</button>
+                <button class="button button-positive" style="margin:5px" ng-click="postReq()">POST Req1</button>
+                <button class="button button-positive" style="margin:5px" ng-click="postReq2()">POST Req2</button>
             </div>
+            <div id="get-request"></div>
     	    <div class="list card">
     	        <ion-item class="item item-divider">Sea Ice Datasets Available:</ion-item>
-    	        <ion-item class="item item-icon-right item-text-wrap" ng-repeat="obj in data" ng-click="itemClick(obj)">
-    	            <i class="icon ion-ios-download"></i>Lat: {{obj.lat}} <br>Lon: {{obj.lon}} <br>Dist: {{obj.dist}}km
+    	        <ion-item class="item item-icon-right item-text-wrap" ng-repeat="obj in data" ng-click="itemClick(obj)" style="font-family:sans-serif">
+    	            <i class="icon ion-ios-download"></i>{{obj.name}}
     	        </ion-item>
     	    </div>
     	    <div>
