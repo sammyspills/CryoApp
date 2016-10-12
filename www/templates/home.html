@@ -21,7 +21,7 @@
         padding-top: 7.5px;
     }
     .home-card .inner {
-        border-radius: 10px;
+        border-radius: 5px;
     }
 </style>
 <ion-view title="CryoApp" id="homeScreen">
@@ -29,38 +29,50 @@
         
         <div id="container" style="height:100%; width:100%">
             <div id="card1" class="home-card">
-                <div class="inner" style="height:100%; width:100%; background-color:#00376d">
-                    <div class="item-divider" style="border-radius:10px; height:22px">
+                <div class="inner" style="height:100%; width:100%; background-color:#00376d" ng-click="trackScreen()">
+                    <div class="item-divider" style="border-radius:5px; height:22px">
                         <h3 style="text-align: center; font-size: 18px">
                             Track Your Route!
                         </h3>
                     </div>
+                    <div style="width: 100%; height: 100%; text-align: center; padding: 20px 10px 0 10px;">
+                        <h1 style="font-family: sans-serif; color: lightgray">Route Tracking Page</h1>
+                    </div>
                 </div>
             </div>
             <div id="card2" class="home-card">
-                <div class="inner" style="height:100%; width:100%; background-color:#00376d">
-                    <div class="item-divider" style="border-radius: 10px; height: 22px">
+                <div class="inner" style="height:100%; width:100%; background-color:#00376d" ng-click="iceScreen()">
+                    <div class="item-divider" style="border-radius: 5px; height: 22px">
                         <h3 style="text-align: center; font-size: 18px">
                             View Sea Ice Conditions!
                         </h3>
                     </div>
+                    <div style="width: 100%; height: 100%; text-align: center; padding: 20px 10px 0 10px;">
+                        <h1 style="font-family: sans-serif; color: lightgray">Sea Ice Page</h1>
+                    </div>
                 </div>
             </div>
             <div id="card3" class="home-card">
-                <div class="inner" style="height:100%; width:100%; background-color:#00376d">
-                    <div class="item-divider" style="border-radius: 10px">
+                <div class="inner" style="height:100%; width:100%; background-color:#00376d" ng-click="downloadScreen()">
+                    <div class="item-divider" style="border-radius: 5px; height: 22px">
                         <h3 style="text-align: center; font-size: 18px">
                             Download Data!
                         </h3>
                     </div>
+                    <div style="width: 100%; height: 100%; text-align: center; padding: 20px 10px 0 10px;">
+                        <h1 style="font-family: sans-serif; color: lightgray">Downloads Page</h1>
+                    </div>
                 </div>
             </div>
             <div id="card4" class="home-card">
-                <div class="inner" style="height:100%; width:100%; background-color:#00376d">
-                    <div class="item-divider" style="border-radius: 10px">
+                <div class="inner" style="height:100%; width:100%; background-color:#00376d" ng-click="aboutScreen()">
+                    <div class="item-divider" style="border-radius: 5px; height: 22px">
                         <h3 style="text-align: center; font-size: 18px">
                             Find Out More!
                         </h3>
+                    </div>
+                    <div style="width: 100%; height: 100%; text-align: center; padding: 20px 10px 0 10px;">
+                        <h1 style="font-family: sans-serif; color: lightgray">About Page</h1>
                     </div>
                 </div>
             </div>

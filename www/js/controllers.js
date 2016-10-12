@@ -921,8 +921,8 @@ angular.module('app.controllers', ['angular-loading-bar'])
             MARGINS = {
                 top: 15,
                 right: 30,
-                bottom: 90,
-                left: 50
+                bottom: 100,
+                left: 60
             },
             xScale = d3.scaleTime()
             .range([MARGINS.left, WIDTH - MARGINS.right])
