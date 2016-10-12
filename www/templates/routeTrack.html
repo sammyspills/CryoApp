@@ -7,39 +7,36 @@
     }
     
 </style>
-<ion-view title="Route Tracking" id="trackScreen" class=" ">
+<ion-view title="Track Your Route" id="trackScreen" class=" ">
     <ion-content padding="false" class="has-header">
         <div class="list card" id="route-card-1">
-            <div class="item item-divider">
-                <h4 style="text-align:left;font-size:18px">Track your route:</h4>
-            </div>
             <div class="padding">
-                <h5 style="text-align:center; color:'gray'">Route tracking will use the phones GPS to record your position once every hour. It will be stored locally, not sent to our servers. The route can be plotted over a map when recording is stopped.</h5>
+                <h5 style="text-align:justify; color:'gray'">Route tracking will use the phones GPS to record your position once every hour. It will be stored locally, not sent to our servers. The route can be plotted over a map when recording is stopped.</h5>
                 <button class="button button-positive" style="width:45%;margin-left:2%;margin-right:2%"ng-disabled="isRecording" ng-click="startGeolocation()">Start Recording</button>
                 <button class="button button-assertive" style="width:45%;margin-left:2%;margin-right:2%" ng-click="stopGeolocation()" ng-disabled="!isRecording">Stop Recording</button>
             </div>
         </div>
         <div class="list card" id="sea-ice-card">
-            <div class="item-divider item-button-right" style="padding-left:20px;">
+            <div class="item-divider" style="padding-left:20px;">
                     <h4 style="text-align:left;font-size:18px">Previous Routes:</h4>
             </div>
-            <ion-list show-delete="data.showDelete">
-                
-            </ion-list>
             <ion-list>
-                <ion-item class="item-icon-left shady item-text-wrap" ng-repeat="route in userRoutes" ng-click="mapScreenUser(route)">
+                <ion-item class="item-icon-left shady item-text-wrap item-button-right" ng-repeat="route in userRoutes" ng-click="mapScreenUser(route)">
                     <i class="icon ion-ios-location-outline"></i>
                     {{route.name}}
-                    <ion-option-button class="button-calm" ng-click="editUser(route)">
+                    <a class="button button-icon icon ion-ios-more" ng-click="editUser(route)">
                         More
-                    </ion-option-button>
+                    </a>
                 </ion-item>
-                <ion-item class="item-icon-left shady item-text-wrap" ng-repeat="route in exampleRoutes" ng-click="mapScreenExample(route)">
+                <div class="item-divider">
+                    <h4 style="text-align: left; font-size: 16px">Example Routes:</h4>
+                </div>
+                <ion-item class="item-icon-left shady item-text-wrap item-button-right" ng-repeat="route in exampleRoutes" ng-click="mapScreenExample(route)">
                     <i class="icon ion-ios-location-outline"></i>
                     {{route.name}}
-                    <ion-option-button class="button-calm" ng-click="editItem(route)">
+                    <a class="button button-icon icon ion-ios-more" ng-click="editItem(route)">
                         More
-                    </ion-option-button>   
+                    </a>   
                 </ion-item>
             </ion-list>
         </div>

@@ -242,13 +242,13 @@ angular.module('app.controllers', ['angular-loading-bar'])
                 return yScale(yData[i]);
             });
 
-        // Add the valueline path.
-        vis.append("svg:path")
-        .attr("class", "line")
-        .attr("stroke", "#00376d")
-        .attr('stroke-width', 0.5)
-        .attr("d", lineGen(xData))
-        .attr("fill", "none");
+//        // Add the valueline path.
+//        vis.append("svg:path")
+//        .attr("class", "line")
+//        .attr("stroke", "#00376d")
+//        .attr('stroke-width', 0.5)
+//        .attr("d", lineGen(xData))
+//        .attr("fill", "none");
         
         //Add labels, points, thickness label
         var div = vis.append("text")
@@ -273,6 +273,16 @@ angular.module('app.controllers', ['angular-loading-bar'])
         .style("stroke", "rgba(0, 55, 109, 0)")
         .style("fill", "rgba(0, 55, 109, 0)")
         .attr('r', 6);
+        
+        vis.selectAll(".dot")
+        .data(xData)
+        .enter().append("circle")
+        .attr('class', 'dot')
+        .attr('cx', function(d, i) { return xScale(xData[i]); } )
+        .attr('cy', function(d, i) { return yScale(yData[i]); } )
+        .style("stroke", "rgba(0, 55, 109, 0)")
+        .style("fill", "#00376d")
+        .attr('r', 2);
         
         //On point click, highlight point and display thickness at that point
         var points = vis.selectAll(".dot");
@@ -1134,19 +1144,19 @@ angular.module('app.controllers', ['angular-loading-bar'])
     //Object to hold names and filenames of example routes
     $scope.exampleRoutes = [
         {
-            "name":"Example Route: Scientific Cruise around the Siberian Shelf - 2014",
+            "name":"Scientific Cruise around the Siberian Shelf - 2014",
             "file":"correctly_filtered.json"
         },
         {
-            "name":"Example Route: Tour of the Arctic circle from Svalbard to Severny Island - 2016",
+            "name":"Tour of the Arctic circle from Svalbard to Severny Island - 2016",
             "file":"example_route_2.json"
         },
         {
-            "name": "Example Route: North West Passage - Northern Route - 2012",
+            "name": "North West Passage - Northern Route - 2012",
             "file":"NWP_north_app.json"
         },
         {
-            "name":"Example Route: North West Passage - Southern Route - 2012",
+            "name":"North West Passage - Southern Route - 2012",
             "file":"NWP_south_app.json"
         }
     ];
