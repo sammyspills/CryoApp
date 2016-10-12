@@ -1,24 +1,24 @@
 ion-side-menu .menu-drawer{
-	background: "#00376e"
+	background: #34dcd6
 }
 
 .bar.bar-positive {
-	background-color: #00376d
+	background-color: #e4dcd6
 }
 
 ion-nav-bar {
-	background-color: #00376d
+	background-color: #e4dcd6
 }
 
 html, body, .custom-button {
-      border-color: #00376d;
+      border-color: #e4dcd6;
       background: transparent;
-      color: #00367d; 
+      color: #e4dcd6; 
       margin:4px; 
       width: 175px;
   }
       .custom_button.active, .custom_button.activated {
-        background: #00376d;
+        background: #e4dcd6;
         box-shadow: none;
         color: #fff; }
 

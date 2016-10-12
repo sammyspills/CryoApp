@@ -1,9 +1,23 @@
 <style>
     .shady {
         color: lighten(darkgrey, -30%) !important;
+        text-align: justify;
     }
     .shady i {
         color: darkgray !important;
+    }
+    .custom-divider {
+        padding-left: 20px;
+        height: 22px;
+        text-align: left;
+    }
+    .share-text {
+        text-align: justify;
+        font-family: sans-serif;
+        font-size: 14px;
+        color: #838383;
+        padding-left: 10px;
+        padding-right: 10px;
     }
     
 </style>
@@ -17,28 +31,29 @@
             </div>
         </div>
         <div class="list card" id="sea-ice-card">
-            <div class="item-divider" style="padding-left:20px;">
-                    <h4 style="text-align:left;font-size:18px">Previous Routes:</h4>
+            <div class="item-divider custom-divider" style="font-size:18px">
+                    Previous Routes:
             </div>
             <ion-list>
-                <ion-item class="item-icon-left shady item-text-wrap item-button-right" ng-repeat="route in userRoutes" ng-click="mapScreenUser(route)">
+                <ion-item class="item-icon-left shady item-text-wrap" ng-repeat="route in userRoutes" ng-click="mapScreenUser(route)">
                     <i class="icon ion-ios-location-outline"></i>
                     {{route.name}}
-                    <a class="button button-icon icon ion-ios-more" ng-click="editUser(route)">
+                    <ion-option-button class="button-calm" ng-click="editUser(route)">
                         More
-                    </a>
+                    </ion-option-button>
                 </ion-item>
-                <div class="item-divider">
-                    <h4 style="text-align: left; font-size: 16px">Example Routes:</h4>
+                <div class="item-divider custom-divider" style="font-size:16px">
+                    Example Routes:
                 </div>
-                <ion-item class="item-icon-left shady item-text-wrap item-button-right" ng-repeat="route in exampleRoutes" ng-click="mapScreenExample(route)">
+                <ion-item class="item-icon-left shady item-text-wrap" ng-repeat="route in exampleRoutes" ng-click="mapScreenExample(route)">
                     <i class="icon ion-ios-location-outline"></i>
                     {{route.name}}
-                    <a class="button button-icon icon ion-ios-more" ng-click="editItem(route)">
+                    <ion-option-button class="button-calm" ng-click="editItem(route)">
                         More
-                    </a>   
+                    </ion-option-button>
                 </ion-item>
             </ion-list>
         </div>
+        <p class="share-text"><b>Psst! Help us out!</b> You can do your bit by sending us data! </br> This helps us conduct research in tourism areas, and improve the app. Just swipe one of your routes to the left and tap "More" to share with us!</p>
     </ion-content>
 </ion-view>

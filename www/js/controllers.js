@@ -264,15 +264,15 @@ angular.module('app.controllers', ['angular-loading-bar'])
                 .attr("class", "tooltip")
                 .attr("text-anchor", "end");
 
-        vis.selectAll(".dot")
-        .data(xData)
-        .enter().append("circle")
-        .attr('class', 'dot')
-        .attr('cx', function(d, i) { return xScale(xData[i]); })
-        .attr('cy', function(d, i) { return yScale(yData[i]); })
-        .style("stroke", "rgba(0, 55, 109, 0)")
-        .style("fill", "rgba(0, 55, 109, 0)")
-        .attr('r', 6);
+//        vis.selectAll(".dot")
+//        .data(xData)
+//        .enter().append("circle")
+//        .attr('class', 'dot')
+//        .attr('cx', function(d, i) { return xScale(xData[i]); })
+//        .attr('cy', function(d, i) { return yScale(yData[i]); })
+//        .style("stroke", "rgba(0, 55, 109, 0)")
+//        .style("fill", "rgba(0, 55, 109, 0)")
+//        .attr('r', 6);
         
         vis.selectAll(".dot")
         .data(xData)
@@ -288,8 +288,8 @@ angular.module('app.controllers', ['angular-loading-bar'])
         var points = vis.selectAll(".dot");
         points.on("click", function(d, i){
             
-            points.attr('r', 6)
-                .style("fill", "rgba(0, 55, 109, 0)")
+            points.attr('r', 2)
+                .style("fill", "#00376d")
                 .style("stroke", "rgba(0, 55, 109, 0)");
             
             thickness = +yData[i];
@@ -310,7 +310,7 @@ angular.module('app.controllers', ['angular-loading-bar'])
         .attr("text-anchor", "middle")
         .attr("x", MARGINS.left + (WIDTH-MARGINS.left-MARGINS.right)/2)
         .attr("y", HEIGHT-(MARGINS.bottom/3))
-        .text("Distance Along Route (km)");
+        .text("Distance Along Route (m)");
 
         vis.append("text")
         .attr("class", "legend")
