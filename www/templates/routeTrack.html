@@ -25,7 +25,7 @@
     <ion-content padding="false" class="has-header">
         <div class="list card" id="route-card-1">
             <div class="padding">
-                <h5 style="text-align:justify; color:'gray'">Route tracking will use the phones GPS to record your position once every hour. It will be stored locally, not sent to our servers. The route can be plotted over a map when recording is stopped.</h5>
+                <p style="text-align:justify; color:gray; font-size:15px">Route tracking will use the phones GPS to record your position once every hour, and then plot your route on a map once recording is stopped. In order to view sea ice trends along a route, swipe it to the left and select 'Process' from the More menu.</p>
                 <button class="button button-positive" style="width:45%;margin-left:2%;margin-right:2%"ng-disabled="isRecording" ng-click="startGeolocation()">Start Recording</button>
                 <button class="button button-assertive" style="width:45%;margin-left:2%;margin-right:2%" ng-click="stopGeolocation()" ng-disabled="!isRecording">Stop Recording</button>
             </div>

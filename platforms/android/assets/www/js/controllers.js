@@ -34,7 +34,7 @@ angular.module('app.controllers', ['angular-loading-bar'])
 
 })
    
-.controller('mapsCtrl', function($scope, $state, $ionicPlatform, $ionicLoading, routeService, $cordovaFile, $http) { 
+.controller('mapsCtrl', function($scope, $state, $ionicPlatform, $ionicLoading, routeService, $cordovaFile, $http, $ionicPopup) { 
     
     //Object to store options for drop-down selector
     $scope.iceOptions = [];
@@ -186,13 +186,13 @@ angular.module('app.controllers', ['angular-loading-bar'])
         
         //Initialise 2D array for thickness, cum. dist.
         var route_array_scientific = [[],[]];
-
+        
         //append appropriate data to array
         data.forEach(function(d){
             if(d.thick >= 0){
-                route_array_scientific[1].push(d.cumdist);
-                route_array_scientific[0].push(d.thick);
-            } else {
+                    route_array_scientific[1].push(d.cumdist);
+                    route_array_scientific[0].push(d.thick);
+                } else {
 
             }
         });
@@ -460,7 +460,7 @@ angular.module('app.controllers', ['angular-loading-bar'])
     $ionicPlatform.ready(function(){
         
         $scope.iceName = "Spring 2012";
-        $scope.fileDir = cordova.file.dataDirectory;
+        $scope.fileDir = cordova.file.externalDataDirectory;
         //Check for ice-options file
         $cordovaFile.checkFile($scope.fileDir, "iceFile.json").then(function(success){
             //On success, parse to iceOptions object
@@ -498,18 +498,36 @@ angular.module('app.controllers', ['angular-loading-bar'])
             
             //If route is user route, needs processing
             if(routeService.type == "usr"){
-                $scope.fileDir = cordova.file.dataDirectory;
+                $scope.fileDir = cordova.file.externalDataDirectory;
                 //Read route file and parse to JSON object
                 $cordovaFile.readAsText($scope.fileDir, routeFile).then(function(success){
-                    var route_data = JSON.parse(success);
+                    var route_json_str = '[' + success.slice(0,-1) + ']';
+                    var route_data = JSON.parse(route_json_str);
                     //Check if it already has thickness data
                     if(route_data[0].hasOwnProperty($scope.iceName)){
                         //TODO: Add function for if already processed.
                         console.log(route_data[0][$scope.iceName]);
+                        vis = topoFunc(route_data);
+                        scatterFuncUser(route_data);
+                        $ionicLoading.hide();
                     } else {
                         //Read ice data, x-process.
                         console.log("Ice data not found in route file");
                         console.log(JSON.stringify($scope.iceOptions));
+                        vis = topoFunc(route_data);
+                        $ionicLoading.hide();
+//                        alert("This route needs to be processed! To view sea ice trends along your route, please swipe your route to the left and select 'Process' from the More menu! This will require a stable internet connection! :)");
+                        var alertPopup = $ionicPopup.show({
+                            title: "Route Processing",
+                            subTitle: "Route needs processing before sea ice trends can be viewed!",
+                            template: "To view sea ice trends along your route, please swipe your route to the left and select 'Process' from the More menu! This will require a stable internet connection!",
+                            buttons: [
+                                { text: ':)'}
+                            ]
+                        });
+                        alertPopup.then(function(res){
+                            console.log("Alert tapped!");
+                        });
                     };
 //                    vis = topoFunc(data);
 //                    scatterFuncUser(data);
@@ -541,12 +559,33 @@ angular.module('app.controllers', ['angular-loading-bar'])
             
             //On new ice data selected, read route data file, show loading screen, draw charts, hide loading screen.
             if(routeService.type == "usr"){
-                $scope.fileDir = cordova.file.dataDirectory;
+                $scope.fileDir = cordova.file.externalDataDirectory;
                 $cordovaFile.readAsText($scope.fileDir, routeFile).then(function(success){
-                    var data = JSON.parse(success);
-                    vis = topoFunc(data);
-                    scatterFuncUser(data);
-                    $ionicLoading.hide();
+                    var data_json_str = '[' + success.slice(0,-1) + ']';
+                    var data = JSON.parse(data_json_str);
+                    if(data[0].hasOwnProperty($scope.iceName)){
+                        console.log(data[0][$scope.iceName]);
+                        vis = topoFunc(data);
+                        scatterFuncUser(data);
+                        $ionicLoading.hide();
+                    } else {
+                        console.log("Ice data not found in route file");
+                        console.log(JSON.stringify($scope.iceOptions));
+                        vis = topoFunc(data);
+                        $ionicLoading.hide();
+//                        alert("This route needs to be processed! To view sea ice trends along your route, please swipe your route to the left and select 'Process' from the More menu! This will require a stable internet connection! :)");
+                        var alertPopup = $ionicPopup.show({
+                            title: "Route Processing",
+                            subTitle: "Route needs processing before sea ice trends can be viewed!",
+                            template: "To view sea ice trends along your route, please swipe your route to the left and select 'Process' from the More menu! This will require a stable internet connection!",
+                            buttons: [
+                                { text: ':)'}
+                            ]
+                        });
+                        alertPopup.then(function(res){
+                            console.log("Alert tapped!");
+                        });
+                    }
 
                 }, function(error){
                     console.log("Error: " + JSON.stringify(error));
@@ -1112,12 +1151,17 @@ angular.module('app.controllers', ['angular-loading-bar'])
         console.log("Share: " + route.name);
     };
     
+    var processRote = function(route){
+        console.log("Process: " + route.name);
+    };
+    
     //Function to handle deleting user route
     $scope.editUser = function(route){
         $ionicActionSheet.show({
             
             buttons: [
-                {text: "Share with us!"}
+                {text: "Share with us!"},
+                {text: "Process"}
             ],
             destructiveText: 'Delete',
             titleText: route.name,
@@ -1127,6 +1171,9 @@ angular.module('app.controllers', ['angular-loading-bar'])
                 if(index == 0){
                     alert('Send route to CPOM!');
                     shareRoute(route);
+                } else if(index == 1) {
+                    alert('Being processing!');
+                    processRoute(route);
                 };
                 
                 $ionicListDelegate.closeOptionButtons();
@@ -1169,6 +1216,7 @@ angular.module('app.controllers', ['angular-loading-bar'])
         $ionicLoading.show({
             template: loadingTemplate
         });
+        
         routeService.selectedRoute = route;
         routeService.selectedIce = "spring_2012.png";
         routeService.type = "usr";
@@ -1190,8 +1238,8 @@ angular.module('app.controllers', ['angular-loading-bar'])
         //Get directory from appropriate filesystem
         if(ionic.Platform.isAndroid()){
             console.log('Platform is Android');
-            console.log('cordova.file.externalDataDirectory: ' + cordova.file.dataDirectory);
-            $scope.fileDir = cordova.file.dataDirectory;
+            console.log('cordova.file.externalDataDirectory: ' + cordova.file.externalDataDirectory);
+            $scope.fileDir = cordova.file.externalDataDirectory;
         };
         
         //Parse json file holding user route names and filenames
@@ -1248,10 +1296,13 @@ angular.module('app.controllers', ['angular-loading-bar'])
 
 		};
         
-        $scope.fileDir = cordova.file.dataDirectory;
+        $scope.fileDir = cordova.file.externalDataDirectory;
         $cordovaFile.readAsText($scope.fileDir, "iceFile.json").then(function(success){
             var json_data = '[' + success + ']';
             $scope.iceOptions = JSON.parse(json_data);
+        }, function(error){
+            console.log("iceFile.json does not exist.");
+            var json_data = '[]'
         });
 
 		var onResume = function(){
@@ -1263,15 +1314,11 @@ angular.module('app.controllers', ['angular-loading-bar'])
 	  					console.log('[ForegroundGeo] Location updated - Position: latitude - ' + position.coords.latitude + ', longitude - ' + position.coords.longitude);
                         var coordEntry = '{"lat":"' + position.coords.latitude + '","lon":"' + position.coords.longitude + '"}'
                         var jsonCoord = JSON.parse('[' + coordEntry + ']');
-                        for(var i = 0; i < $scope.iceOptions.length; i++){
-                            var fileLoc = $scope.iceOptions[i].loc;
-                            var fileName = $scope.iceOptions[i].data;
-                            var iceName = $scope.iceOptions[i].name;
-
-                            d3.csv(fileLoc + fileName, function(ice_data){
-                                jsonCoord[iceName] = appendThickness(ice_data, position.coords.latitude, position.coords.longitude);
-                            });
-                        };
+//                        for(var i = 0; i < $scope.iceOptions.length; i++){
+//                            var fileLoc = $scope.iceOptions[i].loc;
+//                            var fileName = $scope.iceOptions[i].data;
+//                            var iceName = $scope.iceOptions[i].name;
+//                        };
                         coordEntry = JSON.stringify(jsonCoord).slice(1,-1) + ',';
                         $cordovaFile.writeExistingFile($scope.fileDir, $scope.fileName, coordEntry, true);
 	  				});
@@ -1308,7 +1355,7 @@ angular.module('app.controllers', ['angular-loading-bar'])
                         bgGeo.start();
                         $scope.isRecording = true;
                         console.log('[BackgroundGeo] Tracking started.');
-                        console.log('File created.')
+                        console.log('Route file created.')
                         onResume();
                     });
 		        } else {
@@ -1476,7 +1523,7 @@ angular.module('app.controllers', ['angular-loading-bar'])
     };
 })
 
-.controller('dlCtrl', function($scope, $http, $ionicLoading, $ionicPlatform){
+.controller('dlCtrl', function($scope, $http, $ionicLoading, $ionicPlatform, $ionicPopup){
 	
     var url = "http://www.cpom.ucl.ac.uk/csopr/sidata/";
     
@@ -1713,7 +1760,16 @@ angular.module('app.controllers', ['angular-loading-bar'])
                 //TODO: Add file write here to save ice list
         }, function(error){
             console.log("error: " + JSON.stringify(error));
-            alert("The remote server could not be accessed.");
+            var alertPopup = $ionicPopup.show({
+                title: 'Remote Server',
+                template: 'The remote server could not be accessed. Please try again later.',
+                buttons: [
+                    { text: 'OK :)'}
+                ]
+            });
+            alertPopup.then(function(res){
+                console.log("Alert tapped!");
+            });
         });
     };
     
@@ -1741,7 +1797,16 @@ angular.module('app.controllers', ['angular-loading-bar'])
             $scope.data = success.data;
         }, function(error){
             console.log("error: " + JSON.stringify(error));
-            alert("The remote server could not be accessed.");
+            var alertPopup = $ionicPopup.show({
+                title: 'Remote Server',
+                template: 'The remote server could not be accessed. Please try again later.',
+                buttons: [
+                    { text: 'OK :)'}
+                ]
+            });
+            alertPopup.then(function(res){
+                console.log("Alert tapped!");
+            });
         });
     };
     
