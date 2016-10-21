@@ -4,8 +4,10 @@ angular.module('app.controllers', ['angular-loading-bar'])
     cfpLoadingBarProvider.includeSpinner = false;
     cfpLoadingBarProvider.parentSelector = '#bar-cont';
 }])
-  
-.controller('homeCtrl', function($scope, $state, $ionicHistory) {
+
+.controller('homeCtrl', function($scope, $state, $ionicHistory, $ionicSideMenuDelegate) {
+
+    $ionicSideMenuDelegate.canDragContent(false);
 
     $scope.trackScreen = function(){
         $ionicHistory.nextViewOptions({
@@ -26,19 +28,19 @@ angular.module('app.controllers', ['angular-loading-bar'])
         $state.go('menu.about');
     };
     $scope.downloadScreen = function(){
-        $ionicHistory.nextViewOptions({
-            disableBack: true
-        });
+        // $ionicHistory.nextViewOptions({
+        //     disableBack: true
+        // });
         $state.go('menu.download');
     };
 
 })
-   
-.controller('mapsCtrl', function($scope, $state, $ionicPlatform, $ionicLoading, routeService, $cordovaFile, $http, $ionicPopup) { 
-    
+
+.controller('mapsCtrl', function($scope, $state, $ionicPlatform, $ionicLoading, routeService, $cordovaFile, $http, $ionicPopup) {
+
     //Object to store options for drop-down selector
     $scope.iceOptions = [];
-    
+
     //Get dimens of map div
     var topoDiv = document.getElementById("topo-div");
     var topoHeight = topoDiv.offsetHeight;
@@ -53,7 +55,7 @@ angular.module('app.controllers', ['angular-loading-bar'])
             route_points[0].push(d.lat);
             route_points[1].push(d.lon);
         });
-        
+
         //Get start and end coords
         var startPoint = [route_points[1][0], route_points[0][0]],
             endPoint = [route_points[1][route_points[1].length - 1], route_points[0][route_points[0].length - 1]];
@@ -63,14 +65,14 @@ angular.module('app.controllers', ['angular-loading-bar'])
             WIDTH = topoWidth,
             HEIGHT = topoHeight,
             PADDING = 0;
-        
+
         //Clear all current SVG elements. Ensures JSON land shows on new ice data selection
         vis.selectAll("svg > *").remove();
 
         //Determine which of the dimensions is largest/smallest
         var minDim = Math.min(WIDTH, HEIGHT),
             maxDim = Math.max(WIDTH, HEIGHT);
-        
+
         //Arctic object holds coords of Arctic area, used to fitSize
         var Arctic = {
                           "type": "Feature",
@@ -107,7 +109,7 @@ angular.module('app.controllers', ['angular-loading-bar'])
 
             console.log("Image used: img/ice_thickness/" + routeService.selectedIce);
         } catch(err) {
-            console.log("No image selected");    
+            console.log("No image selected");
         };
 
         //D3 Path Generator
@@ -139,11 +141,11 @@ angular.module('app.controllers', ['angular-loading-bar'])
                 .attr("class", "arc")
                 .attr("d", path);
         };
-        
+
         //Add Start/End text
         console.log(projection(startPoint));
         console.log(projection(endPoint));
-        
+
         vis.selectAll("circle")
             .data([startPoint,endPoint]).enter()
             .append("text")
@@ -163,7 +165,7 @@ angular.module('app.controllers', ['angular-loading-bar'])
                 .datum(topojson.feature(world, world.objects.land))
                 .attr("class", "land")
                 .attr("d", path);
-            
+
             console.log('JSON Features added.');
 
             vis.insert("path", ".graticule")
@@ -183,10 +185,10 @@ angular.module('app.controllers', ['angular-loading-bar'])
 
     //Function to draw scatter plot
     var scatterFunc = function(data){
-        
+
         //Initialise 2D array for thickness, cum. dist.
         var route_array_scientific = [[],[]];
-        
+
         //append appropriate data to array
         data.forEach(function(d){
             if(d.thick >= 0){
@@ -220,7 +222,7 @@ angular.module('app.controllers', ['angular-loading-bar'])
 
             xAxis = d3.axisBottom().scale(xScale).tickArguments([10, "s"]),
             yAxis = d3.axisLeft().scale(yScale).tickArguments([5, "s"]);
-        
+
         //Clear all SVG elements. Ensures new chart drawn on new ice data selection.
         vis.selectAll("svg > *").remove();
 
@@ -249,7 +251,7 @@ angular.module('app.controllers', ['angular-loading-bar'])
 //        .attr('stroke-width', 0.5)
 //        .attr("d", lineGen(xData))
 //        .attr("fill", "none");
-        
+
         //Add labels, points, thickness label
         var div = vis.append("text")
             .attr("x", WIDTH - MARGINS.right)
@@ -257,7 +259,7 @@ angular.module('app.controllers', ['angular-loading-bar'])
             .attr("class", "tooltip")
             .attr("text-anchor", "end")
             .html("Click a point to view thickness!");
-        
+
         var distText = vis.append("text")
                 .attr('x', WIDTH - MARGINS.right)
                 .attr('y', (MARGINS.top * 2) + 17)
@@ -273,7 +275,7 @@ angular.module('app.controllers', ['angular-loading-bar'])
 //        .style("stroke", "rgba(0, 55, 109, 0)")
 //        .style("fill", "rgba(0, 55, 109, 0)")
 //        .attr('r', 6);
-        
+
         vis.selectAll(".dot")
         .data(xData)
         .enter().append("circle")
@@ -283,26 +285,26 @@ angular.module('app.controllers', ['angular-loading-bar'])
         .style("stroke", "rgba(0, 55, 109, 0)")
         .style("fill", "#00376d")
         .attr('r', 2);
-        
+
         //On point click, highlight point and display thickness at that point
         var points = vis.selectAll(".dot");
         points.on("click", function(d, i){
-            
+
             points.attr('r', 2)
                 .style("fill", "#00376d")
                 .style("stroke", "rgba(0, 55, 109, 0)");
-            
+
             thickness = +yData[i];
             distance = +xData[i];
-            
+
             div.text("Thickness: " + thickness.toPrecision(4) + "m");
             distText.text("Distance: " + distance.toPrecision(4) + "km")
-            
+
             d3.select(this)
                 .attr('r', 5)
                 .style("fill", "#ffffff")
                 .style("stroke", "#ff0707");
-            
+
         });
 
         vis.append("text")
@@ -319,12 +321,12 @@ angular.module('app.controllers', ['angular-loading-bar'])
         .attr("x", -MARGINS.top-(HEIGHT-MARGINS.top-MARGINS.bottom)/2)
         .attr("transform", "rotate(-90)")
         .text("Sea Ice Thickness (m)");
-        
+
         console.log('Done loading')
         //$ionicLoading.hide();
 
     };
-    
+
     var scatterFuncUser = function(data){
         //Initialise 2D array for thickness, cum. dist.
         var route_array_scientific = [[],[]];
@@ -362,7 +364,7 @@ angular.module('app.controllers', ['angular-loading-bar'])
 
             xAxis = d3.axisBottom().scale(xScale).tickArguments([10, "s"]),
             yAxis = d3.axisLeft().scale(yScale).tickArguments([5, "s"]);
-        
+
         //Clear all SVG elements. Ensures new chart drawn on new ice data selection.
         vis.selectAll("svg > *").remove();
 
@@ -391,7 +393,7 @@ angular.module('app.controllers', ['angular-loading-bar'])
         .attr('stroke-width', 0.5)
         .attr("d", lineGen(xData))
         .attr("fill", "none");
-        
+
         //Add labels, points, thickness label
         var div = vis.append("text")
             .attr("x", WIDTH - MARGINS.right)
@@ -399,7 +401,7 @@ angular.module('app.controllers', ['angular-loading-bar'])
             .attr("class", "tooltip")
             .attr("text-anchor", "end")
             .html("Click a point to view thickness!");
-        
+
         var distText = vis.append("text")
                 .attr('x', WIDTH - MARGINS.right)
                 .attr('y', (MARGINS.top * 2) + 17)
@@ -415,26 +417,26 @@ angular.module('app.controllers', ['angular-loading-bar'])
         .style("fill", "rgba(0, 55, 109, 0)")
         .style("stroke", "rgba(0, 55, 109, 0)")
         .attr('r', 6);
-        
+
         //On point click, highlight point and display thickness at that point
         var points = vis.selectAll(".dot");
         points.on("click", function(d, i){
-            
+
             points.attr('r', 6)
                 .style("fill", "rgba(0, 55, 109, 0)")
                 .style("stroke", "rgba(0, 55, 109, 0)");
-            
+
             thickness = +yData[i];
             distance = +xData[i];
-            
+
             div.text("Thickness: " + thickness.toPrecision(4) + "m");
             distText.text("Distance: " + distance.toPrecision(4) + "km")
-            
+
             d3.select(this)
                 .attr('r', 5)
                 .style("fill", "#ffffff")
                 .style("stroke", "#ff0707");
-            
+
         });
 
         vis.append("text")
@@ -451,14 +453,14 @@ angular.module('app.controllers', ['angular-loading-bar'])
         .attr("x", -MARGINS.top-(HEIGHT-MARGINS.top-MARGINS.bottom)/2)
         .attr("transform", "rotate(-90)")
         .text("Sea Ice Thickness (m)");
-        
+
         console.log('Done loading')
         //$ionicLoading.hide();
 
     };
-        
+
     $ionicPlatform.ready(function(){
-        
+
         $scope.iceName = "Spring 2012";
         $scope.fileDir = cordova.file.externalDataDirectory;
         //Check for ice-options file
@@ -469,33 +471,33 @@ angular.module('app.controllers', ['angular-loading-bar'])
                 $scope.iceOptions = JSON.parse(json_data);
                 mapInit();
             });
-            
+
         }, function(error){
             //On fail, create file, write initial entry, parse to iceOptions object
             $cordovaFile.createFile($scope.fileDir, "iceFile.json", true).then(function(){
-                
+
                 var initialEntry = '{"name":"Spring 2012","file":"spring_2012.png"}, {"name":"Spring 2016","file":"28_spring_2016.png"}';
                 $cordovaFile.writeFile($scope.fileDir, "iceFile.json", initialEntry, true).then(function(){
-                    
+
                     $cordovaFile.readAsText($scope.fileDir, "iceFile.json").then(function(success){
-                        
+
                         var json_data = '[' + success + ']';
                         $scope.iceOptions = JSON.parse(json_data);
                         mapInit();
-                        
+
                     });
-                    
+
                 });
-                
+
             });
-            
+
         });
-        
+
         //Service to handle selected route and ice between views
         var mapInit = function(){
             var routeFile = routeService.selectedRoute.file;
             console.log(routeFile);
-            
+
             //If route is user route, needs processing
             if(routeService.type == "usr"){
                 $scope.fileDir = cordova.file.externalDataDirectory;
@@ -547,7 +549,7 @@ angular.module('app.controllers', ['angular-loading-bar'])
                 });
             };
         };
-        
+
         $scope.selectedSeaIce = function(mySelect){
 
             console.log(JSON.stringify(mySelect));
@@ -556,7 +558,7 @@ angular.module('app.controllers', ['angular-loading-bar'])
             routeService.selectedIce = mySelect.file;
             routeService.iceData = mySelect.loc + mySelect.data;
             $scope.iceName = mySelect.name;
-            
+
             //On new ice data selected, read route data file, show loading screen, draw charts, hide loading screen.
             if(routeService.type == "usr"){
                 $scope.fileDir = cordova.file.externalDataDirectory;
@@ -603,7 +605,7 @@ angular.module('app.controllers', ['angular-loading-bar'])
         };
 
     });
-    
+
     //Initial plot before sea ice data change
 //    d3.csv("res/" + routeFile, function(d){
 //        scatterFunc(d);
@@ -611,25 +613,25 @@ angular.module('app.controllers', ['angular-loading-bar'])
 //        $ionicLoading.hide();
 //        console.log(JSON.stringify(d));
 //    });
-    
+
 
 })
 
 .controller('seaIceCtrl', function($scope, $state, $ionicLoading, routeService, $ionicActionSheet, $cordovaGeolocation, $ionicPlatform, $ionicListDelegate){
-    
+
     //Object to hold ice data options for drop-down select.
     $scope.iceOptions = [
         {
             "name":"Spring 2016",
             "file":"28_spring_2016.png"
-            
+
         },
         {
             "name":"Spring 2012",
             "file":"spring_2012.png"
         }
     ];
-    
+
     //Function to set routeService selected route and display map screen.
     var loadingTemplate = "<div style='margin:-20px;padding:15px;border-radius:7px;background-color:#00376d'>Processing...</div>"
     $scope.mapScreenExample = function(filename){
@@ -639,7 +641,7 @@ angular.module('app.controllers', ['angular-loading-bar'])
         routeService.selectedRoute = filename;
         routeService.selectedIce = "spring_2012.png";
         routeService.type = "eg";
-        $state.go('menu.maps');    
+        $state.go('menu.maps');
     };
     $scope.mapScreenUser = function(filename){
         $ionicLoading.show({
@@ -648,29 +650,29 @@ angular.module('app.controllers', ['angular-loading-bar'])
         routeService.selectedRoute = filename;
         routeService.selectedIce = "spring_2012.png";
         routeService.type = "usr";
-        $state.go('menu.maps');    
+        $state.go('menu.maps');
     };
-    
+
     //Get dimens of map div
     var mapDiv = document.getElementById("sea-ice-div");
     var mapHeight = mapDiv.offsetHeight;
     var mapWidth = mapDiv.offsetWidth;
-    
+
     //Function to show Arctic map
     var mapFunc = function(){
-        
+
         //Init SVG container
         var vis = d3.select("#sea-ice-vis"),
             WIDTH = mapWidth,
             HEIGHT = mapHeight,
             PADDING = 0;
-        
+
         //Clear SVG elements. Ensures land JSON shown on new ice data selected.
         vis.selectAll("svg > *").remove();
-        
+
         var minDim = Math.min(WIDTH, HEIGHT);
         var maxDim = Math.max(WIDTH, HEIGHT);
-        
+
         //Object to hold coords of Arctic area. Used for fitSize.
         var Arctic = {
                           "type": "Feature",
@@ -682,19 +684,19 @@ angular.module('app.controllers', ['angular-loading-bar'])
                             "name": "Arctic"
                           }
                     };
-        
+
         //Init projection
         var projection = d3.geoStereographic()
             .rotate([0, -90])
             .center([0, 90])
             .fitSize([WIDTH,HEIGHT],Arctic)
             .precision(.1);
-        
+
         //Add SVG element.
         vis.append("svg")
             .attr("width", WIDTH)
             .attr("height", HEIGHT);
-        
+
         //Add background ice data image from routeService.
         vis.append("svg:image")
             .attr('width', WIDTH)
@@ -703,17 +705,17 @@ angular.module('app.controllers', ['angular-loading-bar'])
             .attr('y','-4%')
             .attr("transform", "scale(1.08)")
             .attr("xlink:href","img/ice_thickness/" + routeService.selectedIce);
-        
+
         var path = d3.geoPath()
             .projection(projection);
-        
+
         var graticule = d3.geoGraticule();
-        
+
         vis.append("path")
             .datum(graticule)
             .attr("class", "graticule")
             .attr("d", path);
-        
+
         //Functions for converting straight polygons into arched polygons for stereographic projection
         var parallel = function(phi, lam0, lam1){
             if(lam0 > lam1) lam1 += 360;
@@ -721,11 +723,11 @@ angular.module('app.controllers', ['angular-loading-bar'])
                 step = dlam / Math.ceil(dlam);
             return d3.range(lam0, lam1 + .5 * step, step).map(function(lam) { return [normalise(lam), phi]; });
         };
-        
+
         var normalise = function(x){
             return (x + 180) % 360 - 180;
         };
-        
+
         //Feature set for all selection polygons
         var Polygons = [
             {
@@ -888,9 +890,9 @@ angular.module('app.controllers', ['angular-loading-bar'])
                         .concat(parallel(60, -90, -45).reverse())
                 ]
             }
-            
+
         ];
-        
+
         //Add each selection polygon to the SVG container
         for(var i=0, len = Polygons.length; i<len; i++){
             vis.append("path")
@@ -901,35 +903,35 @@ angular.module('app.controllers', ['angular-loading-bar'])
                 .attr("id", i)
                 .attr("class", "quad")
         };
-        
+
         //Handle click event for quadrants. Highlight area. Change chart data.
         var quads = vis.selectAll(".quad");
         quads.on("click", function(d, i){
             quads.attr('fill', 'rgba(255, 255, 255, 0)');
             d3.select(this)
                 .attr('fill', 'rgba(0, 55, 109, 0.3)');
-            
+
             d3.select(this)
                 .transition()
                 .delay(0)
                 .duration(3000)
                 .attr('fill', 'rgba(255, 255, 255, 0)');
-            
+
             var xData = [],
                 yData = [];
-            
+
             var parseDate = d3.timeParse("%Y-%d-%m")
-            
+
             d3.csv("res/means.csv", function(data){
-                
+
                 scatterFunc(data, i);
-        
-            });   
-            
+
+            });
+
         });
-        
+
         var g = vis.append("g");
-        
+
         //Show land JSON
         d3.json("json/world-110m.json", function(error, world) {
               if (error) throw error;
@@ -944,26 +946,26 @@ angular.module('app.controllers', ['angular-loading-bar'])
                 .attr("class", "boundary")
                 .attr("d", path);
         });
-        
+
         return vis;
     };
-    
+
     var chartDiv = document.getElementById("historic-chart");
     var chartHeight = chartDiv.offsetHeight;
     var chartWidth = chartDiv.offsetWidth;
-    
+
     var scatterFunc = function(data, i){
-        
+
         var parseDate = d3.timeParse("%Y-%d-%m")
-        
+
         var xData = [],
             yData = [];
-        
+
         data.forEach(function(d){
             xData.push(parseDate(d.date));
             yData.push(parseFloat(d[i+1]));
         });
-        
+
         var vis = d3.select("#chart"),
             WIDTH = chartWidth,
             HEIGHT = chartHeight,
@@ -984,9 +986,9 @@ angular.module('app.controllers', ['angular-loading-bar'])
 
             xAxis = d3.axisBottom().scale(xScale).tickArguments([8]),
             yAxis = d3.axisLeft().scale(yScale).tickArguments([5]);
-        
+
         vis.selectAll("svg > *").remove();
-        
+
         vis.append("svg:g")
             .attr("class","axis")
             .attr("transform", "translate(0," + (HEIGHT - MARGINS.bottom) + ")")
@@ -994,26 +996,26 @@ angular.module('app.controllers', ['angular-loading-bar'])
             .selectAll("text")
                 .style("text-anchor", "end")
                 .attr("transform", "rotate(-60)");
-        
+
         vis.append("svg:g")
             .attr("class","axis")
             .attr("transform", "translate(" + MARGINS.left + ",0)")
             .call(yAxis);
-        
+
         var lineGen = d3.line().x(function(d, i){
             return xScale(xData[i]);
         })
         .y(function(d, i){
             return yScale(yData[i]);
         });
-        
+
         vis.append("svg:path")
             .attr("class","line")
             .attr("stroke","#00376d")
             .attr("stroke-width", 0)
             .attr("d", lineGen(xData))
             .attr("fill", "none");
-        
+
         vis.selectAll(".dot")
         .data(xData)
         .enter().append("circle")
@@ -1023,14 +1025,14 @@ angular.module('app.controllers', ['angular-loading-bar'])
         .style("stroke","#00376d")
         .style("fill","#00376d")
         .attr('r', 4);
-        
+
         vis.append("text")
             .attr("class", "legend")
             .attr("text-anchor", "middle")
             .attr("x", MARGINS.left + (WIDTH-MARGINS.left-MARGINS.right)/2)
             .attr("y", HEIGHT-(MARGINS.bottom/3))
             .text("Month, Year");
-        
+
         vis.append("text")
             .attr("class", "legend")
             .attr("text-anchor", "middle")
@@ -1038,20 +1040,20 @@ angular.module('app.controllers', ['angular-loading-bar'])
             .attr("x", -MARGINS.top-(HEIGHT-MARGINS.top-MARGINS.bottom)/2)
             .attr("transform", "rotate(-90)")
             .text("Mean Sea Ice Thickness (m)");
-        
+
     };
-    
+
     $ionicPlatform.ready(function(){
-        
+
         routeService.selectedIce = $scope.iceOptions[1].file;
-        
+
         //Handle reload on new ice data selected
         $scope.selectedSeaIce = function(mySelect){
-            
+
             routeService.selectedIce = mySelect.file;
-            
+
             d3.selectAll("svg > *").remove();
-            
+
             var text1 = chartContainer.append("text")
                 .attr("x", chartWidth/2)
                 .attr("y", (chartHeight/2)-13)
@@ -1069,20 +1071,20 @@ angular.module('app.controllers', ['angular-loading-bar'])
                 .style("font-size", "24px")
                 .text("historic ice conditions!")
                 .attr("id", "text2");
-            
+
 //            d3.csv("res/means.csv", function(d){
 //                scatterFunc(d);
 //            });
-            
+
             var vis = mapFunc();
-            
+
         };
 
     });
-    
+
     var vis = mapFunc();
     var chartContainer = d3.select("#chart");
-            
+
     var text1 = chartContainer.append("text")
         .attr("x", chartWidth/2)
         .attr("y", (chartHeight/2)-13)
@@ -1090,7 +1092,7 @@ angular.module('app.controllers', ['angular-loading-bar'])
         .attr("fill", "#00376d")
         .style("font-size", "24px")
         .text("Click on an area to view the");
-    
+
     var text2 = chartContainer.append("text")
         .attr("x", chartWidth/2)
         .attr("y", (chartHeight/2)+13)
@@ -1102,13 +1104,13 @@ angular.module('app.controllers', ['angular-loading-bar'])
 })
 
 .controller('routeTrackCtrl', function($scope, $state, $ionicPlatform, $cordovaToast, $ionicPopup, $window, $cordovaGeolocation, $interval, $ionicLoading, routeService, $ionicActionSheet, $cordovaFile, $ionicListDelegate){
-    
+
     $scope.fileDir = null;
 
     $scope.data = {
-        
+
     };
-    
+
     var userDelete = function(route){
         console.log("Old JSON: " + JSON.stringify($scope.userRoutes));
         if($scope.userRoutes.length == 1){
@@ -1127,11 +1129,11 @@ angular.module('app.controllers', ['angular-loading-bar'])
         var filename = route.filename;
         $cordovaFile.removeFile($scope.fileDir, route.file);
     };
-    
+
     //Function to remove data on delete of example route
     $scope.editItem = function(route){
         $ionicActionSheet.show({
-            
+
             buttons: [],
             destructiveText: 'Delete',
             titleText: route.name,
@@ -1141,24 +1143,24 @@ angular.module('app.controllers', ['angular-loading-bar'])
                 $scope.exampleRoutes.splice($scope.exampleRoutes.indexOf(route), 1);
                 return true;
             }
-            
+
         });
-        
+
     };
 
     var shareRoute = function(route){
         //TODO: Add route sharing here.
         console.log("Share: " + route.name);
     };
-    
+
     var processRote = function(route){
         console.log("Process: " + route.name);
     };
-    
+
     //Function to handle deleting user route
     $scope.editUser = function(route){
         $ionicActionSheet.show({
-            
+
             buttons: [
                 {text: "Share with us!"},
                 {text: "Process"}
@@ -1175,7 +1177,7 @@ angular.module('app.controllers', ['angular-loading-bar'])
                     alert('Being processing!');
                     processRoute(route);
                 };
-                
+
                 $ionicListDelegate.closeOptionButtons();
                 return true;
             },
@@ -1183,11 +1185,11 @@ angular.module('app.controllers', ['angular-loading-bar'])
                 userDelete(route);
                 return true;
             }
-            
+
         });
-        
+
     };
-    
+
     //Object to hold names and filenames of example routes
     $scope.exampleRoutes = [
         {
@@ -1207,16 +1209,16 @@ angular.module('app.controllers', ['angular-loading-bar'])
             "file":"NWP_south_app.json"
         }
     ];
-    
+
     //Function to set routeService selected route and show map screen
     var loadingTemplate = "<div style='margin:-20px;padding:15px;border-radius:7px;background-color:#00376d'>Processing...</div>"
-    
+
     //Function to display example routes
     $scope.mapScreenUser = function(route){
         $ionicLoading.show({
             template: loadingTemplate
         });
-        
+
         routeService.selectedRoute = route;
         routeService.selectedIce = "spring_2012.png";
         routeService.type = "usr";
@@ -1234,14 +1236,14 @@ angular.module('app.controllers', ['angular-loading-bar'])
 
   	$ionicPlatform.ready(function(){
   		console.log("[IONIC PLATFORM IS NOW READY]");
-        
+
         //Get directory from appropriate filesystem
         if(ionic.Platform.isAndroid()){
             console.log('Platform is Android');
             console.log('cordova.file.externalDataDirectory: ' + cordova.file.externalDataDirectory);
             $scope.fileDir = cordova.file.externalDataDirectory;
         };
-        
+
         //Parse json file holding user route names and filenames
         $cordovaFile.readAsText($scope.fileDir, "userRoutes.json").then(function(success){
             var routes_json = '[' + success + ']';
@@ -1295,7 +1297,7 @@ angular.module('app.controllers', ['angular-loading-bar'])
   			console.log('[BackgroundGeo] onPause success.')
 
 		};
-        
+
         $scope.fileDir = cordova.file.externalDataDirectory;
         $cordovaFile.readAsText($scope.fileDir, "iceFile.json").then(function(success){
             var json_data = '[' + success + ']';
@@ -1309,7 +1311,7 @@ angular.module('app.controllers', ['angular-loading-bar'])
 
 	  		var getLocation = function(){
 	  			if($scope.isRecording){
-                    
+
 	  				$cordovaGeolocation.getCurrentPosition(optionsGeo).then(function(position){
 	  					console.log('[ForegroundGeo] Location updated - Position: latitude - ' + position.coords.latitude + ', longitude - ' + position.coords.longitude);
                         var coordEntry = '{"lat":"' + position.coords.latitude + '","lon":"' + position.coords.longitude + '"}'
@@ -1324,7 +1326,7 @@ angular.module('app.controllers', ['angular-loading-bar'])
 	  				});
 	  			} else {
 	  				console.log('[ForegroundGeo] getLocation called, location tracking disabled.')
-	  			}	  			
+	  			}
 
 	  		};
 
@@ -1350,7 +1352,7 @@ angular.module('app.controllers', ['angular-loading-bar'])
                     var month = new Date().getMonth();
                     var date_string = date + "_" + month + "_" + year;
                     $scope.fileName = "route_" + date_string + ".json";
-                    
+
                     $cordovaFile.createFile($scope.fileDir, $scope.fileName, true).then(function(success){
                         bgGeo.start();
                         $scope.isRecording = true;
@@ -1363,13 +1365,13 @@ angular.module('app.controllers', ['angular-loading-bar'])
 		        	console.log('[BackgroundGeo] Begin tracking cancelled by user.');
 		        }
 		    });
-				
+
 		};
 
         //Stop Geolocation on button press and name submit
 		$scope.stopGeolocation = function(){
 			var confirmPopup = $ionicPopup.show({
-    
+
                 template: '<input type="text" name="namer" ng-model="data.name" required>',
                 title: 'Location Tracking',
                 subTitle: 'Please enter a name for this track to stop recording:',
@@ -1403,27 +1405,27 @@ angular.module('app.controllers', ['angular-loading-bar'])
                                             });
                                         });
                                     });
-                                    
+
                                 }, function(error){
                                     var initial_entry = JSON.stringify(json_entry)
                                     $cordovaFile.writeFile($scope.fileDir, "userRoutes.json", initial_entry, true).then(function(){
                                         $cordovaFile.readAsText($scope.fileDir, "userRoutes.json").then(function(success){
-                                            
+
                                             console.log("User Routes read.");
                                             var route_json = '[' + success + ']';
                                             $scope.userRoutes = JSON.parse(route_json);
-                                            
+
                                         }, function(error){
-                                            
+
                                             console.log("Error reading userRoutes.json as text.");
                                             console.log("Error: " + error);
-                                            
+
                                         });
-                                        
+
                                     });
-                                    
+
                                 });
-                                
+
                                 return $scope.data.name;
                             };
                         }
@@ -1441,7 +1443,7 @@ angular.module('app.controllers', ['angular-loading-bar'])
 		        	console.log('[BackgroundGeo] End tracking cancelled by user.');
 		        }
 		    });
-				
+
 		};
 
   	});
@@ -1462,7 +1464,7 @@ angular.module('app.controllers', ['angular-loading-bar'])
 	$scope.blogSite = function(){
 		window.open("http://cpom.leeds.ac.uk/cpom-blog/", '_system');
     };
-    
+
     //Email providers
     $ionicPlatform.ready(function(){
         cordova.plugins.email.isAvailable(function(isAvailable){
@@ -1482,7 +1484,7 @@ angular.module('app.controllers', ['angular-loading-bar'])
                         console.log('[SendMail] Email window closed.');
                     });
                 };
-                
+
                 $scope.cpomMail = function(mailAddress){
                     cordova.plugins.email.open({
                         to: [mailAddress],
@@ -1502,10 +1504,11 @@ angular.module('app.controllers', ['angular-loading-bar'])
             };
         });
     });
-    
+
 })
 
 .controller('menuCtrl', function($scope){
+
     $scope.menuLink = function(site){
         if(site == "bas"){
             window.open("https://www.bas.ac.uk/", '_system');
@@ -1524,9 +1527,9 @@ angular.module('app.controllers', ['angular-loading-bar'])
 })
 
 .controller('dlCtrl', function($scope, $http, $ionicLoading, $ionicPlatform, $ionicPopup){
-	
+
     var url = "http://www.cpom.ucl.ac.uk/csopr/sidata/";
-    
+
     var toObj = function(arr){
         obj = [];
         for (var i = 0; i < arr.length; i++){
@@ -1536,8 +1539,8 @@ angular.module('app.controllers', ['angular-loading-bar'])
         };
         return obj;
     };
-    
-    var dataObj = [     
+
+    var dataObj = [
         {"lat":"7.779160199999999747e+01","lon":"1.160304700000000011e+01"},
         {"lat":"7.794587555555555980e+01","lon":"1.097784166666666650e+01"},
         {"lat":"7.810014911111110791e+01","lon":"1.035263633333333289e+01"},
@@ -1746,7 +1749,7 @@ angular.module('app.controllers', ['angular-loading-bar'])
         {"lat":"7.802733622222223175e+01","lon":"6.792043144444444636e+01"},
         {"lat":"7.749957311111111835e+01","lon":"6.688684322222222534e+01"}
     ];
-    
+
     $scope.postReq= function(){
         console.log("Button clicked. Sending POST request.");
         var url = "http://localhost:8080/post1";
@@ -1772,7 +1775,7 @@ angular.module('app.controllers', ['angular-loading-bar'])
             });
         });
     };
-    
+
     $scope.postReq2 = function(){
         var url = "http://localhost:8080/post2"
         $http({
@@ -1786,7 +1789,7 @@ angular.module('app.controllers', ['angular-loading-bar'])
             console.log("error: " + error);
         });
     };
-    
+
     $scope.getRequest = function(){
         $scope.$broadcast('scroll.refreshComplete');
         var url = "http://localhost:8080/getData";
@@ -1809,15 +1812,15 @@ angular.module('app.controllers', ['angular-loading-bar'])
             });
         });
     };
-    
+
     $scope.itemClick = function(object){
         var index = $scope.data.indexOf(object);
         alert("This will download the " + $scope.data[index].name + " dataset.");
         //TODO: Download ice image here. POST2 Request.
     };
-    
+
     $ionicPlatform.ready(function(){
         $scope.getRequest();
     });
-    
+
 })
