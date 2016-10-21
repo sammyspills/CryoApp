@@ -346,7 +346,6 @@ module.exports = [
 module.exports.metadata = 
 // TOP OF METADATA
 {
-    "cordova-plugin-compat": "1.0.0",
     "cordova-plugin-console": "1.0.3",
     "cordova-plugin-device": "1.1.2",
     "cordova-plugin-email": "1.1.1",
@@ -362,7 +361,8 @@ module.exports.metadata =
     "cordova-sqlite-storage": "1.4.6",
     "ionic-plugin-keyboard": "2.2.1",
     "me.rahul.plugins.sqlDB": "1.0.3",
-    "org.flybuy.cordova.background-location-services": "1.0.4"
+    "org.flybuy.cordova.background-location-services": "1.0.4",
+    "cordova-plugin-compat": "1.0.0"
 };
 // BOTTOM OF METADATA
 });

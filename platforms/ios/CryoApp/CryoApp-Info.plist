@@ -52,10 +52,10 @@
       <key>NSAllowsArbitraryLoads</key>
       <true/>
     </dict>
-    <key>NSLocationWhenInUseUsageDescription</key>
-    <string/>
     <key>NSLocationAlwaysUsageDescription</key>
     <string>${EXECUTABLE_NAME} Would Like to Use Your Current Location Even In Background.</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string/>
     <key>UIBackgroundModes</key>
     <array>
       <string>location</string>
