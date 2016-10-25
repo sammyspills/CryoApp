@@ -911,11 +911,11 @@ angular.module('app.controllers', ['angular-loading-bar'])
             d3.select(this)
                 .attr('fill', 'rgba(0, 55, 109, 0.3)');
 
-            d3.select(this)
-                .transition()
-                .delay(0)
-                .duration(3000)
-                .attr('fill', 'rgba(255, 255, 255, 0)');
+            // d3.select(this)
+            //     .transition()
+            //     .delay(0)
+            //     .duration(60000)
+            //     .attr('fill', 'rgba(255, 255, 255, 0)');
 
             var xData = [],
                 yData = [];
@@ -1465,6 +1465,22 @@ angular.module('app.controllers', ['angular-loading-bar'])
 		window.open("http://cpom.leeds.ac.uk/cpom-blog/", '_system');
     };
 
+    $scope.menuLink = function(site){
+        if(site == "bas"){
+            window.open("https://www.bas.ac.uk/", '_system');
+        } else if(site == "noc"){
+            window.open("http://noc.ac.uk/", '_system');
+        } else if(site == "nceo"){
+            window.open("https://www.nceo.ac.uk/", '_system');
+        } else if(site == "nerc"){
+            window.open("http://www.nerc.ac.uk/", '_system');
+        } else if(site == "esa"){
+            window.open("http://www.esa.int/ESA", '_system');
+        } else if(site == "ionic"){
+            window.open("http://ionicframework.com/", '_system');
+        };
+    };
+
     //Email providers
     $ionicPlatform.ready(function(){
         cordova.plugins.email.isAvailable(function(isAvailable){
@@ -1505,25 +1521,6 @@ angular.module('app.controllers', ['angular-loading-bar'])
         });
     });
 
-})
-
-.controller('menuCtrl', function($scope){
-
-    $scope.menuLink = function(site){
-        if(site == "bas"){
-            window.open("https://www.bas.ac.uk/", '_system');
-        } else if(site == "noc"){
-            window.open("http://noc.ac.uk/", '_system');
-        } else if(site == "nceo"){
-            window.open("https://www.nceo.ac.uk/", '_system');
-        } else if(site == "nerc"){
-            window.open("http://www.nerc.ac.uk/", '_system');
-        } else if(site == "esa"){
-            window.open("http://www.esa.int/ESA", '_system');
-        } else if(site == "ionic"){
-            window.open("http://ionicframework.com/", '_system');
-        };
-    };
 })
 
 .controller('dlCtrl', function($scope, $http, $ionicLoading, $ionicPlatform, $ionicPopup){

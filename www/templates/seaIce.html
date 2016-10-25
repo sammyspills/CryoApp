@@ -92,8 +92,8 @@
 </style>
 
 <ion-view title="Sea Ice Thickness" id="iceScreen" class=" ">
-    <ion-content padding="false" class="has-header">
-        <div class="list">
+    <ion-content class="has-header" scroll="false"">
+        <div class="">
             <label class="item item-input item-select item-positive">
                 <div class="input-label">
                     Sea Ice Data:
@@ -103,8 +103,8 @@
                 </select>
             </label>
         </div>
-        <div class="card">
-            <div style="height:96vw;width:96vw" id="sea-ice-div">
+        <div class="">
+            <div style="height:40vh;width:100vw" id="sea-ice-div">
                 <svg id="sea-ice-vis" width="100%" height="100%"></svg>
             </div>
         </div>
@@ -113,28 +113,5 @@
                 <svg id="chart" width="100%" height="100%"></svg>
             </div>
         </div>
-<!--
-        <div class="list card" id="sea-ice-card">
-            <div class="item-divider item-button-right" style="padding-left:20px;">
-                    <h4 style="text-align:left;font-size:18px">Previous Routes:</h4>
-            </div>
-            <ion-list>
-                <ion-item class="item-icon-left shady item-text-wrap" ng-repeat="route in userRoutes" ng click="mapScreenUser(route.filename)">
-                    <i class="icon ion-ios-location-outline"></i>
-                    {{route.name}}
-                    <ion-option-button class="button-calm" ng-click="editUser(route)">
-                        More
-                    </ion-option-button>
-                </ion-item>
-                <ion-item class="item-icon-left shady item-text-wrap" ng-repeat="route in exampleRoutes" ng-click="mapScreenExample(route.filename)">
-                    <i class="icon ion-ios-location-outline"></i>
-                    {{route.name}}
-                    <ion-option-button class="button-calm" ng-click="editItem(route)">
-                        More
-                    </ion-option-button>
-                </ion-item>
-            </ion-list>
-        </div>
--->
     </ion-content>
 </ion-view>
