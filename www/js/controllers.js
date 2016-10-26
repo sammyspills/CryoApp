@@ -1030,7 +1030,7 @@ angular.module('app.controllers', ['angular-loading-bar'])
             .attr("class", "legend")
             .attr("text-anchor", "middle")
             .attr("x", MARGINS.left + (WIDTH-MARGINS.left-MARGINS.right)/2)
-            .attr("y", HEIGHT-(MARGINS.bottom/3))
+            .attr("y", HEIGHT-(MARGINS.bottom/2))
             .text("Month, Year");
 
         vis.append("text")
