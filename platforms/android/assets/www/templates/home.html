@@ -29,31 +29,31 @@
         height: 22px;
     }
 </style>
-<ion-view title="CryoApp" id="homeScreen">
+<ion-view title="Home" id="homeScreen">
     <ion-content padding="false" class="has-header background">
-        
+
         <div id="container" style="height:100%; width:100%">
-            <div id="card1" class="home-card">
-                <div class="inner" style="height:100%; width:100%; background-color:#00376d" ng-click="trackScreen()">
-                    <div class="item-divider tile-title">
-                        <h3 style="text-align: center; font-size: 18px">
-                            Track Your Route!
-                        </h3>
-                    </div>
-                    <div class="item-icon-right" style="width: auto; height: auto; text-align: center; padding: 20px 10px 0 10px;">
-                        <h1 style="font-family: sans-serif; color: lightgray">Route Tracking Page</h1>
-                    </div>
-                </div>
-            </div>
             <div id="card2" class="home-card">
                 <div class="inner" style="height:100%; width:100%; background-color:#00376d" ng-click="iceScreen()">
                     <div class="item-divider tile-title">
                         <h3 style="text-align: center; font-size: 18px">
-                            View Sea Ice Conditions!
+                            View Sea Ice Conditions
                         </h3>
                     </div>
                     <div style="width: auto; height: auto; text-align: center; padding: 20px 10px 0 10px;">
-                        <h1 style="font-family: sans-serif; color: lightgray">Sea Ice Page</h1>
+                        <h2 style="font-family: sans-serif; color: lightgray">Sea Ice Page</h2>
+                    </div>
+                </div>
+            </div>
+            <div id="card1" class="home-card">
+                <div class="inner" style="height:100%; width:100%; background-color:#00376d" ng-click="trackScreen()">
+                    <div class="item-divider tile-title">
+                        <h3 style="text-align: center; font-size: 18px">
+                            Track Your Route
+                        </h3>
+                    </div>
+                    <div class="" style="width: auto; height: auto; text-align: center; padding: 10px 10px 0 10px;">
+                        <h2 style="font-family: sans-serif; color: lightgray">Route Tracking Page</h2>
                     </div>
                 </div>
             </div>
@@ -61,11 +61,11 @@
                 <div class="inner" style="height:100%; width:100%; background-color:#00376d" ng-click="downloadScreen()">
                     <div class="item-divider tile-title">
                         <h3 style="text-align: center; font-size: 18px">
-                            Download Data!
+                            Download Data
                         </h3>
                     </div>
                     <div style="width: auto; height: auto; text-align: center; padding: 20px 10px 0 10px;">
-                        <h1 style="font-family: sans-serif; color: lightgray">Downloads Page</h1>
+                        <h2 style="font-family: sans-serif; color: lightgray">Downloads Page</h2>
                     </div>
                 </div>
             </div>
@@ -73,11 +73,11 @@
                 <div class="inner" style="height:100%; width:100%; background-color:#00376d" ng-click="aboutScreen()">
                     <div class="item-divider tile-title">
                         <h3 style="text-align: center; font-size: 18px">
-                            Find Out More!
+                            Find Out More
                         </h3>
                     </div>
                     <div style="width: auto; height: auto; text-align: center; padding: 20px 10px 0 10px;">
-                        <h1 style="font-family: sans-serif; color: lightgray">About Page</h1>
+                        <h2 style="font-family: sans-serif; color: lightgray">About Page</h2>
                     </div>
                 </div>
             </div>
@@ -100,9 +100,9 @@
                 <div class="item item-image">
                     <img src="img/home_ice.png"/>
                 </div>
-                
+
             </div>
-        
+
             <div class="list card" ng-click="aboutScreen()">
                 <div class="item item-divider">
                     <h3 style="text-align:center; font-size:18px">Find Out More!</h3>
@@ -123,5 +123,3 @@
 -->
     </ion-content>
 </ion-view>
-
-

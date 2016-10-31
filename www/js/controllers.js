@@ -187,20 +187,18 @@ angular.module('app.controllers', ['angular-loading-bar'])
     var scatterFunc = function(data){
 
         //Initialise 2D array for thickness, cum. dist.
-        var route_array_scientific = [[],[]];
+        var xData = [],
+            yData = [];
 
         //append appropriate data to array
         data.forEach(function(d){
             if(d.thick >= 0){
-                    route_array_scientific[1].push(d.cumdist);
-                    route_array_scientific[0].push(d.thick);
-                } else {
+                    xData.push(parseFloat(d.cumdist));
+                    yData.push(parseFloat(d.thick));
+            } else {
 
             }
         });
-
-        var xData = route_array_scientific[1];
-        var yData = route_array_scientific[0];
 
         //Init SVG container, scales, axes
         var vis = d3.select("#visualisation"),
@@ -214,11 +212,11 @@ angular.module('app.controllers', ['angular-loading-bar'])
             },
             xScale = d3.scaleLinear()
             .range([MARGINS.left, WIDTH - MARGINS.right])
-            .domain([0, Math.max(...xData)]),
+            .domain([0, d3.max(xData)]),
 
             yScale = d3.scaleLinear()
             .range([HEIGHT - MARGINS.bottom, MARGINS.top])
-            .domain([0, Math.max(...yData)]),
+            .domain([0, d3.max(yData)]),
 
             xAxis = d3.axisBottom().scale(xScale).tickArguments([10, "s"]),
             yAxis = d3.axisLeft().scale(yScale).tickArguments([5, "s"]);
@@ -276,26 +274,56 @@ angular.module('app.controllers', ['angular-loading-bar'])
 //        .style("fill", "rgba(0, 55, 109, 0)")
 //        .attr('r', 6);
 
-        vis.selectAll(".dot")
-        .data(xData)
-        .enter().append("circle")
-        .attr('class', 'dot')
-        .attr('cx', function(d, i) { return xScale(xData[i]); } )
-        .attr('cy', function(d, i) { return yScale(yData[i]); } )
-        .style("stroke", "rgba(0, 55, 109, 0)")
-        .style("fill", "#00376d")
-        .attr('r', 2);
+        node = vis.selectAll("g")
+            .data(xData)
+            .enter()
+            .append("g");
+
+        console.log("xData: " + xData[1]);
+        console.log("xScale(xData): " + xScale(xData[1]));
+
+        node.append("circle")
+            .attr('class', 'dot')
+            .attr('cx', function(d, i) { return xScale(xData[i]); })
+            .attr('cy', function(d, i) { return yScale(yData[i]); })
+            .style("stroke", "rgba(0, 55, 109, 0)")
+            .style("fill", "rgba(0, 55, 109, 0)")
+            .attr('r', 8);
+
+        node.append("circle")
+            .attr('class', 'dot-touch')
+            .attr('cx', function(d, i) { return xScale(xData[i]); })
+            .attr('cy', function(d, i) { return yScale(yData[i]); })
+            .style("stroke", "rgba(0, 55, 109, 0)")
+            .style("fill", "#00376d")
+            .attr('r', 2);
+
+        // vis.selectAll(".dot")
+        // .data(xData)
+        // .enter().append("circle")
+        // .attr('class', 'dot')
+        // .attr('cx', function(d, i) { return xScale(xData[i]); } )
+        // .attr('cy', function(d, i) { return yScale(yData[i]); } )
+        // .style("stroke", "rgba(0, 55, 109, 0)")
+        // .style("fill", "#00376d")
+        // .attr('r', 2);
 
         //On point click, highlight point and display thickness at that point
         var points = vis.selectAll(".dot");
-        points.on("click", function(d, i){
+        var touchPoints = vis.selectAll(".dot-touch");
+
+        touchPoints.on("click", function(d, i){
+
+            touchPoints.attr('r', 8)
+                .style("fill", "rgba(0, 55, 109, 0)")
+                .style("stroke", "rgba(0, 55, 109, 0)");
 
             points.attr('r', 2)
                 .style("fill", "#00376d")
                 .style("stroke", "rgba(0, 55, 109, 0)");
 
-            thickness = +yData[i];
-            distance = +xData[i];
+            thickness = yData[i];
+            distance = xData[i];
 
             div.text("Thickness: " + thickness.toPrecision(4) + "m");
             distText.text("Distance: " + distance.toPrecision(4) + "km")
@@ -312,7 +340,7 @@ angular.module('app.controllers', ['angular-loading-bar'])
         .attr("text-anchor", "middle")
         .attr("x", MARGINS.left + (WIDTH-MARGINS.left-MARGINS.right)/2)
         .attr("y", HEIGHT-(MARGINS.bottom/3))
-        .text("Distance Along Route (m)");
+        .text("Distance Along Route (km)");
 
         vis.append("text")
         .attr("class", "legend")
@@ -329,20 +357,18 @@ angular.module('app.controllers', ['angular-loading-bar'])
 
     var scatterFuncUser = function(data){
         //Initialise 2D array for thickness, cum. dist.
-        var route_array_scientific = [[],[]];
+        var xData = [],
+            yData = [];
 
         //append appropriate data to array
         data.forEach(function(d){
             if(d.thick >= 0){
-                route_array_scientific[1].push(d.cumdist);
-                route_array_scientific[0].push(d.thick);
+                xData.push(parseFloat(d.cumdist));
+                yData.push(parseFloat(d.thick));
             } else {
 
             }
         });
-
-        var xData = route_array_scientific[1];
-        var yData = route_array_scientific[0];
 
         //Init SVG container, scales, axes
         var vis = d3.select("#visualisation"),
@@ -356,11 +382,11 @@ angular.module('app.controllers', ['angular-loading-bar'])
             },
             xScale = d3.scaleLinear()
             .range([MARGINS.left, WIDTH - MARGINS.right])
-            .domain([0, Math.max(...xData)]),
+            .domain([0, d3.max(xData)]),
 
             yScale = d3.scaleLinear()
             .range([HEIGHT - MARGINS.bottom, MARGINS.top])
-            .domain([0, Math.max(...yData)]),
+            .domain([0, d3.max(yData)]),
 
             xAxis = d3.axisBottom().scale(xScale).tickArguments([10, "s"]),
             yAxis = d3.axisLeft().scale(yScale).tickArguments([5, "s"]);
@@ -420,14 +446,15 @@ angular.module('app.controllers', ['angular-loading-bar'])
 
         //On point click, highlight point and display thickness at that point
         var points = vis.selectAll(".dot");
+        
         points.on("click", function(d, i){
 
             points.attr('r', 6)
                 .style("fill", "rgba(0, 55, 109, 0)")
                 .style("stroke", "rgba(0, 55, 109, 0)");
 
-            thickness = +yData[i];
-            distance = +xData[i];
+            thickness = yData[i];
+            distance = xData[i];
 
             div.text("Thickness: " + thickness.toPrecision(4) + "m");
             distText.text("Distance: " + distance.toPrecision(4) + "km")
@@ -518,13 +545,13 @@ angular.module('app.controllers', ['angular-loading-bar'])
                         console.log(JSON.stringify($scope.iceOptions));
                         vis = topoFunc(route_data);
                         $ionicLoading.hide();
-//                        alert("This route needs to be processed! To view sea ice trends along your route, please swipe your route to the left and select 'Process' from the More menu! This will require a stable internet connection! :)");
+//                        alert("This route needs to be processed! To view sea ice trends along your route, please swipe your route to the left and select 'Process' from the More menu! This will require a stable internet connection!");
                         var alertPopup = $ionicPopup.show({
                             title: "Route Processing",
                             subTitle: "Route needs processing before sea ice trends can be viewed!",
                             template: "To view sea ice trends along your route, please swipe your route to the left and select 'Process' from the More menu! This will require a stable internet connection!",
                             buttons: [
-                                { text: ':)'}
+                                { text: 'OK'}
                             ]
                         });
                         alertPopup.then(function(res){
@@ -575,13 +602,13 @@ angular.module('app.controllers', ['angular-loading-bar'])
                         console.log(JSON.stringify($scope.iceOptions));
                         vis = topoFunc(data);
                         $ionicLoading.hide();
-//                        alert("This route needs to be processed! To view sea ice trends along your route, please swipe your route to the left and select 'Process' from the More menu! This will require a stable internet connection! :)");
+//                        alert("This route needs to be processed! To view sea ice trends along your route, please swipe your route to the left and select 'Process' from the More menu! This will require a stable internet connection!");
                         var alertPopup = $ionicPopup.show({
                             title: "Route Processing",
                             subTitle: "Route needs processing before sea ice trends can be viewed!",
                             template: "To view sea ice trends along your route, please swipe your route to the left and select 'Process' from the More menu! This will require a stable internet connection!",
                             buttons: [
-                                { text: ':)'}
+                                { text: 'OK'}
                             ]
                         });
                         alertPopup.then(function(res){
@@ -966,12 +993,13 @@ angular.module('app.controllers', ['angular-loading-bar'])
             yData.push(parseFloat(d[i+1]));
         });
 
+        //Init SVG container, scales, axes
         var vis = d3.select("#chart"),
             WIDTH = chartWidth,
             HEIGHT = chartHeight,
             MARGINS = {
                 top: 15,
-                right: 30,
+                right: 20,
                 bottom: 100,
                 left: 60
             },
@@ -986,7 +1014,8 @@ angular.module('app.controllers', ['angular-loading-bar'])
 
             xAxis = d3.axisBottom().scale(xScale).tickArguments([8]),
             yAxis = d3.axisLeft().scale(yScale).tickArguments([5]);
-
+        
+        //Clear all SVG elements.
         vis.selectAll("svg > *").remove();
 
         vis.append("svg:g")
@@ -1012,7 +1041,7 @@ angular.module('app.controllers', ['angular-loading-bar'])
         vis.append("svg:path")
             .attr("class","line")
             .attr("stroke","#00376d")
-            .attr("stroke-width", 0)
+            .attr("stroke-width", .1)
             .attr("d", lineGen(xData))
             .attr("fill", "none");
 
@@ -1024,14 +1053,14 @@ angular.module('app.controllers', ['angular-loading-bar'])
         .attr('cy', function(d, i) { return yScale(yData[i]); })
         .style("stroke","#00376d")
         .style("fill","#00376d")
-        .attr('r', 4);
+        .attr('r', 3);
 
         vis.append("text")
             .attr("class", "legend")
             .attr("text-anchor", "middle")
             .attr("x", MARGINS.left + (WIDTH-MARGINS.left-MARGINS.right)/2)
             .attr("y", HEIGHT-(MARGINS.bottom/2))
-            .text("Month, Year");
+            .text("Year");
 
         vis.append("text")
             .attr("class", "legend")
@@ -1747,6 +1776,8 @@ angular.module('app.controllers', ['angular-loading-bar'])
         {"lat":"7.749957311111111835e+01","lon":"6.688684322222222534e+01"}
     ];
 
+    var popUpTemplate = '<p style="text-align: center">The remote server could not be accessed. Please try again later.</p>';
+
     $scope.postReq= function(){
         console.log("Button clicked. Sending POST request.");
         var url = "http://localhost:8080/post1";
@@ -1762,9 +1793,9 @@ angular.module('app.controllers', ['angular-loading-bar'])
             console.log("error: " + JSON.stringify(error));
             var alertPopup = $ionicPopup.show({
                 title: 'Remote Server',
-                template: 'The remote server could not be accessed. Please try again later.',
+                template: popUpTemplate,
                 buttons: [
-                    { text: 'OK :)'}
+                    { text: 'OK'}
                 ]
             });
             alertPopup.then(function(res){
@@ -1799,9 +1830,9 @@ angular.module('app.controllers', ['angular-loading-bar'])
             console.log("error: " + JSON.stringify(error));
             var alertPopup = $ionicPopup.show({
                 title: 'Remote Server',
-                template: 'The remote server could not be accessed. Please try again later.',
+                template: popUpTemplate,
                 buttons: [
-                    { text: 'OK :)'}
+                    { text: 'OK'}
                 ]
             });
             alertPopup.then(function(res){
