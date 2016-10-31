@@ -1778,6 +1778,10 @@ angular.module('app.controllers', ['angular-loading-bar'])
 
     var popUpTemplate = '<p style="text-align: center">The remote server could not be accessed. Please try again later.</p>';
 
+    var downloadImage = function(file){
+        //TODO: Download image function here
+    }
+
     $scope.postReq= function(){
         console.log("Button clicked. Sending POST request.");
         var url = "http://localhost:8080/post1";
