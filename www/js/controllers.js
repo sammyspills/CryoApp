@@ -649,15 +649,366 @@ angular.module('app.controllers', ['angular-loading-bar'])
     //Object to hold ice data options for drop-down select.
     $scope.iceOptions = [
         {
-            "name":"Spring 2016",
-            "file":"28_spring_2016.png"
-
+            "name":"Jul 2010",
+            "file":"201007_thk.png",
+            "cb":"201007_thk_cb.png"
         },
         {
-            "name":"Spring 2012",
-            "file":"spring_2012.png"
+            "name":"Aug 2010",
+            "file":"201008_thk.png",
+            "cb":"201008_thk_cb.png"
+        },
+        {
+            "name":"Sep 2010",
+            "file":"201009_thk.png",
+            "cb":"201009_thk_cb.png"
+        },
+        {
+            "name":"Oct 2010",
+            "file":"201010_thk.png",
+            "cb":"201010_thk_cb.png"
+        },
+        {
+            "name":"Nov 2010",
+            "file":"201011_thk.png",
+            "cb":"201011_thk_cb.png"
+        },
+        {
+            "name":"Dec 2010",
+            "file":"201012_thk.png",
+            "cb":"201012_thk_cb.png"
+        },
+        {
+            "name":"Jan 2011",
+            "file":"201101_thk.png",
+            "cb":"201101_thk_cb.png"
+        },
+        {
+            "name":"Feb 2011",
+            "file":"201102_thk.png",
+            "cb":"201102_thk_cb.png"
+        },
+        {
+            "name":"Mar 2011",
+            "file":"201103_thk.png",
+            "cb":"201103_thk_cb.png"
+        },
+        {
+            "name":"Apr 2011",
+            "file":"201104_thk.png",
+            "cb":"201104_thk_cb.png"
+        },
+        {
+            "name":"May 2011",
+            "file":"201105_thk.png",
+            "cb":"201105_thk_cb.png"
+        },
+        {
+            "name":"Jun 2011",
+            "file":"201106_thk.png",
+            "cb":"201106_thk_cb.png"
+        },
+        {
+            "name":"Jul 2011",
+            "file":"201107_thk.png",
+            "cb":"201107_thk_cb.png"
+        },
+        {
+            "name":"Aug 2011",
+            "file":"201108_thk.png",
+            "cb":"201108_thk_cb.png"
+        },
+        {
+            "name":"Sep 2011",
+            "file":"201109_thk.png",
+            "cb":"201109_thk_cb.png"
+        },
+        {
+            "name":"Oct 2011",
+            "file":"201110_thk.png",
+            "cb":"201110_thk_cb.png"
+        },
+        {
+            "name":"Nov 2011",
+            "file":"201111_thk.png",
+            "cb":"201111_thk_cb.png"
+        },
+        {
+            "name":"Dec 2011",
+            "file":"201112_thk.png",
+            "cb":"201112_thk_cb.png"
+        },
+        {
+            "name":"Jan 2012",
+            "file":"201201_thk.png",
+            "cb":"201201_thk_cb.png"
+        },
+        {
+            "name":"Feb 2012",
+            "file":"201202_thk.png",
+            "cb":"201202_thk_cb.png"
+        },
+        {
+            "name":"Mar 2012",
+            "file":"201203_thk.png",
+            "cb":"201203_thk_cb.png"
+        },
+        {
+            "name":"Apr 2012",
+            "file":"201204_thk.png",
+            "cb":"201204_thk_cb.png"
+        },
+        {
+            "name":"May 2012",
+            "file":"201205_thk.png",
+            "cb":"201205_thk_cb.png"
+        },
+        {
+            "name":"Jun 2012",
+            "file":"201206_thk.png",
+            "cb":"201206_thk_cb.png"
+        },
+        {
+            "name":"Jul 2012",
+            "file":"201207_thk.png",
+            "cb":"201207_thk_cb.png"
+        },
+        {
+            "name":"Aug 2012",
+            "file":"201208_thk.png",
+            "cb":"201208_thk_cb.png"
+        },
+        {
+            "name":"Sep 2012",
+            "file":"201209_thk.png",
+            "cb":"201209_thk_cb.png"
+        },
+        {
+            "name":"Oct 2012",
+            "file":"201210_thk.png",
+            "cb":"201210_thk_cb.png"
+        },
+        {
+            "name":"Nov 2012",
+            "file":"201211_thk.png",
+            "cb":"201211_thk_cb.png"
+        },
+        {
+            "name":"Dec 2012",
+            "file":"201212_thk.png",
+            "cb":"201212_thk_cb.png"
+        },
+        {
+            "name":"Jan 2013",
+            "file":"201301_thk.png",
+            "cb":"201301_thk_cb.png"
+        },
+        {
+            "name":"Feb 2013",
+            "file":"201302_thk.png",
+            "cb":"201302_thk_cb.png"
+        },
+        {
+            "name":"Mar 2013",
+            "file":"201303_thk.png",
+            "cb":"201303_thk_cb.png"
+        },
+        {
+            "name":"Apr 2013",
+            "file":"201304_thk.png",
+            "cb":"201304_thk_cb.png"
+        },
+        {
+            "name":"May 2013",
+            "file":"201305_thk.png",
+            "cb":"201305_thk_cb.png"
+        },
+        {
+            "name":"Jun 2013",
+            "file":"201306_thk.png",
+            "cb":"201306_thk_cb.png"
+        },
+        {
+            "name":"Jul 2013",
+            "file":"201307_thk.png",
+            "cb":"201307_thk_cb.png"
+        },
+        {
+            "name":"Aug 2013",
+            "file":"201308_thk.png",
+            "cb":"201308_thk_cb.png"
+        },
+        {
+            "name":"Sep 2013",
+            "file":"201309_thk.png",
+            "cb":"201309_thk_cb.png"
+        },
+        {
+            "name":"Oct 2013",
+            "file":"201310_thk.png",
+            "cb":"201310_thk_cb.png"
+        },
+        {
+            "name":"Nov 2013",
+            "file":"201311_thk.png",
+            "cb":"201311_thk_cb.png"
+        },
+        {
+            "name":"Dec 2013",
+            "file":"201312_thk.png",
+            "cb":"201312_thk_cb.png"
+        },
+        {
+            "name":"Jan 2014",
+            "file":"201401_thk.png",
+            "cb":"201401_thk_cb.png"
+        },
+        {
+            "name":"Feb 2014",
+            "file":"201402_thk.png",
+            "cb":"201302_thk_cb.png"
+        },
+        {
+            "name":"Mar 2014",
+            "file":"201403_thk.png",
+            "cb":"201403_thk_cb.png"
+        },
+        {
+            "name":"Apr 2014",
+            "file":"201404_thk.png",
+            "cb":"201404_thk_cb.png"
+        },
+        {
+            "name":"May 2014",
+            "file":"201405_thk.png",
+            "cb":"201405_thk_cb.png"
+        },
+        {
+            "name":"Jun 2014",
+            "file":"201406_thk.png",
+            "cb":"201406_thk_cb.png"
+        },
+        {
+            "name":"Jul 2014",
+            "file":"201407_thk.png",
+            "cb":"201407_thk_cb.png"
+        },
+        {
+            "name":"Aug 2014",
+            "file":"201408_thk.png",
+            "cb":"201408_thk_cb.png"
+        },
+        {
+            "name":"Sep 2014",
+            "file":"201409_thk.png",
+            "cb":"201409_thk_cb.png"
+        },
+        {
+            "name":"Oct 2014",
+            "file":"201410_thk.png",
+            "cb":"201410_thk_cb.png"
+        },
+        {
+            "name":"Nov 2014",
+            "file":"201411_thk.png",
+            "cb":"201411_thk_cb.png"
+        },
+        {
+            "name":"Dec 2014",
+            "file":"201412_thk.png",
+            "cb":"201412_thk_cb.png"
+        },
+        {
+            "name":"Jan 2015",
+            "file":"201501_thk.png",
+            "cb":"201501_thk_cb.png"
+        },
+        {
+            "name":"Feb 2015",
+            "file":"201502_thk.png",
+            "cb":"201502_thk_cb.png"
+        },
+        {
+            "name":"Mar 2015",
+            "file":"201503_thk.png",
+            "cb":"201503_thk_cb.png"
+        },
+        {
+            "name":"Apr 2015",
+            "file":"201504_thk.png",
+            "cb":"201504_thk_cb.png"
+        },
+        {
+            "name":"May 2015",
+            "file":"201505_thk.png",
+            "cb":"201505_thk_cb.png"
+        },
+        {
+            "name":"Jun 2015",
+            "file":"201506_thk.png",
+            "cb":"201506_thk_cb.png"
+        },
+        {
+            "name":"Jul 2015",
+            "file":"201507_thk.png",
+            "cb":"201507_thk_cb.png"
+        },
+        {
+            "name":"Aug 2015",
+            "file":"201508_thk.png",
+            "cb":"201508_thk_cb.png"
+        },
+        {
+            "name":"Sep 2015",
+            "file":"201509_thk.png",
+            "cb":"201509_thk_cb.png"
+        },
+        {
+            "name":"Oct 2015",
+            "file":"201510_thk.png",
+            "cb":"201510_thk_cb.png"
+        },
+        {
+            "name":"Nov 2015",
+            "file":"201511_thk.png",
+            "cb":"201511_thk_cb.png"
+        },
+        {
+            "name":"Dec 2015",
+            "file":"201512_thk.png",
+            "cb":"201512_thk_cb.png"
+        },
+        {
+            "name":"Jan 2016",
+            "file":"201601_thk.png",
+            "cb":"201601_thk_cb.png"
+        },
+        {
+            "name":"Feb 2016",
+            "file":"201602_thk.png",
+            "cb":"201602_thk_cb.png"
+        },
+        {
+            "name":"Mar 2016",
+            "file":"201603_thk.png",
+            "cb":"201603_thk_cb.png"
+        },
+        {
+            "name":"Apr 2016",
+            "file":"201604_thk.png",
+            "cb":"201604_thk_cb.png"
         }
     ];
+
+    $scope.value = 'Sep 2014';
+    $scope.rangeConfig = {
+        'min':'0',
+        'max': $scope.iceOptions.length - 1
+    };
+
+    $scope.drag = function(value){
+        $scope.value = value;
+    };
 
     //Function to set routeService selected route and display map screen.
     var loadingTemplate = "<div style='margin:-20px;padding:15px;border-radius:7px;background-color:#00376d'>Processing...</div>"
@@ -728,9 +1079,9 @@ angular.module('app.controllers', ['angular-loading-bar'])
         vis.append("svg:image")
             .attr('width', WIDTH)
             .attr('height', HEIGHT)
-            .attr('x','-4%')
-            .attr('y','-4%')
-            .attr("transform", "scale(1.08)")
+            .attr('x','-1%')
+            .attr('y','-1%')
+            .attr("transform", "scale(1.02)")
             .attr("xlink:href","img/ice_thickness/" + routeService.selectedIce);
 
         var path = d3.geoPath()
@@ -960,19 +1311,19 @@ angular.module('app.controllers', ['angular-loading-bar'])
         var g = vis.append("g");
 
         //Show land JSON
-        d3.json("json/world-110m.json", function(error, world) {
-              if (error) throw error;
+        // d3.json("json/world-110m.json", function(error, world) {
+        //       if (error) throw error;
 
-            vis.insert("path", ".graticule")
-                .datum(topojson.feature(world, world.objects.land))
-                .attr("class", "land")
-                .attr("d", path);
+        //     vis.insert("path", ".graticule")
+        //         .datum(topojson.feature(world, world.objects.land))
+        //         .attr("class", "land")
+        //         .attr("d", path);
 
-            vis.insert("path", ".graticule")
-                .datum(topojson.mesh(world, world.objects.countries, function(a, b) { return a !== b; }))
-                .attr("class", "boundary")
-                .attr("d", path);
-        });
+        //     vis.insert("path", ".graticule")
+        //         .datum(topojson.mesh(world, world.objects.countries, function(a, b) { return a !== b; }))
+        //         .attr("class", "boundary")
+        //         .attr("d", path);
+        // });
 
         return vis;
     };
@@ -1074,36 +1425,39 @@ angular.module('app.controllers', ['angular-loading-bar'])
 
     $ionicPlatform.ready(function(){
 
-        routeService.selectedIce = $scope.iceOptions[1].file;
+        routeService.selectedIce = $scope.iceOptions[0].file;
 
         //Handle reload on new ice data selected
         $scope.selectedSeaIce = function(mySelect){
 
-            routeService.selectedIce = mySelect.file;
+            $scope.value = $scope.iceOptions[mySelect].name;
 
-            d3.selectAll("svg > *").remove();
+            routeService.selectedIce = $scope.iceOptions[mySelect].file;
+            // routeService.selectedIce = mySelect.file;
 
-            var text1 = chartContainer.append("text")
-                .attr("x", chartWidth/2)
-                .attr("y", (chartHeight/2)-13)
-                .attr("text-anchor", "middle")
-                .attr("fill", "#00376d")
-                .style("font-size", "24px")
-                .text("Click on an area to view the")
-                .attr("id", "text1");
+            // mapDiv.selectAll("svg > *").remove();
 
-            var text2 = chartContainer.append("text")
-                .attr("x", chartWidth/2)
-                .attr("y", (chartHeight/2)+13)
-                .attr("text-anchor", "middle")
-                .attr("fill", "#00376d")
-                .style("font-size", "24px")
-                .text("historic ice conditions!")
-                .attr("id", "text2");
+            // var text1 = chartContainer.append("text")
+            //     .attr("x", chartWidth/2)
+            //     .attr("y", (chartHeight/2)-13)
+            //     .attr("text-anchor", "middle")
+            //     .attr("fill", "#00376d")
+            //     .style("font-size", "24px")
+            //     .text("Click on an area to view the")
+            //     .attr("id", "text1");
 
-//            d3.csv("res/means.csv", function(d){
-//                scatterFunc(d);
-//            });
+            // var text2 = chartContainer.append("text")
+            //     .attr("x", chartWidth/2)
+            //     .attr("y", (chartHeight/2)+13)
+            //     .attr("text-anchor", "middle")
+            //     .attr("fill", "#00376d")
+            //     .style("font-size", "24px")
+            //     .text("historic ice conditions!")
+            //     .attr("id", "text2");
+
+        //    d3.csv("res/means.csv", function(d){
+        //        scatterFunc(d);
+        //    });
 
             var vis = mapFunc();
 
