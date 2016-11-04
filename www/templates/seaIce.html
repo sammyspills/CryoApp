@@ -92,6 +92,7 @@
 .outer {
     width: 100%;
     height: 100%;
+    margin-top: 5px;
 }
 
 .custom-range {
@@ -106,8 +107,9 @@
 }
 
 input[type=range]::-webkit-slider-thumb {
-    height: 15px;
-    width: 15px;
+    height: 20px;
+    width: 5px;
+    border-radius: 0px;
     background: #00376d;
 }
 </style>
@@ -130,12 +132,15 @@ input[type=range]::-webkit-slider-thumb {
                     <svg id="sea-ice-vis" width="100%" height="100%"></svg>
                 </div>
             </div>
-            <div class="upper-right">
+            <div class="upper-right" ng-click="iceInfo()">
                 <img src="img/ice_cbs/201604_thk_cb.png" height="100%">
             </div>
-            <div class="range" style="height: 20px;">
-                <input type="range" name="seaIce" min="{{rangeConfig.min}}" max="{{rangeConfig.max}}" value='0' ng-model="rangeValue" ng-change="selectedSeaIce(rangeValue)">
-                <p style="font-family: monaco">{{value}}</p>
+            <div class="range" style="height: 20px;display:full">
+                <input style="" type="range" name="seaIce" value="{{rangeConfig.value}}" min="{{rangeConfig.min}}" max="{{rangeConfig.max}}" ng-model="rangeValue" ng-change="selectedSeaIce(rangeValue)">
+                <!--<p style="font-family: monaco">{{value}}</p>-->
+            </div>
+            <div style="height: 15px; text-align:center">
+                <p style="font-family:monaco">Sea Ice Data: {{value}}</p>
             </div>
             <div class="">
                 <div style="height:50vh;" id="historic-chart">

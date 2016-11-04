@@ -644,371 +644,361 @@ angular.module('app.controllers', ['angular-loading-bar'])
 
 })
 
-.controller('seaIceCtrl', function($scope, $state, $ionicLoading, routeService, $ionicActionSheet, $cordovaGeolocation, $ionicPlatform, $ionicListDelegate){
+.controller('seaIceCtrl', function($scope, $state, $ionicLoading, routeService, $ionicActionSheet, $cordovaGeolocation, $ionicPlatform, $ionicListDelegate, $ionicModal){
 
     //Object to hold ice data options for drop-down select.
     $scope.iceOptions = [
         {
             "name":"Jul 2010",
             "file":"201007_thk.png",
-            "cb":"201007_thk_cb.png"
+            "season":"Jul2010"
         },
         {
             "name":"Aug 2010",
             "file":"201008_thk.png",
-            "cb":"201008_thk_cb.png"
+            "season":"Aug2010"
         },
         {
             "name":"Sep 2010",
             "file":"201009_thk.png",
-            "cb":"201009_thk_cb.png"
+            "season":"Sep2010"
         },
         {
             "name":"Oct 2010",
             "file":"201010_thk.png",
-            "cb":"201010_thk_cb.png"
+            "season":"Oct2010"
         },
         {
             "name":"Nov 2010",
             "file":"201011_thk.png",
-            "cb":"201011_thk_cb.png"
+            "season":"Nov2010"
         },
         {
             "name":"Dec 2010",
             "file":"201012_thk.png",
-            "cb":"201012_thk_cb.png"
+            "season":"Dec2010"
         },
         {
             "name":"Jan 2011",
             "file":"201101_thk.png",
-            "cb":"201101_thk_cb.png"
+            "season":"Jan2011"
         },
         {
             "name":"Feb 2011",
             "file":"201102_thk.png",
-            "cb":"201102_thk_cb.png"
+            "season":"Feb2011"
         },
         {
             "name":"Mar 2011",
             "file":"201103_thk.png",
-            "cb":"201103_thk_cb.png"
+            "season":"Mar2011"
         },
         {
             "name":"Apr 2011",
             "file":"201104_thk.png",
-            "cb":"201104_thk_cb.png"
+            "season":"Apr2011"
         },
         {
             "name":"May 2011",
             "file":"201105_thk.png",
-            "cb":"201105_thk_cb.png"
+            "season":"May2011"
         },
         {
             "name":"Jun 2011",
             "file":"201106_thk.png",
-            "cb":"201106_thk_cb.png"
+            "season":"Jun2011"
         },
         {
             "name":"Jul 2011",
             "file":"201107_thk.png",
-            "cb":"201107_thk_cb.png"
+            "season":"Jul2011"
         },
         {
             "name":"Aug 2011",
             "file":"201108_thk.png",
-            "cb":"201108_thk_cb.png"
+            "season":"Aug2011"
         },
         {
             "name":"Sep 2011",
             "file":"201109_thk.png",
-            "cb":"201109_thk_cb.png"
+            "season":"Sep2011"
         },
         {
             "name":"Oct 2011",
             "file":"201110_thk.png",
-            "cb":"201110_thk_cb.png"
+            "season":"Oct2011"
         },
         {
             "name":"Nov 2011",
             "file":"201111_thk.png",
-            "cb":"201111_thk_cb.png"
+            "season":"Nov2011"
         },
         {
             "name":"Dec 2011",
             "file":"201112_thk.png",
-            "cb":"201112_thk_cb.png"
+            "season":"Dec2011"
         },
         {
             "name":"Jan 2012",
             "file":"201201_thk.png",
-            "cb":"201201_thk_cb.png"
+            "season":"Jan2012"
         },
         {
             "name":"Feb 2012",
             "file":"201202_thk.png",
-            "cb":"201202_thk_cb.png"
+            "season":"Feb2012"
         },
         {
             "name":"Mar 2012",
             "file":"201203_thk.png",
-            "cb":"201203_thk_cb.png"
+            "season":"Mar2012"
         },
         {
             "name":"Apr 2012",
             "file":"201204_thk.png",
-            "cb":"201204_thk_cb.png"
+            "season":"Apr2012"
         },
         {
             "name":"May 2012",
             "file":"201205_thk.png",
-            "cb":"201205_thk_cb.png"
+            "season":"May2012"
         },
         {
             "name":"Jun 2012",
             "file":"201206_thk.png",
-            "cb":"201206_thk_cb.png"
+            "season":"Jun2012"
         },
         {
             "name":"Jul 2012",
             "file":"201207_thk.png",
-            "cb":"201207_thk_cb.png"
+            "season":"Jul2012"
         },
         {
             "name":"Aug 2012",
             "file":"201208_thk.png",
-            "cb":"201208_thk_cb.png"
+            "season":"Aug2012"
         },
         {
             "name":"Sep 2012",
             "file":"201209_thk.png",
-            "cb":"201209_thk_cb.png"
+            "season":"Sep2012"
         },
         {
             "name":"Oct 2012",
             "file":"201210_thk.png",
-            "cb":"201210_thk_cb.png"
+            "season":"Oct2012"
         },
         {
             "name":"Nov 2012",
             "file":"201211_thk.png",
-            "cb":"201211_thk_cb.png"
+            "season":"Nov2012"
         },
         {
             "name":"Dec 2012",
             "file":"201212_thk.png",
-            "cb":"201212_thk_cb.png"
+            "season":"Dec2012"
         },
         {
             "name":"Jan 2013",
             "file":"201301_thk.png",
-            "cb":"201301_thk_cb.png"
+            "season":"Jan2013"
         },
         {
             "name":"Feb 2013",
             "file":"201302_thk.png",
-            "cb":"201302_thk_cb.png"
+            "season":"Feb2013"
         },
         {
             "name":"Mar 2013",
             "file":"201303_thk.png",
-            "cb":"201303_thk_cb.png"
+            "season":"Mar2013"
         },
         {
             "name":"Apr 2013",
             "file":"201304_thk.png",
-            "cb":"201304_thk_cb.png"
+            "season":"Apr2013"
         },
         {
             "name":"May 2013",
             "file":"201305_thk.png",
-            "cb":"201305_thk_cb.png"
+            "season":"May2013"
         },
         {
             "name":"Jun 2013",
             "file":"201306_thk.png",
-            "cb":"201306_thk_cb.png"
+            "season":"Jun2013"
         },
         {
             "name":"Jul 2013",
             "file":"201307_thk.png",
-            "cb":"201307_thk_cb.png"
+            "season":"Jul2013"
         },
         {
             "name":"Aug 2013",
             "file":"201308_thk.png",
-            "cb":"201308_thk_cb.png"
+            "season":"Aug2013"
         },
         {
             "name":"Sep 2013",
             "file":"201309_thk.png",
-            "cb":"201309_thk_cb.png"
+            "season":"Sep2013"
         },
         {
             "name":"Oct 2013",
             "file":"201310_thk.png",
-            "cb":"201310_thk_cb.png"
+            "season":"Oct2013"
         },
         {
             "name":"Nov 2013",
             "file":"201311_thk.png",
-            "cb":"201311_thk_cb.png"
+            "season":"Nov2013"
         },
         {
             "name":"Dec 2013",
             "file":"201312_thk.png",
-            "cb":"201312_thk_cb.png"
+            "season":"Dec2013"
         },
         {
             "name":"Jan 2014",
             "file":"201401_thk.png",
-            "cb":"201401_thk_cb.png"
+            "season":"Jan2014"
         },
         {
             "name":"Feb 2014",
             "file":"201402_thk.png",
-            "cb":"201302_thk_cb.png"
+            "season":"Feb2014"
         },
         {
             "name":"Mar 2014",
             "file":"201403_thk.png",
-            "cb":"201403_thk_cb.png"
+            "season":"Mar2014"
         },
         {
             "name":"Apr 2014",
             "file":"201404_thk.png",
-            "cb":"201404_thk_cb.png"
+            "season":"Apr2014"
         },
         {
             "name":"May 2014",
             "file":"201405_thk.png",
-            "cb":"201405_thk_cb.png"
+            "season":"May2014"
         },
         {
             "name":"Jun 2014",
             "file":"201406_thk.png",
-            "cb":"201406_thk_cb.png"
+            "season":"Jun2014"
         },
         {
             "name":"Jul 2014",
             "file":"201407_thk.png",
-            "cb":"201407_thk_cb.png"
+            "season":"Jul2014"
         },
         {
             "name":"Aug 2014",
             "file":"201408_thk.png",
-            "cb":"201408_thk_cb.png"
+            "season":"Aug2014"
         },
         {
             "name":"Sep 2014",
             "file":"201409_thk.png",
-            "cb":"201409_thk_cb.png"
+            "season":"Sep2014"
         },
         {
             "name":"Oct 2014",
             "file":"201410_thk.png",
-            "cb":"201410_thk_cb.png"
+            "season":"Oct2014"
         },
         {
             "name":"Nov 2014",
             "file":"201411_thk.png",
-            "cb":"201411_thk_cb.png"
+            "season":"Nov2014"
         },
         {
             "name":"Dec 2014",
             "file":"201412_thk.png",
-            "cb":"201412_thk_cb.png"
+            "season":"Dec2014"
         },
         {
             "name":"Jan 2015",
             "file":"201501_thk.png",
-            "cb":"201501_thk_cb.png"
+            "season":"Jan2015"
         },
         {
             "name":"Feb 2015",
             "file":"201502_thk.png",
-            "cb":"201502_thk_cb.png"
+            "season":"Feb2015"
         },
         {
             "name":"Mar 2015",
             "file":"201503_thk.png",
-            "cb":"201503_thk_cb.png"
+            "season":"Mar2015"
         },
         {
             "name":"Apr 2015",
             "file":"201504_thk.png",
-            "cb":"201504_thk_cb.png"
+            "season":"Apr2015"
         },
         {
             "name":"May 2015",
             "file":"201505_thk.png",
-            "cb":"201505_thk_cb.png"
+            "season":"May2015"
         },
         {
             "name":"Jun 2015",
             "file":"201506_thk.png",
-            "cb":"201506_thk_cb.png"
+            "season":"Jun2015"
         },
         {
             "name":"Jul 2015",
             "file":"201507_thk.png",
-            "cb":"201507_thk_cb.png"
+            "season":"Jul2015"
         },
         {
             "name":"Aug 2015",
             "file":"201508_thk.png",
-            "cb":"201508_thk_cb.png"
+            "season":"Aug2015"
         },
         {
             "name":"Sep 2015",
             "file":"201509_thk.png",
-            "cb":"201509_thk_cb.png"
+            "season":"Sep2015"
         },
         {
             "name":"Oct 2015",
             "file":"201510_thk.png",
-            "cb":"201510_thk_cb.png"
+            "season":"Oct2015"
         },
         {
             "name":"Nov 2015",
             "file":"201511_thk.png",
-            "cb":"201511_thk_cb.png"
+            "season":"Nov2015"
         },
         {
             "name":"Dec 2015",
             "file":"201512_thk.png",
-            "cb":"201512_thk_cb.png"
+            "season":"Dec2015"
         },
         {
             "name":"Jan 2016",
             "file":"201601_thk.png",
-            "cb":"201601_thk_cb.png"
+            "season":"Jan2016"
         },
         {
             "name":"Feb 2016",
             "file":"201602_thk.png",
-            "cb":"201602_thk_cb.png"
+            "season":"Feb2016"
         },
         {
             "name":"Mar 2016",
             "file":"201603_thk.png",
-            "cb":"201603_thk_cb.png"
+            "season":"Mar2016"
         },
         {
             "name":"Apr 2016",
             "file":"201604_thk.png",
-            "cb":"201604_thk_cb.png"
+            "season":"Apr2016"
         }
     ];
-
-    $scope.value = 'Sep 2014';
-    $scope.rangeConfig = {
-        'min':'0',
-        'max': $scope.iceOptions.length - 1
-    };
-
-    $scope.drag = function(value){
-        $scope.value = value;
-    };
 
     //Function to set routeService selected route and display map screen.
     var loadingTemplate = "<div style='margin:-20px;padding:15px;border-radius:7px;background-color:#00376d'>Processing...</div>"
@@ -1278,13 +1268,14 @@ angular.module('app.controllers', ['angular-loading-bar'])
                 .attr("d", path)
                 .attr("fill", "rgba(255, 255, 255, 0)")
                 .attr("stroke", "rgba(51, 51, 51, 0.5)")
-                .attr("id", i)
+                .attr("id", "quad" + i)
                 .attr("class", "quad")
         };
 
         //Handle click event for quadrants. Highlight area. Change chart data.
         var quads = vis.selectAll(".quad");
         quads.on("click", function(d, i){
+            routeService.selectedQuad = "#" + this.id;
             quads.attr('fill', 'rgba(255, 255, 255, 0)');
             d3.select(this)
                 .attr('fill', 'rgba(0, 55, 109, 0.3)');
@@ -1337,11 +1328,13 @@ angular.module('app.controllers', ['angular-loading-bar'])
         var parseDate = d3.timeParse("%Y-%d-%m")
 
         var xData = [],
-            yData = [];
+            yData = [],
+            season = [];
 
         data.forEach(function(d){
             xData.push(parseDate(d.date));
             yData.push(parseFloat(d[i+1]));
+            season.push(d.season);
         });
 
         //Init SVG container, scales, axes
@@ -1404,7 +1397,13 @@ angular.module('app.controllers', ['angular-loading-bar'])
         .attr('cy', function(d, i) { return yScale(yData[i]); })
         .style("stroke","#00376d")
         .style("fill","#00376d")
+        .attr('id', function(d, i) { return season[i]; })
         .attr('r', 3);
+
+        vis.select(routeService.iceSeason)
+            .style("fill", "#ffffff")
+            .style("stroke", "red")
+            .attr('r', 6);
 
         vis.append("text")
             .attr("class", "legend")
@@ -1425,52 +1424,95 @@ angular.module('app.controllers', ['angular-loading-bar'])
 
     $ionicPlatform.ready(function(){
 
-        routeService.selectedIce = $scope.iceOptions[0].file;
+        $scope.value = 'Sep 2014';
+        $scope.rangeConfig = {
+            'min':'0',
+            'max': $scope.iceOptions.length - 1,
+            'value': '0'
+        };
+
+        routeService.selectedIce = $scope.iceOptions[50].file;
+
+        routeService.iceSeason = "#" + $scope.iceOptions[50].season;
 
         //Handle reload on new ice data selected
         $scope.selectedSeaIce = function(mySelect){
-
+            //Set ice data label to selected date
             $scope.value = $scope.iceOptions[mySelect].name;
+            routeService.iceSeason = "#" + $scope.iceOptions[mySelect].season;
 
+            //Set selected ice image from slider
             routeService.selectedIce = $scope.iceOptions[mySelect].file;
-            // routeService.selectedIce = mySelect.file;
-
-            // mapDiv.selectAll("svg > *").remove();
-
-            // var text1 = chartContainer.append("text")
-            //     .attr("x", chartWidth/2)
-            //     .attr("y", (chartHeight/2)-13)
-            //     .attr("text-anchor", "middle")
-            //     .attr("fill", "#00376d")
-            //     .style("font-size", "24px")
-            //     .text("Click on an area to view the")
-            //     .attr("id", "text1");
-
-            // var text2 = chartContainer.append("text")
-            //     .attr("x", chartWidth/2)
-            //     .attr("y", (chartHeight/2)+13)
-            //     .attr("text-anchor", "middle")
-            //     .attr("fill", "#00376d")
-            //     .style("font-size", "24px")
-            //     .text("historic ice conditions!")
-            //     .attr("id", "text2");
-
-        //    d3.csv("res/means.csv", function(d){
-        //        scatterFunc(d);
-        //    });
-
+            //Call mapFunction with new selected ice image
             var vis = mapFunc();
+
+            //Select reference point and highlight
+            try {
+                d3.selectAll(".dot")
+                    .style("fill", "#00376d")
+                    .style('stroke', '#00376d')
+                    .attr('r', 3);
+
+                d3.select(routeService.iceSeason)
+                    .style('fill', '#ffffff')
+                    .style('stroke','red')
+                    .attr('r', 6);
+
+                
+            } catch(error) {
+                console.log(error);
+            }
+
+            //If quad was selected before, reselect and fill.
+            try {
+                selectedQuad = routeService.selectedQuad;
+
+                d3.select(selectedQuad)
+                    .attr('fill', 'rgba(0, 55, 109, 0.3)');
+
+            } catch(error) {
+                console.log(error);
+            };
 
         };
 
+        $ionicModal.fromTemplateUrl('templates/ice-modal.html', {
+            scope: $scope,
+            animation: 'slide-in-up'
+        }).then(function(modal){
+            $scope.modal = modal;
+        });
+
+        $scope.closeModal = function(){
+            $scope.modal.hide();
+        };
+
+        var iceInfoTemplate = '<h3>This is a test</h3></br><h1>Test 2</h1>';
+
+        $scope.iceInfo = function(){
+            $scope.modal.show();
+            // var showSheet = $ionicActionSheet.show({
+            //     buttons: [
+            //         { text: iceInfoTemplate}
+            //     ],
+            //     titleText: 'Ice Information',
+            //     cancelText: 'Done',
+            //     cancel: function(){
+
+            //     }
+
+            // });
+        };
+
     });
+
 
     var vis = mapFunc();
     var chartContainer = d3.select("#chart");
 
     var text1 = chartContainer.append("text")
         .attr("x", chartWidth/2)
-        .attr("y", (chartHeight/2)-13)
+        .attr("y", (chartHeight/2)-33)
         .attr("text-anchor", "middle")
         .attr("fill", "#00376d")
         .style("font-size", "24px")
@@ -1478,11 +1520,27 @@ angular.module('app.controllers', ['angular-loading-bar'])
 
     var text2 = chartContainer.append("text")
         .attr("x", chartWidth/2)
-        .attr("y", (chartHeight/2)+13)
+        .attr("y", (chartHeight/2)-7)
         .attr("text-anchor", "middle")
         .attr("fill", "#00376d")
         .style("font-size", "24px")
-        .text("historic ice conditions!")
+        .text("historic ice conditions")
+
+    var text3 = chartContainer.append("text")
+        .attr("x", chartWidth/2)
+        .attr("y", (chartHeight/2)+38)
+        .attr("text-anchor", "middle")
+        .attr("fill", "#00376d")
+        .style("font-size", "15px")
+        .text("Click the colourbar at any point to")
+
+    var text4 = chartContainer.append("text")
+        .attr("x", chartWidth/2)
+        .attr("y", (chartHeight/2)+59)
+        .attr("text-anchor", "middle")
+        .attr("fill", "#00376d")
+        .style("font-size", "15px")
+        .text("learn more about the ice data.")
 
 })
 

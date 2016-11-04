@@ -19,6 +19,20 @@
         padding-left: 10px;
         padding-right: 10px;
     }
+
+    ion-item.no-routes {
+        display: block;
+    }
+
+    ion-item + ion-item.no-routes {
+        display: none;
+    }
+
+    .no-routes p {
+        color: darken(lightgray, 5%);
+        text-align: center;
+        
+    }
     
 </style>
 <ion-view title="Track Your Route" id="trackScreen" class=" ">
@@ -41,6 +55,9 @@
                     <ion-option-button class="button-calm" ng-click="editUser(route)">
                         More
                     </ion-option-button>
+                </ion-item>
+                <ion-item class="item-text-wrap no-routes">
+                    <p>No user routes logged yet</p>
                 </ion-item>
                 <div class="item-divider custom-divider" style="font-size:16px">
                     Example Routes:

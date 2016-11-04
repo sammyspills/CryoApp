@@ -545,13 +545,13 @@ angular.module('app.controllers', ['angular-loading-bar'])
                         console.log(JSON.stringify($scope.iceOptions));
                         vis = topoFunc(route_data);
                         $ionicLoading.hide();
-//                        alert("This route needs to be processed! To view sea ice trends along your route, please swipe your route to the left and select 'Process' from the More menu! This will require a stable internet connection! :)");
+//                        alert("This route needs to be processed! To view sea ice trends along your route, please swipe your route to the left and select 'Process' from the More menu! This will require a stable internet connection!");
                         var alertPopup = $ionicPopup.show({
                             title: "Route Processing",
                             subTitle: "Route needs processing before sea ice trends can be viewed!",
                             template: "To view sea ice trends along your route, please swipe your route to the left and select 'Process' from the More menu! This will require a stable internet connection!",
                             buttons: [
-                                { text: ':)'}
+                                { text: 'OK'}
                             ]
                         });
                         alertPopup.then(function(res){
@@ -602,13 +602,13 @@ angular.module('app.controllers', ['angular-loading-bar'])
                         console.log(JSON.stringify($scope.iceOptions));
                         vis = topoFunc(data);
                         $ionicLoading.hide();
-//                        alert("This route needs to be processed! To view sea ice trends along your route, please swipe your route to the left and select 'Process' from the More menu! This will require a stable internet connection! :)");
+//                        alert("This route needs to be processed! To view sea ice trends along your route, please swipe your route to the left and select 'Process' from the More menu! This will require a stable internet connection!");
                         var alertPopup = $ionicPopup.show({
                             title: "Route Processing",
                             subTitle: "Route needs processing before sea ice trends can be viewed!",
                             template: "To view sea ice trends along your route, please swipe your route to the left and select 'Process' from the More menu! This will require a stable internet connection!",
                             buttons: [
-                                { text: ':)'}
+                                { text: 'OK'}
                             ]
                         });
                         alertPopup.then(function(res){
@@ -644,18 +644,359 @@ angular.module('app.controllers', ['angular-loading-bar'])
 
 })
 
-.controller('seaIceCtrl', function($scope, $state, $ionicLoading, routeService, $ionicActionSheet, $cordovaGeolocation, $ionicPlatform, $ionicListDelegate){
+.controller('seaIceCtrl', function($scope, $state, $ionicLoading, routeService, $ionicActionSheet, $cordovaGeolocation, $ionicPlatform, $ionicListDelegate, $ionicModal){
 
     //Object to hold ice data options for drop-down select.
     $scope.iceOptions = [
         {
-            "name":"Spring 2016",
-            "file":"28_spring_2016.png"
-
+            "name":"Jul 2010",
+            "file":"201007_thk.png",
+            "season":"Jul2010"
         },
         {
-            "name":"Spring 2012",
-            "file":"spring_2012.png"
+            "name":"Aug 2010",
+            "file":"201008_thk.png",
+            "season":"Aug2010"
+        },
+        {
+            "name":"Sep 2010",
+            "file":"201009_thk.png",
+            "season":"Sep2010"
+        },
+        {
+            "name":"Oct 2010",
+            "file":"201010_thk.png",
+            "season":"Oct2010"
+        },
+        {
+            "name":"Nov 2010",
+            "file":"201011_thk.png",
+            "season":"Nov2010"
+        },
+        {
+            "name":"Dec 2010",
+            "file":"201012_thk.png",
+            "season":"Dec2010"
+        },
+        {
+            "name":"Jan 2011",
+            "file":"201101_thk.png",
+            "season":"Jan2011"
+        },
+        {
+            "name":"Feb 2011",
+            "file":"201102_thk.png",
+            "season":"Feb2011"
+        },
+        {
+            "name":"Mar 2011",
+            "file":"201103_thk.png",
+            "season":"Mar2011"
+        },
+        {
+            "name":"Apr 2011",
+            "file":"201104_thk.png",
+            "season":"Apr2011"
+        },
+        {
+            "name":"May 2011",
+            "file":"201105_thk.png",
+            "season":"May2011"
+        },
+        {
+            "name":"Jun 2011",
+            "file":"201106_thk.png",
+            "season":"Jun2011"
+        },
+        {
+            "name":"Jul 2011",
+            "file":"201107_thk.png",
+            "season":"Jul2011"
+        },
+        {
+            "name":"Aug 2011",
+            "file":"201108_thk.png",
+            "season":"Aug2011"
+        },
+        {
+            "name":"Sep 2011",
+            "file":"201109_thk.png",
+            "season":"Sep2011"
+        },
+        {
+            "name":"Oct 2011",
+            "file":"201110_thk.png",
+            "season":"Oct2011"
+        },
+        {
+            "name":"Nov 2011",
+            "file":"201111_thk.png",
+            "season":"Nov2011"
+        },
+        {
+            "name":"Dec 2011",
+            "file":"201112_thk.png",
+            "season":"Dec2011"
+        },
+        {
+            "name":"Jan 2012",
+            "file":"201201_thk.png",
+            "season":"Jan2012"
+        },
+        {
+            "name":"Feb 2012",
+            "file":"201202_thk.png",
+            "season":"Feb2012"
+        },
+        {
+            "name":"Mar 2012",
+            "file":"201203_thk.png",
+            "season":"Mar2012"
+        },
+        {
+            "name":"Apr 2012",
+            "file":"201204_thk.png",
+            "season":"Apr2012"
+        },
+        {
+            "name":"May 2012",
+            "file":"201205_thk.png",
+            "season":"May2012"
+        },
+        {
+            "name":"Jun 2012",
+            "file":"201206_thk.png",
+            "season":"Jun2012"
+        },
+        {
+            "name":"Jul 2012",
+            "file":"201207_thk.png",
+            "season":"Jul2012"
+        },
+        {
+            "name":"Aug 2012",
+            "file":"201208_thk.png",
+            "season":"Aug2012"
+        },
+        {
+            "name":"Sep 2012",
+            "file":"201209_thk.png",
+            "season":"Sep2012"
+        },
+        {
+            "name":"Oct 2012",
+            "file":"201210_thk.png",
+            "season":"Oct2012"
+        },
+        {
+            "name":"Nov 2012",
+            "file":"201211_thk.png",
+            "season":"Nov2012"
+        },
+        {
+            "name":"Dec 2012",
+            "file":"201212_thk.png",
+            "season":"Dec2012"
+        },
+        {
+            "name":"Jan 2013",
+            "file":"201301_thk.png",
+            "season":"Jan2013"
+        },
+        {
+            "name":"Feb 2013",
+            "file":"201302_thk.png",
+            "season":"Feb2013"
+        },
+        {
+            "name":"Mar 2013",
+            "file":"201303_thk.png",
+            "season":"Mar2013"
+        },
+        {
+            "name":"Apr 2013",
+            "file":"201304_thk.png",
+            "season":"Apr2013"
+        },
+        {
+            "name":"May 2013",
+            "file":"201305_thk.png",
+            "season":"May2013"
+        },
+        {
+            "name":"Jun 2013",
+            "file":"201306_thk.png",
+            "season":"Jun2013"
+        },
+        {
+            "name":"Jul 2013",
+            "file":"201307_thk.png",
+            "season":"Jul2013"
+        },
+        {
+            "name":"Aug 2013",
+            "file":"201308_thk.png",
+            "season":"Aug2013"
+        },
+        {
+            "name":"Sep 2013",
+            "file":"201309_thk.png",
+            "season":"Sep2013"
+        },
+        {
+            "name":"Oct 2013",
+            "file":"201310_thk.png",
+            "season":"Oct2013"
+        },
+        {
+            "name":"Nov 2013",
+            "file":"201311_thk.png",
+            "season":"Nov2013"
+        },
+        {
+            "name":"Dec 2013",
+            "file":"201312_thk.png",
+            "season":"Dec2013"
+        },
+        {
+            "name":"Jan 2014",
+            "file":"201401_thk.png",
+            "season":"Jan2014"
+        },
+        {
+            "name":"Feb 2014",
+            "file":"201402_thk.png",
+            "season":"Feb2014"
+        },
+        {
+            "name":"Mar 2014",
+            "file":"201403_thk.png",
+            "season":"Mar2014"
+        },
+        {
+            "name":"Apr 2014",
+            "file":"201404_thk.png",
+            "season":"Apr2014"
+        },
+        {
+            "name":"May 2014",
+            "file":"201405_thk.png",
+            "season":"May2014"
+        },
+        {
+            "name":"Jun 2014",
+            "file":"201406_thk.png",
+            "season":"Jun2014"
+        },
+        {
+            "name":"Jul 2014",
+            "file":"201407_thk.png",
+            "season":"Jul2014"
+        },
+        {
+            "name":"Aug 2014",
+            "file":"201408_thk.png",
+            "season":"Aug2014"
+        },
+        {
+            "name":"Sep 2014",
+            "file":"201409_thk.png",
+            "season":"Sep2014"
+        },
+        {
+            "name":"Oct 2014",
+            "file":"201410_thk.png",
+            "season":"Oct2014"
+        },
+        {
+            "name":"Nov 2014",
+            "file":"201411_thk.png",
+            "season":"Nov2014"
+        },
+        {
+            "name":"Dec 2014",
+            "file":"201412_thk.png",
+            "season":"Dec2014"
+        },
+        {
+            "name":"Jan 2015",
+            "file":"201501_thk.png",
+            "season":"Jan2015"
+        },
+        {
+            "name":"Feb 2015",
+            "file":"201502_thk.png",
+            "season":"Feb2015"
+        },
+        {
+            "name":"Mar 2015",
+            "file":"201503_thk.png",
+            "season":"Mar2015"
+        },
+        {
+            "name":"Apr 2015",
+            "file":"201504_thk.png",
+            "season":"Apr2015"
+        },
+        {
+            "name":"May 2015",
+            "file":"201505_thk.png",
+            "season":"May2015"
+        },
+        {
+            "name":"Jun 2015",
+            "file":"201506_thk.png",
+            "season":"Jun2015"
+        },
+        {
+            "name":"Jul 2015",
+            "file":"201507_thk.png",
+            "season":"Jul2015"
+        },
+        {
+            "name":"Aug 2015",
+            "file":"201508_thk.png",
+            "season":"Aug2015"
+        },
+        {
+            "name":"Sep 2015",
+            "file":"201509_thk.png",
+            "season":"Sep2015"
+        },
+        {
+            "name":"Oct 2015",
+            "file":"201510_thk.png",
+            "season":"Oct2015"
+        },
+        {
+            "name":"Nov 2015",
+            "file":"201511_thk.png",
+            "season":"Nov2015"
+        },
+        {
+            "name":"Dec 2015",
+            "file":"201512_thk.png",
+            "season":"Dec2015"
+        },
+        {
+            "name":"Jan 2016",
+            "file":"201601_thk.png",
+            "season":"Jan2016"
+        },
+        {
+            "name":"Feb 2016",
+            "file":"201602_thk.png",
+            "season":"Feb2016"
+        },
+        {
+            "name":"Mar 2016",
+            "file":"201603_thk.png",
+            "season":"Mar2016"
+        },
+        {
+            "name":"Apr 2016",
+            "file":"201604_thk.png",
+            "season":"Apr2016"
         }
     ];
 
@@ -728,9 +1069,9 @@ angular.module('app.controllers', ['angular-loading-bar'])
         vis.append("svg:image")
             .attr('width', WIDTH)
             .attr('height', HEIGHT)
-            .attr('x','-4%')
-            .attr('y','-4%')
-            .attr("transform", "scale(1.08)")
+            .attr('x','-1%')
+            .attr('y','-1%')
+            .attr("transform", "scale(1.02)")
             .attr("xlink:href","img/ice_thickness/" + routeService.selectedIce);
 
         var path = d3.geoPath()
@@ -927,13 +1268,14 @@ angular.module('app.controllers', ['angular-loading-bar'])
                 .attr("d", path)
                 .attr("fill", "rgba(255, 255, 255, 0)")
                 .attr("stroke", "rgba(51, 51, 51, 0.5)")
-                .attr("id", i)
+                .attr("id", "quad" + i)
                 .attr("class", "quad")
         };
 
         //Handle click event for quadrants. Highlight area. Change chart data.
         var quads = vis.selectAll(".quad");
         quads.on("click", function(d, i){
+            routeService.selectedQuad = "#" + this.id;
             quads.attr('fill', 'rgba(255, 255, 255, 0)');
             d3.select(this)
                 .attr('fill', 'rgba(0, 55, 109, 0.3)');
@@ -960,19 +1302,19 @@ angular.module('app.controllers', ['angular-loading-bar'])
         var g = vis.append("g");
 
         //Show land JSON
-        d3.json("json/world-110m.json", function(error, world) {
-              if (error) throw error;
+        // d3.json("json/world-110m.json", function(error, world) {
+        //       if (error) throw error;
 
-            vis.insert("path", ".graticule")
-                .datum(topojson.feature(world, world.objects.land))
-                .attr("class", "land")
-                .attr("d", path);
+        //     vis.insert("path", ".graticule")
+        //         .datum(topojson.feature(world, world.objects.land))
+        //         .attr("class", "land")
+        //         .attr("d", path);
 
-            vis.insert("path", ".graticule")
-                .datum(topojson.mesh(world, world.objects.countries, function(a, b) { return a !== b; }))
-                .attr("class", "boundary")
-                .attr("d", path);
-        });
+        //     vis.insert("path", ".graticule")
+        //         .datum(topojson.mesh(world, world.objects.countries, function(a, b) { return a !== b; }))
+        //         .attr("class", "boundary")
+        //         .attr("d", path);
+        // });
 
         return vis;
     };
@@ -986,11 +1328,13 @@ angular.module('app.controllers', ['angular-loading-bar'])
         var parseDate = d3.timeParse("%Y-%d-%m")
 
         var xData = [],
-            yData = [];
+            yData = [],
+            season = [];
 
         data.forEach(function(d){
             xData.push(parseDate(d.date));
             yData.push(parseFloat(d[i+1]));
+            season.push(d.season);
         });
 
         //Init SVG container, scales, axes
@@ -1053,7 +1397,13 @@ angular.module('app.controllers', ['angular-loading-bar'])
         .attr('cy', function(d, i) { return yScale(yData[i]); })
         .style("stroke","#00376d")
         .style("fill","#00376d")
+        .attr('id', function(d, i) { return season[i]; })
         .attr('r', 3);
+
+        vis.select(routeService.iceSeason)
+            .style("fill", "#ffffff")
+            .style("stroke", "red")
+            .attr('r', 6);
 
         vis.append("text")
             .attr("class", "legend")
@@ -1074,49 +1424,95 @@ angular.module('app.controllers', ['angular-loading-bar'])
 
     $ionicPlatform.ready(function(){
 
-        routeService.selectedIce = $scope.iceOptions[1].file;
+        $scope.value = 'Sep 2014';
+        $scope.rangeConfig = {
+            'min':'0',
+            'max': $scope.iceOptions.length - 1,
+            'value': '0'
+        };
+
+        routeService.selectedIce = $scope.iceOptions[50].file;
+
+        routeService.iceSeason = "#" + $scope.iceOptions[50].season;
 
         //Handle reload on new ice data selected
         $scope.selectedSeaIce = function(mySelect){
+            //Set ice data label to selected date
+            $scope.value = $scope.iceOptions[mySelect].name;
+            routeService.iceSeason = "#" + $scope.iceOptions[mySelect].season;
 
-            routeService.selectedIce = mySelect.file;
-
-            d3.selectAll("svg > *").remove();
-
-            var text1 = chartContainer.append("text")
-                .attr("x", chartWidth/2)
-                .attr("y", (chartHeight/2)-13)
-                .attr("text-anchor", "middle")
-                .attr("fill", "#00376d")
-                .style("font-size", "24px")
-                .text("Click on an area to view the")
-                .attr("id", "text1");
-
-            var text2 = chartContainer.append("text")
-                .attr("x", chartWidth/2)
-                .attr("y", (chartHeight/2)+13)
-                .attr("text-anchor", "middle")
-                .attr("fill", "#00376d")
-                .style("font-size", "24px")
-                .text("historic ice conditions!")
-                .attr("id", "text2");
-
-//            d3.csv("res/means.csv", function(d){
-//                scatterFunc(d);
-//            });
-
+            //Set selected ice image from slider
+            routeService.selectedIce = $scope.iceOptions[mySelect].file;
+            //Call mapFunction with new selected ice image
             var vis = mapFunc();
+
+            //Select reference point and highlight
+            try {
+                d3.selectAll(".dot")
+                    .style("fill", "#00376d")
+                    .style('stroke', '#00376d')
+                    .attr('r', 3);
+
+                d3.select(routeService.iceSeason)
+                    .style('fill', '#ffffff')
+                    .style('stroke','red')
+                    .attr('r', 6);
+
+                
+            } catch(error) {
+                console.log(error);
+            }
+
+            //If quad was selected before, reselect and fill.
+            try {
+                selectedQuad = routeService.selectedQuad;
+
+                d3.select(selectedQuad)
+                    .attr('fill', 'rgba(0, 55, 109, 0.3)');
+
+            } catch(error) {
+                console.log(error);
+            };
 
         };
 
+        $ionicModal.fromTemplateUrl('templates/ice-modal.html', {
+            scope: $scope,
+            animation: 'slide-in-up'
+        }).then(function(modal){
+            $scope.modal = modal;
+        });
+
+        $scope.closeModal = function(){
+            $scope.modal.hide();
+        };
+
+        var iceInfoTemplate = '<h3>This is a test</h3></br><h1>Test 2</h1>';
+
+        $scope.iceInfo = function(){
+            $scope.modal.show();
+            // var showSheet = $ionicActionSheet.show({
+            //     buttons: [
+            //         { text: iceInfoTemplate}
+            //     ],
+            //     titleText: 'Ice Information',
+            //     cancelText: 'Done',
+            //     cancel: function(){
+
+            //     }
+
+            // });
+        };
+
     });
+
 
     var vis = mapFunc();
     var chartContainer = d3.select("#chart");
 
     var text1 = chartContainer.append("text")
         .attr("x", chartWidth/2)
-        .attr("y", (chartHeight/2)-13)
+        .attr("y", (chartHeight/2)-33)
         .attr("text-anchor", "middle")
         .attr("fill", "#00376d")
         .style("font-size", "24px")
@@ -1124,11 +1520,27 @@ angular.module('app.controllers', ['angular-loading-bar'])
 
     var text2 = chartContainer.append("text")
         .attr("x", chartWidth/2)
-        .attr("y", (chartHeight/2)+13)
+        .attr("y", (chartHeight/2)-7)
         .attr("text-anchor", "middle")
         .attr("fill", "#00376d")
         .style("font-size", "24px")
-        .text("historic ice conditions!")
+        .text("historic ice conditions")
+
+    var text3 = chartContainer.append("text")
+        .attr("x", chartWidth/2)
+        .attr("y", (chartHeight/2)+38)
+        .attr("text-anchor", "middle")
+        .attr("fill", "#00376d")
+        .style("font-size", "15px")
+        .text("Click the colourbar at any point to")
+
+    var text4 = chartContainer.append("text")
+        .attr("x", chartWidth/2)
+        .attr("y", (chartHeight/2)+59)
+        .attr("text-anchor", "middle")
+        .attr("fill", "#00376d")
+        .style("font-size", "15px")
+        .text("learn more about the ice data.")
 
 })
 
@@ -1776,6 +2188,12 @@ angular.module('app.controllers', ['angular-loading-bar'])
         {"lat":"7.749957311111111835e+01","lon":"6.688684322222222534e+01"}
     ];
 
+    var popUpTemplate = '<p style="text-align: center">The remote server could not be accessed. Please try again later.</p>';
+
+    var downloadImage = function(file){
+        //TODO: Download image function here
+    }
+
     $scope.postReq= function(){
         console.log("Button clicked. Sending POST request.");
         var url = "http://localhost:8080/post1";
@@ -1791,9 +2209,9 @@ angular.module('app.controllers', ['angular-loading-bar'])
             console.log("error: " + JSON.stringify(error));
             var alertPopup = $ionicPopup.show({
                 title: 'Remote Server',
-                template: 'The remote server could not be accessed. Please try again later.',
+                template: popUpTemplate,
                 buttons: [
-                    { text: 'OK :)'}
+                    { text: 'OK'}
                 ]
             });
             alertPopup.then(function(res){
@@ -1828,9 +2246,9 @@ angular.module('app.controllers', ['angular-loading-bar'])
             console.log("error: " + JSON.stringify(error));
             var alertPopup = $ionicPopup.show({
                 title: 'Remote Server',
-                template: 'The remote server could not be accessed. Please try again later.',
+                template: popUpTemplate,
                 buttons: [
-                    { text: 'OK :)'}
+                    { text: 'OK'}
                 ]
             });
             alertPopup.then(function(res){

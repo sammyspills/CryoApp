@@ -95,5 +95,7 @@ angular.module('app.services', [])
     this.selectedIce;
     this.type;
     this.iceData;
+    this.selectedQuad;
+    this.iceSeason;
 }]);
 
