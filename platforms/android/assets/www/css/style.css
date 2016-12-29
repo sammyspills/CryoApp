@@ -3,22 +3,22 @@ ion-side-menu .menu-drawer{
 }
 
 .bar.bar-positive {
-	background-color: #e4dcd6
+	background-color: #00338d
 }
 
 ion-nav-bar {
-	background-color: #e4dcd6
+	background-color: #00338d
 }
 
 html, body, .custom-button {
-      border-color: #e4dcd6;
+      border-color: #00338d;
       background: transparent;
-      color: #e4dcd6; 
+      color: #00338d; 
       margin:4px; 
       width: 175px;
   }
       .custom_button.active, .custom_button.activated {
-        background: #e4dcd6;
+        background: #0033aa;
         box-shadow: none;
         color: #fff; }
 
@@ -49,6 +49,14 @@ html, body, .custom-button {
 	top: 50%;
 	transform:translateY(-50%); 
 }
+
+@font-face {
+        font-family: 'notesesaregular';
+        src: url('../fonts/notesesareg-webfont.ttf') format('truetype');
+        font-weight: normal;
+        font-style: normal;
+
+    }
 
 
 

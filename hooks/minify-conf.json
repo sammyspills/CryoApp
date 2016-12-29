@@ -1,0 +1,20 @@
+{
+    "foldersToProcess": [
+      "js",
+      "css",
+      "img"
+    ],
+    "jpgOptions":{
+      "quality": 50
+    },
+    "jsOptions": {
+      "compress": {
+        "drop_console": false
+      }
+    },
+    "cssOptions": {
+      "keepSpecialComments": 0
+    },
+    "alwaysRun": false,
+    "showErrStack": true
+}

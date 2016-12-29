@@ -1,17 +1,40 @@
 <style>
+
+    @font-face {
+        font-family: 'notesesaregular';
+        src: url('../www/fonts/notesesareg-webfont.ttf') format('truetype');
+        font-weight: normal;
+        font-style: normal;
+
+    }
+
+    body, p, h1, h2, h3, h4, h5, h6 {
+        font-family: notesesaregular !important;
+    }
+
     .wrapper {
         text-align: center;
         margin-top: 10px;
     }
-    
-    #loading-bar .bar {
-        position: relative !important;
-        height: 10px !important;
-        background: #00376d !important;
+
+    .custom-divider {
+        padding-left: 20px;
+        height: 24px;
+        text-align: left; 
     }
-    
-    .load-cont {
-        margin-top: -5px;
+
+    ion-item.no-items {
+        display: block;
+    }
+
+    ion-item + ion-item.no-items {
+        display: none;
+    }
+
+    .no-items p {
+        color: darken(lightgray, 5%);
+        font-size: 18px;
+        text-align: center;
     }
 </style>
 
@@ -21,18 +44,20 @@
                        pulling-text="Pull to refresh..."
                        on-refresh="getRequest()">
         </ion-refresher>
-        <div id="bar-cont" class="load-cont"></div>
-    	<div id="download" class="padding" data-tap-disabled="true">
-            <div class="wrapper">
-                <button class="button button-positive" style="margin:5px" ng-click="postReq()">POST Req1</button>
-                <button class="button button-positive" style="margin:5px" ng-click="postReq2()">POST Req2</button>
-            </div>
+    	<div id="download" class="" data-tap-disabled="true">
             <div id="get-request"></div>
     	    <div class="list card">
-    	        <ion-item class="item item-divider">Sea Ice Datasets Available:</ion-item>
-    	        <ion-item class="item item-icon-right item-text-wrap" ng-repeat="obj in data" ng-click="itemClick(obj)" style="font-family:sans-serif">
-    	            <i class="icon ion-ios-download"></i>{{obj.name}}
-    	        </ion-item>
+                <div class="item-divider custom-divider" style="font-size:18px">
+                    Sea Ice Datasets Available:
+                </div>
+                <ion-list>
+                    <ion-item class="item item-icon-right item-text-wrap" ng-repeat="obj in data" ng-click="itemClick(obj)" style="font-family:sans-serif">
+                        <i class="icon ion-ios-cloud-download"></i>{{obj.name}}
+                    </ion-item>
+                    <ion-item class="item-text-wrap no-items">
+                        <p>No Items</p>
+                    </ion-item>
+                </ion-list>
     	    </div>
     	    <div>
     	    </div>

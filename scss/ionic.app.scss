@@ -18,6 +18,17 @@ $dark:                            #444 !default;
 // The path for our ionicons font files, relative to the built CSS in www/css
 $ionicons-font-path: "../lib/ionic/fonts" !default;
 
+// Include our fonts
+@font-face {
+	font-family: "notesesaregular";
+	src: url('../fonts/notesesareg-webfont.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+
+$font-family-sans-serif:          "notesesaregular", "Helvetica Neue", "Roboto", sans-serif !default;
+$font-family-light-sans-serif:    "notesesaregular", "HelveticaNeue-Light", "Roboto-Light", sans-serif-light !default;
+
 // Include all of Ionic
 @import "www/lib/ionic/scss/ionic";
 

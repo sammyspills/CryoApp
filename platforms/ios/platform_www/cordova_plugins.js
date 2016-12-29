@@ -264,6 +264,14 @@ module.exports = [
         ]
     },
     {
+        "id": "cordova-plugin-mauron85-background-geolocation.backgroundGeolocation",
+        "file": "plugins/cordova-plugin-mauron85-background-geolocation/www/backgroundGeolocation.js",
+        "pluginId": "cordova-plugin-mauron85-background-geolocation",
+        "clobbers": [
+            "backgroundGeolocation"
+        ]
+    },
+    {
         "id": "cordova-plugin-network-information.network",
         "file": "plugins/cordova-plugin-network-information/www/network.js",
         "pluginId": "cordova-plugin-network-information",
@@ -346,6 +354,7 @@ module.exports = [
 module.exports.metadata = 
 // TOP OF METADATA
 {
+    "cordova-plugin-compat": "1.0.0",
     "cordova-plugin-console": "1.0.3",
     "cordova-plugin-device": "1.1.2",
     "cordova-plugin-email": "1.1.1",
@@ -353,6 +362,7 @@ module.exports.metadata =
     "cordova-plugin-file-transfer": "1.6.0",
     "cordova-plugin-geolocation": "2.2.0",
     "cordova-plugin-inappbrowser": "1.4.0",
+    "cordova-plugin-mauron85-background-geolocation": "2.2.5",
     "cordova-plugin-network-information": "1.2.1",
     "cordova-plugin-splashscreen": "3.2.2",
     "cordova-plugin-statusbar": "2.1.3",
@@ -361,8 +371,7 @@ module.exports.metadata =
     "cordova-sqlite-storage": "1.4.6",
     "ionic-plugin-keyboard": "2.2.1",
     "me.rahul.plugins.sqlDB": "1.0.3",
-    "org.flybuy.cordova.background-location-services": "1.0.4",
-    "cordova-plugin-compat": "1.0.0"
+    "org.flybuy.cordova.background-location-services": "1.0.4"
 };
 // BOTTOM OF METADATA
 });

@@ -1,5 +1,17 @@
 <style>
 
+@font-face {
+        font-family: 'notesesaregular';
+        src: url('../www/fonts/notesesareg-webfont.ttf') format('truetype');
+        font-weight: normal;
+        font-style: normal;
+
+    }
+
+    body, p, h1, h2, h3, h4, h5, h6 {
+        font-family: notesesaregular !important;
+    }
+
 .image-right {
     float: right;
     height: 100px;
@@ -19,7 +31,7 @@
 <ion-modal-view style="height: 50%">
     <ion-header-bar>
         <h1 class="title">Data Presentation</h1>
-        <button class="button button-light" style="color:#00376d" ng-click="closeModal()">Close</button>
+        <button class="button button-light" style="color:#00338d" ng-click="closeModal()">Close</button>
     </ion-header-bar>
     <ion-content>
         <div class="list card" style="text-align:justify">

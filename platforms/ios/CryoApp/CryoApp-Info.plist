@@ -49,17 +49,28 @@
       <key>NSAllowsArbitraryLoads</key>
       <true/>
     </dict>
-    <key>NSLocationAlwaysUsageDescription</key>
-    <string>${EXECUTABLE_NAME} Would Like to Use Your Current Location Even In Background.</string>
+    <key>UIInterfaceOrientation</key>
+    <array>
+      <string>UIInterfaceOrientationPortrait</string>
+    </array>
     <key>NSLocationWhenInUseUsageDescription</key>
     <string/>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>${EXECUTABLE_NAME} Would Like to Use Your Current Location Even In Background.</string>
     <key>UIBackgroundModes</key>
     <array>
       <string>location</string>
     </array>
-    <key>UIInterfaceOrientation</key>
+    <key>CFBundleURLTypes</key>
     <array>
-      <string>UIInterfaceOrientationPortrait</string>
+      <dict>
+        <key>CFBundleTypeRole</key>
+        <string>Editor</string>
+        <key>CFBundleURLSchemes</key>
+        <array>
+          <string>prefs</string>
+        </array>
+      </dict>
     </array>
   </dict>
 </plist>

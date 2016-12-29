@@ -17,12 +17,16 @@ angular.module('app', ['ionic', 'app.controllers', 'app.routes', 'app.services',
     }
     if (window.StatusBar) {
       // org.apache.cordova.statusbar required
-      StatusBar.backgroundColorByHexString("#00376d");
+      StatusBar.backgroundColorByHexString("#00338d");
     }
   });
   ionic.Platform.ready(function () {
-  ionic.Platform.fullScreen(true,true);
+  // ionic.Platform.fullScreen(true,true);
   });
+})
+
+.config(function($ionicConfigProvider) {
+  $ionicConfigProvider.scrolling.jsScrolling(true);
 })
 
 

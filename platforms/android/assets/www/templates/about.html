@@ -6,6 +6,18 @@
     .shady i {
         color: darkgray !important;
     }
+
+    @font-face {
+        font-family: 'notesesaregular';
+        src: url('../www/fonts/notesesareg-webfont.ttf') format('truetype');
+        font-weight: normal;
+        font-style: normal;
+
+    }
+
+    body, p, h1, h2, h3, h4, h5, h6 {
+        font-family: notesesaregular !important;
+    }
     
 </style>
 <ion-view title="More" id="aboutScreen" class=" ">
@@ -19,7 +31,7 @@
     		<div class="item item-divider item-text-wrap">
                 <h2 id="home-heading2" style="color:#000000; text-align: center;font-size:24px">Centre for Polar Observation and Modelling</h2></div>
     		<div class="item item-text-wrap">
-                <h5 style="color:#000000; text-align: justify; font-size:16px;">The Centre for Polar Observation and Modelling (CPOM) is a NERC Centre of Excellence that studies processes in the Earth’s polar latitudes that can affect the Earth’s radiation reflectance, polar atmosphere and ocean circulation, and global sea level.<br>CPOM is funded by the Natural Environment Research Council (NERC).  We also work closely with the British Antarctic Survey (BAS), National Oceanography Centre (NOC), National Centre for Earth Observation (NCEO) and European Space Agency (ESA).</h5>
+                <h5 style="color:#000000; text-align: justify; font-size:16px; font-family:notesesaregular">The Centre for Polar Observation and Modelling (CPOM) is a NERC Centre of Excellence that studies processes in the Earth’s polar latitudes that can affect the Earth’s radiation reflectance, polar atmosphere and ocean circulation, and global sea level.<br>CPOM is funded by the Natural Environment Research Council (NERC).  We also work closely with the British Antarctic Survey (BAS), National Oceanography Centre (NOC), National Centre for Earth Observation (NCEO) and European Space Agency (ESA).</h5>
             </div>
     	</div>
     	
@@ -116,5 +128,13 @@
                 <img class="image-list-thumb" src="img/ionic.png">
             </div>
     	</div>
+        <div class="card" style="margin-top: none !important;">
+            <div class="item item-divider" style="color: #808080">
+                <h4 style="text-align: center; font-size: 18px">Other</h4>
+            </div>
+            <div style="padding-left: 5px; padding-right: 5px;">
+                <button class="button button-assertive button-block" ng-click="resetFlags()">Reset tutorials</button>
+            </div>
+        </div>
     </ion-content>
 </ion-view>

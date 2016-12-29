@@ -1,0 +1,84 @@
+<style>
+
+@font-face {
+        font-family: 'notesesaregular';
+        src: url('../www/fonts/notesesareg-webfont.ttf') format('truetype');
+        font-weight: normal;
+        font-style: normal;
+
+    }
+
+    body, p, h1, h2, h3, h4, h5, h6 {
+        font-family: notesesaregular !important;
+    }
+
+.image-right {
+    float: right;
+    height: 100px;
+    width: auto;
+    padding-left: 10px;
+}
+
+.image-left {
+    float: left;
+    height: 100px;
+    width: auto;
+    padding-right: 10px;
+    margin-bottom: 10px;
+}
+
+</style>
+<ion-modal-view style="height: 50%">
+    <ion-header-bar>
+        <h1 class="title">Data Presentation</h1>
+        <button class="button button-light" style="color:#00338d" ng-click="closeModal()">Close</button>
+    </ion-header-bar>
+    <ion-content>
+        <div class="list card" style="text-align:justify">
+            <ion-item class="item-text-wrap" style="height:auto; padding-bottom: 30px">
+                <p style="font-weight:bold;">
+                    Colour Scale
+                </p>
+                <img class="image-right" src="img/ice_cbs/201604_thk_cb.png"/>
+                <p>
+                    The ice thickness data is all presented on a common colour scale ranging from dark blue to bright pink - dark blue resembling a thickness
+                    of 0m, bright pink resembling a thickness of 3.5m.</br>
+                </p>
+            </ion-item>
+            <ion-item class="item-text-wrap" style="padding-bottom: 30px">
+                <p style="font-weight: bold;">
+                    Projection
+                </p>
+                <img class="image-left" src="img/ice_thickness/201604_thk.png"/>
+                <p style="margin-left: 110px">
+                    This data is presented on top of a stereographic projection of the Arctic circle, with 0° longitude being directly downwards
+                    and latitudes ranging from +60° to +90°.</br>
+                </p>
+            </ion-item>
+            <ion-item class="item-text-wrap">
+                <p style="font-weight: bold;">
+                    Extent
+                </p>
+                <img class="image-right" src="img/ice_thickness/201507_thk.png"/>
+                <p>
+                    Also visible is a light grey outline, below the thckness information. For some months, only the grey outline is visible, whilst there is no thickness information.
+                    This light grey represents the estimated extent of the sea ice coverage, seperate to thickness.</br>
+                    The reason this is the only thing visible in the summer months is due to the way the CryoSat-2 satellite measures the thickness of the sea ice.</br>
+                    The thickness is calculated by determining the height of the ice above sea level ('freeboard'), and then using Archimedes principle to estimate the depth of the ice beneath sea level ('draft').</br>
+                    During the summer months, added heat creates melt ponds on the surface of the ice, which confuse the sensors on CryoSat-2, and prevent it from being able to estimate thickness correctly 
+                    however, the extent can still be estimated since these melt ponds don't affect the satellites ability to measure the area of ice. </br>
+                    During winter months, there are regions where the ice is too thin to be accurately calculated, but the area can still be measured - this is why there are still grey areas even when thickness is being calculated elsewhere.
+                </p>
+            </ion-item>
+            <ion-item class="item-text-wrap">
+                <p style="font-weight: bold">
+                    Scatter Graph
+                </p>
+                <p>
+                    The scatter graph below the map shows the thickness of ice along the route currently selected, according to the data from CryoSat-2.
+                    It is able to show the thickness of the ice along the route for one Summer season, one Winter season and one Spring season, to show the variability of the ice thickness throughout the year.</br>
+                </p>
+            </ion-item>
+        </div>
+    </ion-content>
+</ion-modal-view>

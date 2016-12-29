@@ -191,6 +191,22 @@ module.exports = [
         "runs": true
     },
     {
+        "id": "cordova-plugin-file-transfer.FileTransferError",
+        "file": "plugins/cordova-plugin-file-transfer/www/FileTransferError.js",
+        "pluginId": "cordova-plugin-file-transfer",
+        "clobbers": [
+            "window.FileTransferError"
+        ]
+    },
+    {
+        "id": "cordova-plugin-file-transfer.FileTransfer",
+        "file": "plugins/cordova-plugin-file-transfer/www/FileTransfer.js",
+        "pluginId": "cordova-plugin-file-transfer",
+        "clobbers": [
+            "window.FileTransfer"
+        ]
+    },
+    {
         "id": "cordova-plugin-geolocation.geolocation",
         "file": "plugins/cordova-plugin-geolocation/www/android/geolocation.js",
         "pluginId": "cordova-plugin-geolocation",
@@ -211,6 +227,14 @@ module.exports = [
         "clobbers": [
             "cordova.InAppBrowser.open",
             "window.open"
+        ]
+    },
+    {
+        "id": "cordova-plugin-mauron85-background-geolocation.backgroundGeolocation",
+        "file": "plugins/cordova-plugin-mauron85-background-geolocation/www/backgroundGeolocation.js",
+        "pluginId": "cordova-plugin-mauron85-background-geolocation",
+        "clobbers": [
+            "backgroundGeolocation"
         ]
     },
     {
@@ -291,22 +315,6 @@ module.exports = [
         "clobbers": [
             "plugins.backgroundLocationServices"
         ]
-    },
-    {
-        "id": "cordova-plugin-file-transfer.FileTransferError",
-        "file": "plugins/cordova-plugin-file-transfer/www/FileTransferError.js",
-        "pluginId": "cordova-plugin-file-transfer",
-        "clobbers": [
-            "window.FileTransferError"
-        ]
-    },
-    {
-        "id": "cordova-plugin-file-transfer.FileTransfer",
-        "file": "plugins/cordova-plugin-file-transfer/www/FileTransfer.js",
-        "pluginId": "cordova-plugin-file-transfer",
-        "clobbers": [
-            "window.FileTransfer"
-        ]
     }
 ];
 module.exports.metadata = 
@@ -317,8 +325,10 @@ module.exports.metadata =
     "cordova-plugin-device": "1.1.2",
     "cordova-plugin-email": "1.1.1",
     "cordova-plugin-file": "4.3.0",
+    "cordova-plugin-file-transfer": "1.6.0",
     "cordova-plugin-geolocation": "2.2.0",
     "cordova-plugin-inappbrowser": "1.4.0",
+    "cordova-plugin-mauron85-background-geolocation": "2.2.5",
     "cordova-plugin-network-information": "1.2.1",
     "cordova-plugin-splashscreen": "3.2.2",
     "cordova-plugin-statusbar": "2.1.3",
@@ -327,8 +337,7 @@ module.exports.metadata =
     "cordova-sqlite-storage": "1.4.6",
     "ionic-plugin-keyboard": "2.2.1",
     "me.rahul.plugins.sqlDB": "1.0.3",
-    "org.flybuy.cordova.background-location-services": "1.0.4",
-    "cordova-plugin-file-transfer": "1.6.0"
+    "org.flybuy.cordova.background-location-services": "1.0.4"
 };
 // BOTTOM OF METADATA
 });

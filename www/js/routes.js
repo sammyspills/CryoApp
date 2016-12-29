@@ -36,6 +36,16 @@ angular.module('app.routes', [])
     abstract:true
   })
 
+  .state('menu.iceAntarctic', {
+    url: '/iceAntarctic',
+    views: {
+      'side-menu21': {
+        templateUrl: 'templates/antarctic.html',
+        controller: 'antarcticCtrl'
+      }
+    }
+  })
+
   .state('menu.seaIce', {
     url: '/iceScreen',
     views: {
