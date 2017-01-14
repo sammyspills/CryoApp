@@ -88,7 +88,8 @@ ext {
 }
 
 // PLUGIN GRADLE EXTENSIONS START
-apply from: "cordova-plugin-mauron85-background-geolocation/cryoapp544768-logtofile.gradle"
+apply from: "com.transistorsoft.cordova.background-geolocation/seeIce-build.gradle"
+apply from: "cordova-plugin-mauron85-background-geolocation/seeIce-logtofile.gradle"
 // PLUGIN GRADLE EXTENSIONS END
 
 def hasBuildExtras = file('build-extras.gradle').exists()

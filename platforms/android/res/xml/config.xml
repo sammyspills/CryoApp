@@ -1,5 +1,11 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.ionicframework.cryoapp544768" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="org.cpom.seeIce" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <feature name="Notification">
+        <param name="android-package" value="org.apache.cordova.dialogs.Notification" />
+    </feature>
+    <feature name="BackgroundGeolocation">
+        <param name="android-package" value="com.transistorsoft.cordova.bggeo.CDVBackgroundGeolocation" />
+    </feature>
     <feature name="Device">
         <param name="android-package" value="org.apache.cordova.device.Device" />
     </feature>
@@ -54,12 +60,12 @@
     <feature name="BackgroundLocationServices">
         <param name="android-package" value="com.flybuy.cordova.location.BackgroundLocationServicesPlugin" />
     </feature>
-    <name>CryoApp</name>
+    <name>SeeIce</name>
     <description>
-        An Ionic Framework and Cordova project.
+        An Ionic Framework application dedicated to displaying data gathered from ESA'a CryoSat-2 Satellite.
     </description>
-    <author email="you@example.com" href="http://example.com.com/">
-      Your Name Here
+    <author email="py14sts@leeds.ac.uk" href="www.cpom.org">
+      Centre for Polar Observarion and Modelling
     </author>
     <content src="index.html" />
     <access origin="*" />

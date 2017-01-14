@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">CryoApp</string>
+    <string name="app_name">SeeIce</string>
     <string name="launcher_name">@string/app_name</string>
     <string name="activity_name">@string/launcher_name</string>
-    <string name="account_type">com.ionicframework.cryoapp544768.account</string>
-    <string name="content_authority">com.ionicframework.cryoapp544768</string>
+    <string name="account_type">org.cpom.seeIce.account</string>
+    <string name="content_authority">org.cpom.seeIce</string>
 </resources>

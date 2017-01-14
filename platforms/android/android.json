@@ -9,6 +9,14 @@
                 "parents": {
                     "/*": [
                         {
+                            "xml": "<feature name=\"Notification\"><param name=\"android-package\" value=\"org.apache.cordova.dialogs.Notification\" /></feature>",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"BackgroundGeolocation\"><param name=\"android-package\" value=\"com.transistorsoft.cordova.bggeo.CDVBackgroundGeolocation\" /></feature>",
+                            "count": 1
+                        },
+                        {
                             "xml": "<feature name=\"Device\"><param name=\"android-package\" value=\"org.apache.cordova.device.Device\" /></feature>",
                             "count": 1
                         },
@@ -193,11 +201,11 @@
                 "parents": {
                     "/resources": [
                         {
-                            "xml": "<string name=\"account_type\">com.ionicframework.cryoapp544768.account</string>",
+                            "xml": "<string name=\"account_type\">org.cpom.seeIce.account</string>",
                             "count": 1
                         },
                         {
-                            "xml": "<string name=\"content_authority\">com.ionicframework.cryoapp544768</string>",
+                            "xml": "<string name=\"content_authority\">org.cpom.seeIce</string>",
                             "count": 1
                         }
                     ]
@@ -206,65 +214,109 @@
         }
     },
     "installed_plugins": {
+        "cordova-plugin-dialogs": {
+            "PACKAGE_NAME": "org.cpom.seeIce"
+        },
+        "cordova-plugin-background-fetch": {
+            "PACKAGE_NAME": "org.cpom.seeIce"
+        },
+        "com.transistorsoft.cordova.background-geolocation": {
+            "PACKAGE_NAME": "org.cpom.seeIce"
+        },
+        "cordova-plugin-cocoalumberjack": {
+            "PACKAGE_NAME": "org.cpom.seeIce"
+        },
         "cordova-plugin-compat": {
-            "PACKAGE_NAME": "com.ionicframework.cryoapp544768"
+            "PACKAGE_NAME": "org.cpom.seeIce"
         },
         "cordova-plugin-console": {
-            "PACKAGE_NAME": "com.ionicframework.cryoapp544768"
+            "PACKAGE_NAME": "org.cpom.seeIce"
         },
         "cordova-plugin-device": {
-            "PACKAGE_NAME": "com.ionicframework.cryoapp544768"
+            "PACKAGE_NAME": "org.cpom.seeIce"
         },
         "cordova-plugin-email": {
-            "PACKAGE_NAME": "com.ionicframework.cryoapp544768"
+            "PACKAGE_NAME": "org.cpom.seeIce"
         },
         "cordova-plugin-file": {
-            "PACKAGE_NAME": "com.ionicframework.cryoapp544768"
+            "PACKAGE_NAME": "org.cpom.seeIce"
         },
         "cordova-plugin-file-transfer": {
-            "PACKAGE_NAME": "com.ionicframework.cryoapp544768"
+            "PACKAGE_NAME": "org.cpom.seeIce"
         },
         "cordova-plugin-geolocation": {
-            "PACKAGE_NAME": "com.ionicframework.cryoapp544768"
+            "PACKAGE_NAME": "org.cpom.seeIce"
         },
         "cordova-plugin-inappbrowser": {
-            "PACKAGE_NAME": "com.ionicframework.cryoapp544768"
+            "PACKAGE_NAME": "org.cpom.seeIce"
         },
         "cordova-plugin-mauron85-background-geolocation": {
             "ACCOUNT_TYPE": "$PACKAGE_NAME.account",
             "CONTENT_AUTHORITY": "$PACKAGE_NAME",
-            "PACKAGE_NAME": "com.ionicframework.cryoapp544768"
+            "PACKAGE_NAME": "org.cpom.seeIce"
         },
         "cordova-plugin-network-information": {
-            "PACKAGE_NAME": "com.ionicframework.cryoapp544768"
+            "PACKAGE_NAME": "org.cpom.seeIce"
         },
         "cordova-plugin-splashscreen": {
-            "PACKAGE_NAME": "com.ionicframework.cryoapp544768"
+            "PACKAGE_NAME": "org.cpom.seeIce"
         },
         "cordova-plugin-statusbar": {
-            "PACKAGE_NAME": "com.ionicframework.cryoapp544768"
+            "PACKAGE_NAME": "org.cpom.seeIce"
         },
         "cordova-plugin-whitelist": {
-            "PACKAGE_NAME": "com.ionicframework.cryoapp544768"
+            "PACKAGE_NAME": "org.cpom.seeIce"
         },
         "cordova-plugin-x-toast": {
-            "PACKAGE_NAME": "com.ionicframework.cryoapp544768"
+            "PACKAGE_NAME": "org.cpom.seeIce"
         },
         "cordova-sqlite-storage": {
-            "PACKAGE_NAME": "com.ionicframework.cryoapp544768"
+            "PACKAGE_NAME": "org.cpom.seeIce"
         },
         "ionic-plugin-keyboard": {
-            "PACKAGE_NAME": "com.ionicframework.cryoapp544768"
+            "PACKAGE_NAME": "org.cpom.seeIce"
         },
         "me.rahul.plugins.sqlDB": {
-            "PACKAGE_NAME": "com.ionicframework.cryoapp544768"
+            "PACKAGE_NAME": "org.cpom.seeIce"
         },
         "org.flybuy.cordova.background-location-services": {
-            "PACKAGE_NAME": "com.ionicframework.cryoapp544768"
+            "PACKAGE_NAME": "org.cpom.seeIce"
         }
     },
     "dependent_plugins": {},
     "modules": [
+        {
+            "id": "cordova-plugin-dialogs.notification",
+            "file": "plugins/cordova-plugin-dialogs/www/notification.js",
+            "pluginId": "cordova-plugin-dialogs",
+            "merges": [
+                "navigator.notification"
+            ]
+        },
+        {
+            "id": "cordova-plugin-dialogs.notification_android",
+            "file": "plugins/cordova-plugin-dialogs/www/android/notification.js",
+            "pluginId": "cordova-plugin-dialogs",
+            "merges": [
+                "navigator.notification"
+            ]
+        },
+        {
+            "id": "cordova-plugin-background-fetch.BackgroundFetch",
+            "file": "plugins/cordova-plugin-background-fetch/www/BackgroundFetch.js",
+            "pluginId": "cordova-plugin-background-fetch",
+            "clobbers": [
+                "window.BackgroundFetch"
+            ]
+        },
+        {
+            "id": "com.transistorsoft.cordova.background-geolocation.BackgroundGeolocation",
+            "file": "plugins/com.transistorsoft.cordova.background-geolocation/www/BackgroundGeolocation.js",
+            "pluginId": "com.transistorsoft.cordova.background-geolocation",
+            "clobbers": [
+                "window.BackgroundGeolocation"
+            ]
+        },
         {
             "id": "cordova-plugin-device.device",
             "file": "plugins/cordova-plugin-device/www/device.js",
@@ -583,6 +635,10 @@
         }
     ],
     "plugin_metadata": {
+        "cordova-plugin-dialogs": "1.3.1",
+        "cordova-plugin-background-fetch": "4.0.0",
+        "com.transistorsoft.cordova.background-geolocation": "2.3.0",
+        "cordova-plugin-cocoalumberjack": "0.0.1",
         "cordova-plugin-compat": "1.0.0",
         "cordova-plugin-console": "1.0.3",
         "cordova-plugin-device": "1.1.2",

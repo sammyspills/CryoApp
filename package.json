@@ -1,7 +1,7 @@
 {
-  "name": "cryoapp",
-  "version": "1.1.1",
-  "description": "CryoApp: An Ionic project",
+  "name": "SeeIce",
+  "version": "0.0.1",
+  "description": "An Ionic Framework application dedicated to displaying data gathered from ESA'a CryoSat-2 Satellite.",
   "dependencies": {
     "angular-loading-bar": "^0.9.0",
     "gulp": "^3.5.6",
@@ -26,7 +26,8 @@
     "cordova-plugin-inappbrowser",
     "ionic-plugin-keyboard",
     "cordova-plugin-file",
-    "cordova-plugin-mauron85-background-geolocation"
+    "cordova-plugin-mauron85-background-geolocation",
+    "cordova-background-geolocation-lt"
   ],
   "cordovaPlatforms": [
     "android",

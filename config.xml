@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<widget id="com.ionicframework.cryoapp544768" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-  <name>CryoApp</name>
+<widget id="org.cpom.seeIce" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+  <name>SeeIce</name>
   <description>&#xD;&#xD;&#xD;
-        An Ionic Framework and Cordova project.&#xD;&#xD;&#xD;
+        An Ionic Framework application dedicated to displaying data gathered from ESA'a CryoSat-2 Satellite.&#xD;&#xD;&#xD;
     </description>
-  <author email="you@example.com" href="http://example.com.com/">&#xD;&#xD;&#xD;
-      Your Name Here&#xD;&#xD;&#xD;
+  <author email="py14sts@leeds.ac.uk" href="www.cpom.org">&#xD;&#xD;&#xD;
+      Centre for Polar Observarion and Modelling&#xD;&#xD;&#xD;
     </author>
   <content src="index.html"/>
   <access origin="*"/>
