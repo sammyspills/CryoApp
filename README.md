@@ -1,6 +1,6 @@
 
 # CryoApp
-# Application developed for the CPOM group during my placement at University of Leeds in summer 2016.
+### Application developed for the CPOM group during my placement at University of Leeds in summer 2016.
 
 - The application is built using the Ionic Framework, based on the ngCordova platform. To develop the application further, the development environment will need to have Node.js, Cordova and Ionic CLI's installed (http://ionicframework.com/getting-started/)
 
