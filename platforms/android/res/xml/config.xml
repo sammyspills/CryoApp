@@ -26,9 +26,6 @@
     <feature name="InAppBrowser">
         <param name="android-package" value="org.apache.cordova.inappbrowser.InAppBrowser" />
     </feature>
-    <feature name="BackgroundGeolocation">
-        <param name="android-package" value="com.tenforwardconsulting.cordova.BackgroundGeolocationPlugin" />
-    </feature>
     <feature name="NetworkStatus">
         <param name="android-package" value="org.apache.cordova.networkinformation.NetworkManager" />
     </feature>
@@ -56,9 +53,6 @@
     </feature>
     <feature name="sqlDB">
         <param name="android-package" value="me.rahul.plugins.sqlDB.sqlDB" />
-    </feature>
-    <feature name="BackgroundLocationServices">
-        <param name="android-package" value="com.flybuy.cordova.location.BackgroundLocationServicesPlugin" />
     </feature>
     <name>SeeIce</name>
     <description>

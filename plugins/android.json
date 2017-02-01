@@ -31,11 +31,6 @@
         "cordova-plugin-inappbrowser": {
             "PACKAGE_NAME": "org.cpom.seeIce"
         },
-        "cordova-plugin-mauron85-background-geolocation": {
-            "ACCOUNT_TYPE": "$PACKAGE_NAME.account",
-            "CONTENT_AUTHORITY": "$PACKAGE_NAME",
-            "PACKAGE_NAME": "org.cpom.seeIce"
-        },
         "cordova-plugin-network-information": {
             "PACKAGE_NAME": "org.cpom.seeIce"
         },
@@ -58,9 +53,6 @@
             "PACKAGE_NAME": "org.cpom.seeIce"
         },
         "me.rahul.plugins.sqlDB": {
-            "PACKAGE_NAME": "org.cpom.seeIce"
-        },
-        "org.flybuy.cordova.background-location-services": {
             "PACKAGE_NAME": "org.cpom.seeIce"
         }
     },

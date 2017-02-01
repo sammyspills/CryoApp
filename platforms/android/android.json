@@ -45,10 +45,6 @@
                             "count": 1
                         },
                         {
-                            "xml": "<feature name=\"BackgroundGeolocation\"><param name=\"android-package\" value=\"com.tenforwardconsulting.cordova.BackgroundGeolocationPlugin\" /></feature>",
-                            "count": 1
-                        },
-                        {
                             "xml": "<feature name=\"NetworkStatus\"><param name=\"android-package\" value=\"org.apache.cordova.networkinformation.NetworkManager\" /></feature>",
                             "count": 1
                         },
@@ -79,10 +75,6 @@
                         {
                             "xml": "<feature name=\"sqlDB\"><param name=\"android-package\" value=\"me.rahul.plugins.sqlDB.sqlDB\" /></feature>",
                             "count": 1
-                        },
-                        {
-                            "xml": "<feature name=\"BackgroundLocationServices\"><param name=\"android-package\" value=\"com.flybuy.cordova.location.BackgroundLocationServicesPlugin\" /></feature>",
-                            "count": 1
                         }
                     ]
                 }
@@ -107,89 +99,8 @@
                             "count": 1
                         }
                     ],
-                    "/manifest/application": [
-                        {
-                            "xml": "<meta-data android:name=\"com.google.android.gms.version\" android:value=\"@integer/google_play_services_version\" />",
-                            "count": 2
-                        },
-                        {
-                            "xml": "<service android:exported=\"true\" android:name=\"com.marianhello.bgloc.sync.SyncService\" android:process=\":sync\"><intent-filter><action android:name=\"android.content.SyncAdapter\" /></intent-filter><meta-data android:name=\"android.content.SyncAdapter\" android:resource=\"@xml/syncadapter\" /></service>",
-                            "count": 1
-                        },
-                        {
-                            "xml": "<service android:name=\"com.marianhello.bgloc.sync.AuthenticatorService\"><intent-filter><action android:name=\"android.accounts.AccountAuthenticator\" /></intent-filter><meta-data android:name=\"android.accounts.AccountAuthenticator\" android:resource=\"@xml/authenticator\" /></service>",
-                            "count": 1
-                        },
-                        {
-                            "xml": "<provider android:authorities=\"@string/content_authority\" android:exported=\"false\" android:name=\"com.marianhello.bgloc.sync.DummyContentProvider\" android:syncable=\"true\" />",
-                            "count": 1
-                        },
-                        {
-                            "xml": "<service android:enabled=\"true\" android:exported=\"false\" android:name=\"com.marianhello.bgloc.LocationService\" />",
-                            "count": 1
-                        },
-                        {
-                            "xml": "<receiver android:enabled=\"true\" android:exported=\"true\" android:name=\"com.marianhello.bgloc.BootCompletedReceiver\"><intent-filter><action android:name=\"android.intent.action.BOOT_COMPLETED\" /></intent-filter></receiver>",
-                            "count": 1
-                        },
-                        {
-                            "xml": "<service android:enabled=\"true\" android:name=\"com.flybuy.cordova.location.BackgroundLocationUpdateService\" />",
-                            "count": 1
-                        }
-                    ],
+                    "/manifest/application": [],
                     "/manifest": [
-                        {
-                            "xml": "<uses-permission android:name=\"android.permission.AUTHENTICATE_ACCOUNTS\" />",
-                            "count": 1
-                        },
-                        {
-                            "xml": "<uses-permission android:name=\"android.permission.GET_ACCOUNTS\" />",
-                            "count": 1
-                        },
-                        {
-                            "xml": "<uses-permission android:name=\"android.permission.READ_SYNC_SETTINGS\" />",
-                            "count": 1
-                        },
-                        {
-                            "xml": "<uses-permission android:name=\"android.permission.WRITE_SYNC_SETTINGS\" />",
-                            "count": 1
-                        },
-                        {
-                            "xml": "<uses-permission android:name=\"android.permission.RECEIVE_BOOT_COMPLETED\" />",
-                            "count": 1
-                        },
-                        {
-                            "xml": "<uses-permission android:name=\"com.google.android.gms.permission.ACTIVITY_RECOGNITION\" />",
-                            "count": 2
-                        },
-                        {
-                            "xml": "<uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\" />",
-                            "count": 2
-                        },
-                        {
-                            "xml": "<uses-permission android:name=\"android.permission.ACCESS_COARSE_LOCATION\" />",
-                            "count": 2
-                        },
-                        {
-                            "xml": "<uses-permission android:name=\"android.permission.ACCESS_FINE_LOCATION\" />",
-                            "count": 2
-                        },
-                        {
-                            "xml": "<uses-permission android:name=\"android.permission.ACCESS_LOCATION_EXTRA_COMMANDS\" />",
-                            "count": 2
-                        },
-                        {
-                            "xml": "<uses-permission android:name=\"android.permission.INTERNET\" />",
-                            "count": 2
-                        },
-                        {
-                            "xml": "<uses-permission android:name=\"android.permission.WAKE_LOCK\" />",
-                            "count": 2
-                        },
-                        {
-                            "xml": "<uses-permission android:name=\"android.hardware.location\" />",
-                            "count": 1
-                        },
                         {
                             "xml": "<uses-permission android:name=\"android.permission.WRITE_EXTERNAL_STORAGE\" />",
                             "count": 1
@@ -199,16 +110,7 @@
             },
             "res/values/strings.xml": {
                 "parents": {
-                    "/resources": [
-                        {
-                            "xml": "<string name=\"account_type\">org.cpom.seeIce.account</string>",
-                            "count": 1
-                        },
-                        {
-                            "xml": "<string name=\"content_authority\">org.cpom.seeIce</string>",
-                            "count": 1
-                        }
-                    ]
+                    "/resources": []
                 }
             }
         }
@@ -250,11 +152,6 @@
         "cordova-plugin-inappbrowser": {
             "PACKAGE_NAME": "org.cpom.seeIce"
         },
-        "cordova-plugin-mauron85-background-geolocation": {
-            "ACCOUNT_TYPE": "$PACKAGE_NAME.account",
-            "CONTENT_AUTHORITY": "$PACKAGE_NAME",
-            "PACKAGE_NAME": "org.cpom.seeIce"
-        },
         "cordova-plugin-network-information": {
             "PACKAGE_NAME": "org.cpom.seeIce"
         },
@@ -277,9 +174,6 @@
             "PACKAGE_NAME": "org.cpom.seeIce"
         },
         "me.rahul.plugins.sqlDB": {
-            "PACKAGE_NAME": "org.cpom.seeIce"
-        },
-        "org.flybuy.cordova.background-location-services": {
             "PACKAGE_NAME": "org.cpom.seeIce"
         }
     },
@@ -547,14 +441,6 @@
             ]
         },
         {
-            "id": "cordova-plugin-mauron85-background-geolocation.backgroundGeolocation",
-            "file": "plugins/cordova-plugin-mauron85-background-geolocation/www/backgroundGeolocation.js",
-            "pluginId": "cordova-plugin-mauron85-background-geolocation",
-            "clobbers": [
-                "backgroundGeolocation"
-            ]
-        },
-        {
             "id": "cordova-plugin-network-information.network",
             "file": "plugins/cordova-plugin-network-information/www/network.js",
             "pluginId": "cordova-plugin-network-information",
@@ -624,14 +510,6 @@
             "clobbers": [
                 "window.plugins.sqlDB"
             ]
-        },
-        {
-            "id": "org.flybuy.cordova.background-location-services.BackgroundLocationServices",
-            "file": "plugins/org.flybuy.cordova.background-location-services/www/BackgroundLocationServices.js",
-            "pluginId": "org.flybuy.cordova.background-location-services",
-            "clobbers": [
-                "plugins.backgroundLocationServices"
-            ]
         }
     ],
     "plugin_metadata": {
@@ -647,7 +525,6 @@
         "cordova-plugin-file-transfer": "1.6.0",
         "cordova-plugin-geolocation": "2.2.0",
         "cordova-plugin-inappbrowser": "1.4.0",
-        "cordova-plugin-mauron85-background-geolocation": "2.2.5",
         "cordova-plugin-network-information": "1.2.1",
         "cordova-plugin-splashscreen": "3.2.2",
         "cordova-plugin-statusbar": "2.1.3",
@@ -655,7 +532,6 @@
         "cordova-plugin-x-toast": "2.5.2",
         "cordova-sqlite-storage": "1.4.6",
         "ionic-plugin-keyboard": "2.2.1",
-        "me.rahul.plugins.sqlDB": "1.0.3",
-        "org.flybuy.cordova.background-location-services": "1.0.4"
+        "me.rahul.plugins.sqlDB": "1.0.3"
     }
 }

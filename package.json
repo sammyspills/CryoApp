@@ -26,7 +26,6 @@
     "cordova-plugin-inappbrowser",
     "ionic-plugin-keyboard",
     "cordova-plugin-file",
-    "cordova-plugin-mauron85-background-geolocation",
     "cordova-background-geolocation-lt"
   ],
   "cordovaPlatforms": [
