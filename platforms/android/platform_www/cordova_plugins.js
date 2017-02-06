@@ -1,38 +1,6 @@
 cordova.define('cordova/plugin_list', function(require, exports, module) {
 module.exports = [
     {
-        "id": "cordova-plugin-dialogs.notification",
-        "file": "plugins/cordova-plugin-dialogs/www/notification.js",
-        "pluginId": "cordova-plugin-dialogs",
-        "merges": [
-            "navigator.notification"
-        ]
-    },
-    {
-        "id": "cordova-plugin-dialogs.notification_android",
-        "file": "plugins/cordova-plugin-dialogs/www/android/notification.js",
-        "pluginId": "cordova-plugin-dialogs",
-        "merges": [
-            "navigator.notification"
-        ]
-    },
-    {
-        "id": "cordova-plugin-background-fetch.BackgroundFetch",
-        "file": "plugins/cordova-plugin-background-fetch/www/BackgroundFetch.js",
-        "pluginId": "cordova-plugin-background-fetch",
-        "clobbers": [
-            "window.BackgroundFetch"
-        ]
-    },
-    {
-        "id": "com.transistorsoft.cordova.background-geolocation.BackgroundGeolocation",
-        "file": "plugins/com.transistorsoft.cordova.background-geolocation/www/BackgroundGeolocation.js",
-        "pluginId": "com.transistorsoft.cordova.background-geolocation",
-        "clobbers": [
-            "window.BackgroundGeolocation"
-        ]
-    },
-    {
         "id": "cordova-plugin-device.device",
         "file": "plugins/cordova-plugin-device/www/device.js",
         "pluginId": "cordova-plugin-device",
@@ -331,14 +299,19 @@ module.exports = [
         "clobbers": [
             "window.plugins.sqlDB"
         ]
+    },
+    {
+        "id": "cordova-plugin-mauron85-background-geolocation.backgroundGeolocation",
+        "file": "plugins/cordova-plugin-mauron85-background-geolocation/www/backgroundGeolocation.js",
+        "pluginId": "cordova-plugin-mauron85-background-geolocation",
+        "clobbers": [
+            "backgroundGeolocation"
+        ]
     }
 ];
 module.exports.metadata = 
 // TOP OF METADATA
 {
-    "cordova-plugin-dialogs": "1.3.1",
-    "cordova-plugin-background-fetch": "4.0.0",
-    "com.transistorsoft.cordova.background-geolocation": "2.3.0",
     "cordova-plugin-cocoalumberjack": "0.0.1",
     "cordova-plugin-compat": "1.0.0",
     "cordova-plugin-console": "1.0.3",
@@ -355,7 +328,8 @@ module.exports.metadata =
     "cordova-plugin-x-toast": "2.5.2",
     "cordova-sqlite-storage": "1.4.6",
     "ionic-plugin-keyboard": "2.2.1",
-    "me.rahul.plugins.sqlDB": "1.0.3"
+    "me.rahul.plugins.sqlDB": "1.0.3",
+    "cordova-plugin-mauron85-background-geolocation": "2.2.5"
 };
 // BOTTOM OF METADATA
 });

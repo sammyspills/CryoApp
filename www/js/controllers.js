@@ -5,10 +5,10 @@ angular.module('app.controllers', [])
     Some of these are unused. I'm keeping them for now. */
     $ionicSideMenuDelegate.canDragContent(false);
 
-    if(ionic.Platform.IOS){
-        console.log("Platform is iOS");
+    if(ionic.Platform.isAndroid()){
+        console.log("Platform is Android");
     } else {
-        console.log("Platform is not iOS");
+        console.log("Platform is not Android");
     };
 
     $scope.trackScreen = function(){
