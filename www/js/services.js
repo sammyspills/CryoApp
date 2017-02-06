@@ -38,4 +38,10 @@ angular.module('app.services', [])
         this.tempJson = [];
         console.log("[locationUpdateService] tempJson reset.");
     };
-}]);
+}])
+
+.service('routeHolder', [function(){
+
+    this.routeName;
+
+}])

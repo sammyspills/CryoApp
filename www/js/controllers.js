@@ -1,12 +1,8 @@
 angular.module('app.controllers', [])
 
-// .config(['cfpLoadingBarProvider', function(cfpLoadingBarProvider){
-//     cfpLoadingBarProvider.includeSpinner = false;
-//     cfpLoadingBarProvider.parentSelector = '#bar-cont';
-// }])
-
 .controller('homeCtrl', function($scope, $state, $ionicHistory, $ionicSideMenuDelegate) {
-    //NOTE: Controllers are not in order of home screen buttons. Check routes.js to see states.
+    /* NOTE: Controllers are not in order of home screen buttons. Check routes.js to see states.
+    Some of these are unused. I'm keeping them for now. */
     $ionicSideMenuDelegate.canDragContent(false);
 
     if(ionic.Platform.IOS){
@@ -16,30 +12,18 @@ angular.module('app.controllers', [])
     };
 
     $scope.trackScreen = function(){
-        // $ionicHistory.nextViewOptions({
-        //   disableBack: true
-        // });
         $state.go('menu.routeTrack');
     };
     $scope.antarcticScreen = function(){
         $state.go('menu.iceAntarctic');
     };
     $scope.iceScreen = function(){
-        // $ionicHistory.nextViewOptions({
-        //   disableBack: true
-        // });
         $state.go('menu.seaIce');
     };
     $scope.aboutScreen = function(){
-        // $ionicHistory.nextViewOptions({
-        //     disableBack: true
-        // });
         $state.go('menu.about');
     };
     $scope.downloadScreen = function(){
-        // $ionicHistory.nextViewOptions({
-        //     disableBack: true
-        // });
         $state.go('menu.download');
     };
 
@@ -125,15 +109,8 @@ angular.module('app.controllers', [])
         var path = d3.geoPath()
             .projection(projection);
 
-        //D3 Graticule Generator
-        // var graticule = d3.geoGraticule();
-
-        // vis.append("path")
-        //     .datum(graticule)
-        //     .attr("class", "graticule")
-        //     .attr("d", path);
-
         //Draw lines between every point in route
+        // jank plz forgive
         for(var i=0, len=route_points[0].length-1;i<len;i++){
             var start_point = [route_points[1][i], route_points[0][i]];
             var end_point = [route_points[1][i+1], route_points[0][i+1]];
@@ -953,7 +930,7 @@ angular.module('app.controllers', [])
             MARGINS = {
                 top: 15,
                 right: 20,
-                bottom: 75,
+                bottom: 80,
                 left: 60
             },
             xScale = d3.scaleTime()
@@ -1488,8 +1465,6 @@ angular.module('app.controllers', [])
             };
 
         };
-
-        
 
         $scope.closeModal = function(){
             if(window.Statusbar){
@@ -2426,9 +2401,9 @@ angular.module('app.controllers', [])
     });
 })
 
-.controller('routeTrackCtrl', function($scope, $state, $ionicPlatform, $cordovaToast, $ionicPopup, $cordovaBackgroundGeolocation, $cordovaGeolocation, $interval, $ionicLoading, routeService, $ionicActionSheet, $cordovaFile, $ionicListDelegate, $http, locationUpdateService){
+.controller('routeTrackCtrl', function($scope, $state, $ionicPlatform, $cordovaToast, $ionicPopup, $cordovaBackgroundGeolocation, $cordovaGeolocation, $interval, $ionicLoading, routeService, $ionicActionSheet, $cordovaFile, $ionicListDelegate, $http, locationUpdateService, routeHolder){
 
-    $scope.fileDir = null;
+    $scope.fileDir = cordova.file.dataDirectory;
 
     var popUpTemplate = '<p style="text-align: center">Having trouble processing your route at the moment. Please try again later.</p>';
     var processTemplate = "<div style='margin:-20px;padding:15px;border-radius:7px;background-color:#00338d;text-align:center'>Processing.</br>This can take a few minutes.</br><ion-spinner class='spinner-light' icon='ripple'></ion-spinner></div>";
@@ -2476,7 +2451,7 @@ angular.module('app.controllers', [])
     };
 
     var clickedFunction = function(route, type){
-        var url = "http://cryoapp-dev.leeds.ac.uk/getData";
+        var url = "http://cryoapp.leeds.ac.uk/getData";
         $ionicLoading.show({
             template: processTemplate
         });
@@ -2510,7 +2485,7 @@ angular.module('app.controllers', [])
     var shareRoute = function(route){
         console.log("Share button pressed. Sending POST request. File: " + route.name);
         var file = route.file;
-        var shareUrl = "http://cryoapp-dev.leeds.ac.uk/post2";
+        var shareUrl = "http://cryoapp.leeds.ac.uk/post2";
         $ionicLoading.show({
             template: shareTemplate
         });
@@ -2559,7 +2534,7 @@ angular.module('app.controllers', [])
     var processRoute = function(route){
         console.log("Process button pressed. Sending POST request. File: " + route.name);
         var file = route.file;
-        var url = "http://cryoapp-dev.leeds.ac.uk/post1";
+        var url = "http://cryoapp.leeds.ac.uk/post1";
         $ionicLoading.show({
             template: processTemplate
         });
@@ -2700,7 +2675,11 @@ angular.module('app.controllers', [])
             // Get a reference to the plugin.
             var bgGeo = window.BackgroundGeolocation;
 
-            $scope.isRecording = false;
+            if(typeof locationUpdateService.tempJson !== 'undefined'){
+                $scope.isRecording = true;
+            } else {
+                $scope.isRecording = false;
+            };
 
             //This callback will be executed every time a geolocation is recorded in the background.
             var callbackFn = function(location, taskId) {
@@ -2736,7 +2715,7 @@ angular.module('app.controllers', [])
                 stopTimeout: 5,
 
                 // Application config
-                debug: true,
+                debug: false,
                 stopOnTerminate: false,
                 startOnBoot: true,
 
@@ -2773,9 +2752,10 @@ angular.module('app.controllers', [])
                             month = new Date().getMonth(),
                             date_string = date + "_" + month + "_" + year;
 
-                        $scope.fileName = "route_" + date_string + ".json";
+                        routeHolder.routeName = "route_" + date_string + ".json";
 
-                        $cordovaFile.createFile($scope.fileDir, $scope.fileName, true);
+
+                        $cordovaFile.createFile($scope.fileDir, routeHolder.routeName, true);
                         bgGeo.start();
                         $scope.isRecording = true;
                         console.log('[bgGeo] Tracking started.');
@@ -2803,7 +2783,7 @@ angular.module('app.controllers', [])
                                     alert('You have to name your route before you can save it.');
                                     e.preventDefault();
                                 } else {
-                                    var json_entry = { "name" : $scope.data.name, "filename" : $scope.fileDir + $scope.fileName, "file" : $scope.fileName };
+                                    var json_entry = { "name" : $scope.data.name, "filename" : $scope.fileDir + routeHolder.routeName, "file" : routeHolder.routeName };
                                     //Check route database exists
                                     $cordovaFile.checkFile($scope.fileDir, "userRoutes.json").then(function(success){
                                         //Read it in it's current state
@@ -2848,8 +2828,8 @@ angular.module('app.controllers', [])
                             var route_json = locationUpdateService.tempJson,
                                 route_str = JSON.stringify(route_json);
                                 route_json_str = '[' + route_str.slice(1,-1) + ']';
-                            $cordovaFile.checkFile($scope.fileDir, $scope.fileName).then(function(success){
-                                $cordovaFile.writeExistingFile($scope.fileDir, $scope.fileName, route_json_str, true).then(function(success){
+                            $cordovaFile.checkFile($scope.fileDir, routeHolder.routeName).then(function(success){
+                                $cordovaFile.writeExistingFile($scope.fileDir, routeHolder.routeName, route_json_str, true).then(function(success){
                                     console.log('[bgGeo] Route written to file.');
                                     console.log('[bgGeo] Route coords: ' + JSON.stringify(route_json));
                                     locationUpdateService.clearTemp();
@@ -2992,7 +2972,7 @@ angular.module('app.controllers', [])
     $scope.postReq2 = function(){
         $http({
             method: 'POST',
-            url: "http://cryoapp-dev.leeds.ac.uk/post2",
+            url: "http://cryoapp.leeds.ac.uk/post2",
             headers: 'application/json',
             data: dataObj
         }).then(function(success){
@@ -3006,7 +2986,7 @@ angular.module('app.controllers', [])
         $scope.$broadcast('scroll.refreshComplete');
         $http({
             method: 'POST',
-            url: "http://cryoapp-dev.leeds.ac.uk/getData",
+            url: "http://cryoapp.leeds.ac.uk/getData",
             headers: 'application/json',
             data: ""
         }).then(function(success){
