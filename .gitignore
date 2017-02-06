@@ -1,5 +1,4 @@
 # Specifies intentionally untracked files to ignore when using Git
 # 
-plugins
 platforms
 node_modules
