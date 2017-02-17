@@ -14,7 +14,7 @@
         background-color: #00338d;
     }
     .crop {
-        height: 40%;
+        height: 60%;
         overflow: hidden;
     }
     .tile-row {
@@ -26,7 +26,7 @@
         background-size: cover;
     }
     .home-button {
-        height: 15%;
+        height: 25%;
         width: 100%;
         margin-top: 7.5px;
         margin-bottom: 7.5px;
@@ -34,37 +34,39 @@
         font-family: notesesaregular !important;
     }
     .lower-div {
-        height: 60%;
+        height: 40%;
         width: 100%;
         margin-top: -5px;
         padding-left: 15px;
         padding-right: 15px;
+        padding-top: 5px;
         background: rgba(0, 51, 141, 0.2);
     }
 </style>
 <ion-view title="Home" id="homeScreen">
     <ion-content padding="false" class"has-header background" scrollbar-y="false">
-        <img class="crop" src="img/berg_bg_4.jpg"/>
+        <!--<img class="crop" src="img/berg_bg_4.jpg"/>-->
+        <img class="crop" src="img/IMG_5889-min.JPG"/>
         <div class="lower-div">
             <button class="button item-icon-left home-button" ng-click="iceScreen()">
                 <i class="icon ion-earth"></i>
                 View Arctic Sea Ice Data
             </button>
 
-            <button class="button item-icon-left home-button" ng-click="antarcticScreen()">
+            <!--<button class="button item-icon-left home-button" ng-click="antarcticScreen()">
                 <i class="icon ion-earth"></i>
                 View Antarctic Sea Ice Data
-            </button>
+            </button>-->
 
             <button class="button item-icon-left home-button" ng-click="trackScreen()">
                 <i class="icon ion-android-boat"></i>
                 Track Your Route
             </button>
 
-            <button class="button item-icon-left home-button" ng-click="downloadScreen()">
+            <!--<button class="button item-icon-left home-button" ng-click="downloadScreen()">
                 <i class="icon ion-ios-cloud-download"></i>
                 Download Latest Data
-            </button>
+            </button>-->
 
             <button class="button item-icon-left home-button" ng-click="aboutScreen()">
                 <i class="icon ion-information-circled"></i>

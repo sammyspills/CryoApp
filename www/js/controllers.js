@@ -5,17 +5,8 @@ angular.module('app.controllers', [])
     Some of these are unused. I'm keeping them for now. */
     $ionicSideMenuDelegate.canDragContent(false);
 
-    if(ionic.Platform.IOS){
-        console.log("Platform is iOS");
-    } else {
-        console.log("Platform is not iOS");
-    };
-
     $scope.trackScreen = function(){
         $state.go('menu.routeTrack');
-    };
-    $scope.antarcticScreen = function(){
-        $state.go('menu.iceAntarctic');
     };
     $scope.iceScreen = function(){
         $state.go('menu.seaIce');
@@ -23,13 +14,10 @@ angular.module('app.controllers', [])
     $scope.aboutScreen = function(){
         $state.go('menu.about');
     };
-    $scope.downloadScreen = function(){
-        $state.go('menu.download');
-    };
 
 })
 
-.controller('mapsCtrl', function($scope, $state, $ionicPlatform, $ionicModal, $ionicLoading, routeService, $cordovaFile, $ionicPopup) {
+.controller('mapsCtrl', function($scope, $state, $ionicPlatform, $ionicModal, $ionicLoading, routeService, $cordovaFile, $ionicPopup, $ionicHistory, routeHolder) {
 
     //Object to store options for drop-down selector
     $scope.iceOptions = [];
@@ -93,6 +81,7 @@ angular.module('app.controllers', [])
         //Add background ice image
         try {
             vis.append("svg:image")
+                .attr('class', 'ice-image')
                 .attr('width', WIDTH)
                 .attr('height', HEIGHT)
                 .attr('x','-1%')
@@ -174,12 +163,13 @@ angular.module('app.controllers', [])
     var divWidth = chartDiv.offsetWidth;
     var padding = "30";
 
-    //Function to draw scatter plot
-    var scatterFunc = function(data, season){
+    var scatterFuncUsr = function(data, season){
 
         //Initialise 2D array for thickness, cum. dist.
         var xData = [],
             yData = [];
+
+        console.log(season);
 
         //append appropriate data to array
         data.forEach(function(d){
@@ -190,6 +180,149 @@ angular.module('app.controllers', [])
 
             }
         });
+
+        console.log("xData: " + xData);
+        console.log("yData: " + yData);
+        
+
+        //Init SVG container, scales, axes
+        var vis = d3.select("#visualisation"),
+            WIDTH = divWidth,
+            HEIGHT = divHeight,
+            MARGINS = {
+                top: 15,
+                right: 20,
+                bottom: 60,
+                left: 60
+            },
+            xScale = d3.scaleLinear()
+            .range([MARGINS.left, WIDTH - MARGINS.right])
+            .domain([0, d3.max(xData)]),
+
+            yScale = d3.scaleLinear()
+            .range([HEIGHT - MARGINS.bottom, MARGINS.top])
+            .domain([0, d3.max(yData)]),
+
+            xAxis = d3.axisBottom().scale(xScale).tickArguments([5]),
+            yAxis = d3.axisLeft().scale(yScale).tickArguments([5, "s"]);
+
+        //Clear all SVG elements. Ensures new chart drawn on new ice data selection.
+        vis.selectAll("svg > *").remove();
+
+        vis.append("svg:g")
+            .attr("class","axis")
+            .attr("transform", "translate(0," +(HEIGHT - (MARGINS.bottom))+ ")")
+            .call(xAxis);
+
+        vis.append("svg:g")
+            .attr("class","axis")
+            .attr("transform", "translate(" + (MARGINS.left) + ",0)")
+            .call(yAxis);
+
+        var div = vis.append("text")
+        .attr("x", WIDTH - MARGINS.right)
+        .attr("y", MARGINS.top * 2)
+        .attr("class", "tooltip")
+        .attr("text-anchor", "end")
+        .html("Click a point to view thickness");
+
+        var distText = vis.append("text")
+                .attr('x', WIDTH - MARGINS.right)
+                .attr('y', (MARGINS.top * 2) + 17)
+                .attr("class", "tooltip")
+                .attr("text-anchor", "end");
+
+        vis.append("g").selectAll("circle")
+            .data(xData)
+            .enter()
+            .append("circle")
+            .attr('class', 'dot')
+            .attr('cx', function(d, i) { return xScale(xData[i]); })
+            .attr('cy', function(d, i) { return yScale(yData[i]); })
+            .style("stroke", "rgba(0, 55, 109, 0)")
+            .style("fill", "#00338d")
+            .attr('r', 2);
+
+        vis.append("g").selectAll("circle")
+            .data(xData)
+            .enter()
+            .append("circle")
+            .attr('class', 'dot-touch')
+            .attr('cx', function(d, i) { return xScale(xData[i]); })
+            .attr('cy', function(d, i) { return yScale(yData[i]); })
+            .style("stroke", "rgba(0, 55, 109, 0)")
+            .style("fill", "rgba(0, 55, 109, 0)")
+            .attr('r', 8);
+
+        //On point click, highlight point and display thickness at that point
+        var points = vis.selectAll(".dot"),
+            touchPoints = vis.selectAll(".dot-touch");
+
+        touchPoints.on("click", function(d, i){
+
+            touchPoints.attr('r', 8)
+                .style("fill", "rgba(0, 55, 109, 0)")
+                .style("stroke", "rgba(0, 55, 109, 0)");
+
+            points.attr('r', 2)
+                .style("fill", "#00338d")
+                .style("stroke", "rgba(0, 55, 109, 0)");
+
+            thickness = yData[i];
+            distance = xData[i];
+
+            div.text("Thickness: " + thickness.toPrecision(4) + "m");
+            distText.text("Distance: " + distance.toPrecision(4) + "km");
+
+            d3.select(this)
+                .attr('r', 5)
+                .style("fill", "rgba(0, 55, 109, 0)")
+                .style("stroke", "#ff0707");
+
+        });
+
+        vis.append("text")
+        .attr("class", "legend")
+        .attr("text-anchor", "middle")
+        .attr("x", MARGINS.left + (WIDTH-MARGINS.left-MARGINS.right)/2)
+        .attr("y", HEIGHT-(MARGINS.bottom/3))
+        .text("Distance Along Route (km)");
+
+        vis.append("text")
+        .attr("class", "legend")
+        .attr("text-anchor", "middle")
+        .attr("y", MARGINS.left/2.5)
+        .attr("x", -MARGINS.top-(HEIGHT-MARGINS.top-MARGINS.bottom)/2)
+        .attr("transform", "rotate(-90)")
+        .text("Sea Ice Thickness (m)");
+
+        console.log('Done loading')
+        //$ionicLoading.hide();
+
+    };
+
+    //Function to draw scatter plot
+    var scatterFunc = function(data, season){
+
+        //Initialise 2D array for thickness, cum. dist.
+        var xData = [],
+            yData = [];
+
+        console.log(season);
+
+        //append appropriate data to array
+        data.forEach(function(d){
+            if(d[String(season)] >= 0){
+                    xData.push(parseFloat(d.cumdist));
+                    yData.push(parseFloat(d[String(season)]));
+            } else {
+
+            }
+        });
+
+        console.log("xData: " + xData);
+        console.log("yData: " + yData);
+        
 
         //Init SVG container, scales, axes
         var vis = d3.select("#visualisation"),
@@ -361,6 +494,8 @@ angular.module('app.controllers', [])
             checked: false
         };
 
+        $scope.processButtonSow = false;
+
         $scope.closeModal = function(){
             if(window.Statusbar){
                 Statusbar.backgroundColorByHexString("#00338d");
@@ -382,8 +517,6 @@ angular.module('app.controllers', [])
             });
         };
 
-        $scope.returnToRouteTrack;
-
         //Service to handle selected route and ice between views
         var mapInit = function(){
             var routeFile = routeService.selectedRoute.file;
@@ -402,43 +535,22 @@ angular.module('app.controllers', [])
                         //Check if it already has thickness data
                         if(route_data[0].hasOwnProperty($scope.iceName)){
                             vis = topoFunc(route_data);
-                            scatterFunc(route_data, $scope.initSeason);
+                            scatterFuncUsr(route_data, $scope.initSeason);
                             $ionicLoading.hide();
                         } else {
                             //Read ice data, x-process.
                             console.log("Ice data not found in route file");
-                            vis = topoFunc(route_data);
                             $ionicLoading.hide();
-                            var alertPopup = $ionicPopup.show({
-                                title: "Route Processing",
-                                subTitle: "Route needs processing before sea ice trends can be viewed",
-                                template: '<p style="text-align:center">To view sea ice trends along your route, please swipe your route to the left and select "Process" from the More menu. This will require a stable internet connection.</p>',
-                                buttons: [
-                                    { text: 'OK'}
-                                ]
-                            });
-                            alertPopup.then(function(res){
-                                console.log("Alert tapped!");
-                                $scope.returnToRouteTrack = true;
-                                // $state.go('menu.routeTrack');
-                            });
+                            // routeHolder.returnToRouteTrack_process = true;
+                            // $state.go('menu.routeTrack');
+                            $scope.processButtonShow = true;
+                            vis = topoFunc(route_data);
                         };
                     } else {
                         console.log("Route file is empty");
-                        vis = topoFunc([]);
                         $ionicLoading.hide();
-                        var alertPopup = $ionicPopup.show({
-                            title: "Route Empty",
-                            template: "This route file is empty. This normally happens if the route tracking is stopped before a location point is recorded. Recommended action is to delete the route.",
-                            buttons: [
-                                { text: 'OK'}
-                            ]
-                        });
-                        alertPopup.then(function(res){
-                            console.log("Alert tapped");
-                            $scope.returnToRouteTrack = true;
-                            // $state.go('menu.routeTrack');
-                        });
+                        routeHolder.returnToRouteTrack_empty = true;
+                        $state.go('menu.routeTrack');
                     };
 
                 }, function(error){
@@ -454,6 +566,11 @@ angular.module('app.controllers', [])
 
                 });
             };
+        };
+
+        $scope.processButtonPressed = function(){
+            routeHolder.returnAndProcess = true;
+            $state.go('menu.routeTrack');
         };
 
         $scope.selectedSeaIce = function(mySelect){
@@ -474,29 +591,23 @@ angular.module('app.controllers', [])
                     console.log('Route: ' + data_json_str);
                     var data = JSON.parse(data_json_str);
                     if(data[0].hasOwnProperty($scope.iceName)){
-                        vis = topoFunc(data);
-                        scatterFunc(data, $scope.seasonSelect);
+                        
+                        try{
+                            d3.selectAll(".ice-image")
+                                .attr("xlink:href","img/ice_thickness/" + routeService.selectedIce);
+                        } catch(error){
+                            console.log(error);
+                            vis = topoFunc(data);
+                        };
+                        scatterFuncUsr(data, $scope.seasonSelect);
                         $ionicLoading.hide();
                     } else {
                         console.log("Ice data not found in route file");
                         console.log(JSON.stringify($scope.iceOptions));
-                        vis = topoFunc(data);
                         $ionicLoading.hide();
-//                        alert("This route needs to be processed! To view sea ice trends along your route, please swipe your route to the left and select 'Process' from the More menu! This will require a stable internet connection!");
-                        var alertPopup = $ionicPopup.show({
-                            title: "Route Processing",
-                            subTitle: "Route needs processing before sea ice trends can be viewed.",
-                            template: "To view sea ice trends along your route, please swipe your route to the left and select 'Process' from the More menu. This will require a stable internet connection.",
-                            buttons: [
-                                { text: 'OK'}
-                            ]
-                        });
-                        alertPopup.then(function(res){
-                            console.log("Alert tapped!");
-                            $scope.returnToRouteTrack = true;
-                            // $state.go('menu.routeTrack');
-                        });
-                    }
+                        routeHolder.returnToRouteTrack_process = true;
+                        $ionicHistory.goBack();
+                    };
 
                 }, function(error){
                     console.log("Error: " + JSON.stringify(error));
@@ -506,42 +617,47 @@ angular.module('app.controllers', [])
                     if(error){ console.log(error) };
 
                     scatterFunc(data, $scope.seasonSelect);
-                    vis = topoFunc(data);
+                    try{
+                        d3.selectAll('.ice-image')
+                            .attr("xlink:href","img/ice_thickness/" + routeService.selectedIce);
+                    } catch(error){
+                        console.log(error);
+                        vis = topoFunc(data);
+                    };
                     $ionicLoading.hide();
 
                 });
             };
         };
 
-        $cordovaFile.checkFile($scope.fileDir, '.flags').then(function(success){
-            console.log("Maps screen has been viewed before.");
-        }, function(error){
-                //if flags not set, show popover
-                var tutPopup = $ionicPopup.show({
-                    template: '<p style="text-align:center">This screen displays the thickness of ice along your route. Click a point on the graph to view the exact thickness.</br></br> Click on the colourbar at any point to learn more about the sea ice data.</br></br>Pinch to zoom in on the map.</p><ion-checkbox ng-model="dontShow.checked">Don&apos;t show again</ion-checkbox>',
-                    scope: $scope,
-                    buttons: [
-                        {
-                            text: 'OK',
-                            type: 'button-positive',
-                            onTap: function(e) {
-                                return $scope.dontShow.checked;
+        $scope.showIntro = function(){
+            $cordovaFile.checkFile($scope.fileDir, '.flags').then(function(success){
+                console.log("Maps screen has been viewed before.");
+            }, function(error){
+                    //if flags not set, show popover
+                    var tutPopup = $ionicPopup.show({
+                        template: '<p style="text-align:center">This screen displays the thickness of ice along your route. Click a point on the graph to view the exact thickness.</br></br> Click on the colourbar at any point to learn more about the sea ice data.</br></br>Pinch to zoom in on the map.</p><ion-checkbox ng-model="dontShow.checked">Don&apos;t show again</ion-checkbox>',
+                        scope: $scope,
+                        buttons: [
+                            {
+                                text: 'OK',
+                                type: 'button-positive',
+                                onTap: function(e) {
+                                    return $scope.dontShow.checked;
+                                }
                             }
-                        }
-                    ]
-                });
-                tutPopup.then(function(res){
-                    //If dontShow, set flags
-                    if(res){
-                        $cordovaFile.createFile($scope.fileDir, ".flags", true);
-                    } else {
-                        console.log("Show again next time - flags not set.");
-                    };
-                    if(returnToRouteTrack){
-                        $state.go('menu.routeTrack');
-                    };
-                });
-        });
+                        ]
+                    });
+                    tutPopup.then(function(res){
+                        //If dontShow, set flags
+                        if(res){
+                            $cordovaFile.createFile($scope.fileDir, ".flags", true);
+                        } else {
+                            console.log("Show again next time - flags not set.");
+                        };
+                    });
+            });
+        };
 
     });
 
@@ -596,6 +712,7 @@ angular.module('app.controllers', [])
 
         //Add background ice data image from routeService.
         vis.append("svg:image")
+            .attr('class', 'ice-image')
             .attr('width', WIDTH)
             .attr('height', HEIGHT)
             .attr('x','-1%')
@@ -1426,14 +1543,17 @@ angular.module('app.controllers', [])
 
         //Handle reload on new ice data selected
         $scope.selectedSeaIce = function(mySelect){
-            //Set ice data label to selected date
+
             $scope.value = $scope.iceOptions[mySelect].name;
             routeService.iceSeason = "#" + $scope.iceOptions[mySelect].season;
-
-            //Set selected ice image from slider
             routeService.selectedIce = $scope.iceOptions[mySelect].file;
-            //Call mapFunction with new selected ice image
-            var vis = mapFunc();
+
+            try {
+                d3.selectAll(".ice-image")
+                    .attr('xlink:href',"img/ice_thickness/" + routeService.selectedIce);
+            } catch(error){
+                console.log(error);
+            };
 
             //Select reference point and highlight
             try {
@@ -1451,19 +1571,7 @@ angular.module('app.controllers', [])
                 
             } catch(error) {
                 console.log(error);
-            }
-
-            //If quad was selected before, reselect and fill.
-            try {
-                selectedQuad = routeService.selectedQuad;
-
-                d3.select(selectedQuad)
-                    .attr('fill', 'rgba(0, 55, 109, 0.3)');
-
-            } catch(error) {
-                console.log(error);
             };
-
         };
 
         $scope.closeModal = function(){
@@ -1497,908 +1605,6 @@ angular.module('app.controllers', [])
 
     });
 
-})
-
-.controller('antarcticCtrl', function($scope, $state, $ionicLoading, routeService, $cordovaFile, $ionicActionSheet, $ionicPopup, $ionicPlatform, $ionicModal, $ionicListDelegate){
-
-    //Get dimens of map div
-    var mapDiv = document.getElementById("antarctic-ice-div");
-    var mapHeight = mapDiv.offsetHeight;
-    var mapWidth = mapDiv.offsetWidth;
-
-    //Function to show Arctic map
-    var mapFunc = function(){
-
-        //Init SVG container
-        var vis = d3.select("#antarctic-ice-vis"),
-            WIDTH = mapWidth,
-            HEIGHT = mapHeight,
-            PADDING = 0;
-
-        //Clear SVG elements. Ensures land image shown on new ice data selected.
-        vis.selectAll("svg > *").remove();
-
-        var minDim = Math.min(WIDTH, HEIGHT);
-        var maxDim = Math.max(WIDTH, HEIGHT);
-
-        //Object to hold coords of Arctic area. Used for fitSize.
-        var Antarctica = {
-                          "type": "Feature",
-                          "geometry": {
-                            "type": "MultiPoint",
-                            "coordinates": [[0,-50],[180,-50]]
-                          },
-                          "properties": {
-                            "name": "Antarctica"
-                          }
-                    };
-
-        //Init projection
-        var projection = d3.geoStereographic()
-            .rotate([0, 90])
-            .center([0, -90])
-            .fitSize([WIDTH,HEIGHT],Antarctica)
-            .precision(.1);
-
-        //Add SVG element.
-        vis.append("svg")
-            .attr("width", WIDTH)
-            .attr("height", HEIGHT);
-
-        //Add background ice data image from routeService.
-        vis.append("svg:image")
-            .attr('width', WIDTH)
-            .attr('height', HEIGHT)
-            .attr('x','-1%')
-            .attr('y','-1%')
-            .attr("transform", "scale(1.02)")
-            .attr("xlink:href","img/ice_thickness_ant/" + routeService.selectedIceAnt);
-
-        var path = d3.geoPath()
-            .projection(projection);
-
-        var graticule = d3.geoGraticule();
-
-        vis.append("path")
-            .datum(graticule)
-            .attr("class", "graticule")
-            .attr("d", path);
-
-        //Functions for converting straight polygons into arched polygons for stereographic projection
-        var parallel = function(phi, lam0, lam1){
-            if(lam0 > lam1) lam1 += 360;
-            var dlam = lam1 - lam0,
-                step = dlam / Math.ceil(dlam);
-            return d3.range(lam0, lam1 + .5 * step, step).map(function(lam) { return [normalise(lam), phi]; });
-        };
-
-        var normalise = function(x){
-            return (x + 180) % 360 - 180;
-        };
-
-        //Feature set for all selection polygons
-        var Polygons = [
-            {
-                type: "Polygon",
-                coordinates: [
-                    [[-90,-90]]
-                        .concat(parallel(-80, -90, 0))
-                        .concat(parallel(-90, -90, 0).reverse())
-                ]
-            },
-            {
-                type: "Polygon",
-                coordinates: [
-                    [[0,-90]]
-                        .concat(parallel(-80, 0, 90))
-                        .concat(parallel(-90, 0, 90).reverse())
-                ]
-            },
-            {
-                type: "Polygon",
-                coordinates: [
-                    [[90,-90]]
-                        .concat(parallel(-80, 90, 180))
-                        .concat(parallel(-90, 90, 180).reverse())
-                ]
-            },
-            {
-                type: "Polygon",
-                coordinates: [
-                    [[180,-80]]
-                        .concat(parallel(-80, 180, -90))
-                        .concat(parallel(-90, 180, -90).reverse())
-                ]
-            },
-            {
-                type: "Polygon",
-                coordinates: [
-                    [[-90,-70]]
-                        .concat(parallel(-70, -90, -60))
-                        .concat(parallel(-80, -90, -60).reverse())
-                ]
-            },
-            {
-                type: "Polygon",
-                coordinates: [
-                    [[-60,-70]]
-                        .concat(parallel(-70, -60, -30))
-                        .concat(parallel(-80, -60, -30).reverse())
-                ]
-            },
-            {
-                type: "Polygon",
-                coordinates: [
-                    [[-30,-70]]
-                        .concat(parallel(-70, -30, 0))
-                        .concat(parallel(-80, -30, 0).reverse())
-                ]
-            },
-            {
-                type: "Polygon",
-                coordinates: [
-                    [[0,-70]]
-                        .concat(parallel(-70, 0, 30))
-                        .concat(parallel(-80, 0, 30).reverse())
-                ]
-            },
-            {
-                type: "Polygon",
-                coordinates: [
-                    [[30,-70]]
-                        .concat(parallel(-70, 30, 60))
-                        .concat(parallel(-80, 30, 60).reverse())
-                ]
-            },
-            {
-                type: "Polygon",
-                coordinates: [
-                    [[60,-70]]
-                        .concat(parallel(-70, 60, 90))
-                        .concat(parallel(-80, 60, 90).reverse())
-                ]
-            },
-            {
-                type: "Polygon",
-                coordinates: [
-                    [[90,-70]]
-                        .concat(parallel(-70, 90, 120))
-                        .concat(parallel(-80, 90, 120).reverse())
-                ]
-            },
-            {
-                type: "Polygon",
-                coordinates: [
-                    [[120,-70]]
-                        .concat(parallel(-70, 120, 150))
-                        .concat(parallel(-80, 120, 150).reverse())
-                ]
-            },
-            {
-                type: "Polygon",
-                coordinates: [
-                    [[150,-70]]
-                        .concat(parallel(-70, 150, 180))
-                        .concat(parallel(-80, 150, 180).reverse())
-                ]
-            },
-            {
-                type: "Polygon",
-                coordinates: [
-                    [[-180,-70]]
-                        .concat(parallel(-70, -180, -150))
-                        .concat(parallel(-80, -180, -150).reverse())
-                ]
-            },
-            {
-                type: "Polygon",
-                coordinates: [
-                    [[-150,-70]]
-                        .concat(parallel(-70, -150, -120))
-                        .concat(parallel(-80, -150, -120).reverse())
-                ]
-            },
-            {
-                type: "Polygon",
-                coordinates: [
-                    [[-120,-70]]
-                        .concat(parallel(-70, -120, -90))
-                        .concat(parallel(-80, -120, -90).reverse())
-                ]
-            },
-            {
-                type: "Polygon",
-                coordinates: [
-                    [[-90,-60]]
-                        .concat(parallel(-60, -90, -60))
-                        .concat(parallel(-70, -90, -60).reverse())
-                ]
-            },
-            {
-                type: "Polygon",
-                coordinates: [
-                    [[-60,-60]]
-                        .concat(parallel(-60, -60, -30))
-                        .concat(parallel(-70, -60, -30).reverse())
-                ]
-            },
-            {
-                type: "Polygon",
-                coordinates: [
-                    [[-30,-60]]
-                        .concat(parallel(-60, -30, 0))
-                        .concat(parallel(-70, -30, 0).reverse())
-                ]
-            },
-            {
-                type: "Polygon",
-                coordinates: [
-                    [[0,-60]]
-                        .concat(parallel(-60, 0, 30))
-                        .concat(parallel(-70, 0, 30).reverse())
-                ]
-            },
-            {
-                type: "Polygon",
-                coordinates: [
-                    [[30,-60]]
-                        .concat(parallel(-60, 30, 60))
-                        .concat(parallel(-70, 30, 60).reverse())
-                ]
-            },
-            {
-                type: "Polygon",
-                coordinates: [
-                    [[60,-60]]
-                        .concat(parallel(-60, 60, 90))
-                        .concat(parallel(-70, 60, 90).reverse())
-                ]
-            },
-            {
-                type: "Polygon",
-                coordinates: [
-                    [[90,-60]]
-                        .concat(parallel(-60, 90, 120))
-                        .concat(parallel(-70, 90, 120).reverse())
-                ]
-            },
-            {
-                type: "Polygon",
-                coordinates: [
-                    [[120,-60]]
-                        .concat(parallel(-60, 120, 150))
-                        .concat(parallel(-70, 120, 150).reverse())
-                ]
-            },
-            {
-                type: "Polygon",
-                coordinates: [
-                    [[150,-60]]
-                        .concat(parallel(-60, 150, 180))
-                        .concat(parallel(-70, 150, 180).reverse())
-                ]
-            },
-            {
-                type: "Polygon",
-                coordinates: [
-                    [[180,-60]]
-                        .concat(parallel(-60, 180, -150))
-                        .concat(parallel(-70, 180, -150).reverse())
-                ]
-            },
-            {
-                type: "Polygon",
-                coordinates: [
-                    [[-150,-60]]
-                        .concat(parallel(-60, -150, -120))
-                        .concat(parallel(-70, -150, -120).reverse())
-                ]
-            },
-            {
-                type: "Polygon",
-                coordinates: [
-                    [[-120,-60]]
-                        .concat(parallel(-60, -120, -90))
-                        .concat(parallel(-70, -120, -90).reverse())
-                ]
-            }
-        ];
-
-        //Add each selection polygon to the SVG container
-        for(var i=0, len = Polygons.length; i<len; i++){
-            vis.append("path")
-                .datum(Polygons[i])
-                .attr("d", path)
-                .attr("fill", "rgba(255, 255, 255, 0)")
-                .attr("stroke", "rgba(51, 51, 51, 0.5)")
-                .attr("id", "quad" + i)
-                .attr("class", "quad")
-        };
-
-        //Handle click event for quadrants. Highlight area. Change chart data.
-        var quads = vis.selectAll(".quad");
-        quads.on("click", function(d, i){
-            routeService.selectedQuadAnt = "#" + this.id;
-            quads.attr('fill', 'rgba(255, 255, 255, 0)');
-            d3.select(this)
-                .attr('fill', 'rgba(0, 55, 109, 0.3)');
-
-            var xData = [],
-                yData = [];
-
-            var parseDate = d3.timeParse("%Y-%d-%m")
-
-            d3.csv("res/means.csv", function(data){
-
-                scatterFunc(data, i);
-
-            });
-
-        });
-
-        var g = vis.append("g");
-        return vis;
-    };
-
-    var chartDiv = document.getElementById("antarctic-historic-chart");
-    var chartHeight = chartDiv.offsetHeight;
-    var chartWidth = chartDiv.offsetWidth;
-
-    var scatterFunc = function(data, i){
-
-        var parseDate = d3.timeParse("%Y-%d-%m")
-
-        var xData = [],
-            yData = [],
-            season = [];
-
-        data.forEach(function(d){
-            xData.push(parseDate(d.date));
-            yData.push(parseFloat(d[i+1]));
-            season.push(d.season);
-        });
-
-        //Init SVG container, scales, axes
-        var vis = d3.select("#chart"),
-            WIDTH = chartWidth,
-            HEIGHT = chartHeight,
-            MARGINS = {
-                top: 15,
-                right: 20,
-                bottom: 75,
-                left: 60
-            },
-            xScale = d3.scaleTime()
-            .range([MARGINS.left, WIDTH - MARGINS.right])
-            .domain([new Date(xData[0]), new Date(xData[xData.length - 1])]),
-
-            yScale = d3.scaleLinear()
-            .range([HEIGHT - MARGINS.bottom, MARGINS.top])
-            .domain([0, d3.max(yData)]),
-
-            xAxis = d3.axisBottom().scale(xScale).tickArguments([6]),
-            yAxis = d3.axisLeft().scale(yScale).tickArguments([5]);
-        
-        //Clear all SVG elements.
-        vis.selectAll("svg > *").remove();
-
-        vis.append("svg:g")
-            .attr("class","axis")
-            .attr("transform", "translate(0," + (HEIGHT - MARGINS.bottom) + ")")
-            .call(xAxis)
-            .selectAll("text")
-            .style("font-size", "14px");
-
-        vis.append("svg:g")
-            .attr("class","axis")
-            .attr("transform", "translate(" + MARGINS.left + ",0)")
-            .call(yAxis)
-            .selectAll("text")
-            .style("font-size", "14px");
-
-        var lineGen = d3.line().x(function(d, i){
-            return xScale(xData[i]);
-        })
-        .y(function(d, i){
-            return yScale(yData[i]);
-        });
-
-        vis.selectAll(".dot")
-        .data(xData)
-        .enter().append("circle")
-        .attr("class","dot")
-        .attr('cx', function(d, i) { return xScale(xData[i]); })
-        .attr('cy', function(d, i) { return yScale(yData[i]); })
-        .style("stroke","#00338d")
-        .style("fill","#00338d")
-        .attr('r', 3);
-
-        vis.selectAll(".dot-touch")
-        .data(xData)
-        .enter().append("circle")
-        .attr("class", "dot-touch")
-        .attr('cx', function(d, i) { return xScale(xData[i]); })
-        .attr('cy', function(d, i) { return yScale(yData[i]); })
-        .style("stroke", "rgba(0, 55, 109, 0)")
-        .style("fill", "rgba(0, 55, 109, 0)")
-        .attr('id', function(d, i) { return season[i]; })
-        .attr('r', 6);
-        
-        var touchPoints = vis.selectAll(".dot-touch");
-
-        touchPoints.on("click", function(d, i){
-            var dotID = this.id;
-
-            for(var j = 0; j < $scope.iceOptions.length; j++){
-                if($scope.iceOptions[j].season == dotID){
-                    $scope.selectedIceAnt(j);
-                };
-            };
-        });
-
-        vis.select(routeService.iceSeasonAnt)
-            .style("fill", "rgba(0, 55, 109, 0)")
-            .style("stroke", "red")
-            .attr('r', 6);
-
-        vis.append("text")
-            .attr("class", "legend")
-            .attr("text-anchor", "middle")
-            .attr("x", MARGINS.left + (WIDTH-MARGINS.left-MARGINS.right)/2)
-            .attr("y", HEIGHT-(MARGINS.bottom/2))
-            .text("Year");
-
-        vis.append("text")
-            .attr("class", "legend")
-            .attr("text-anchor", "middle")
-            .attr("y", MARGINS.left/2.5)
-            .attr("x", -MARGINS.top-(HEIGHT-MARGINS.top-MARGINS.bottom)/2)
-            .attr("transform", "rotate(-90)")
-            .text("Mean Sea Ice Thickness (m)");
-
-    };
-
-    $ionicPlatform.ready(function(){
-
-        $scope.iceOptions = [
-            {
-                "name":"Jul 2010",
-                "file":"201007_thk.png",
-                "season":"Jul2010"
-            },
-            {
-                "name":"Aug 2010",
-                "file":"201008_thk.png",
-                "season":"Aug2010"
-            },
-            {
-                "name":"Sep 2010",
-                "file":"201009_thk.png",
-                "season":"Sep2010"
-            },
-            {
-                "name":"Oct 2010",
-                "file":"201010_thk.png",
-                "season":"Oct2010"
-            },
-            {
-                "name":"Nov 2010",
-                "file":"201011_thk.png",
-                "season":"Nov2010"
-            },
-            {
-                "name":"Dec 2010",
-                "file":"201012_thk.png",
-                "season":"Dec2010"
-            },
-            {
-                "name":"Jan 2011",
-                "file":"201101_thk.png",
-                "season":"Jan2011"
-            },
-            {
-                "name":"Feb 2011",
-                "file":"201102_thk.png",
-                "season":"Feb2011"
-            },
-            {
-                "name":"Mar 2011",
-                "file":"201103_thk.png",
-                "season":"Mar2011"
-            },
-            {
-                "name":"Apr 2011",
-                "file":"201104_thk.png",
-                "season":"Apr2011"
-            },
-            {
-                "name":"May 2011",
-                "file":"201105_thk.png",
-                "season":"May2011"
-            },
-            {
-                "name":"Jun 2011",
-                "file":"201106_thk.png",
-                "season":"Jun2011"
-            },
-            {
-                "name":"Jul 2011",
-                "file":"201107_thk.png",
-                "season":"Jul2011"
-            },
-            {
-                "name":"Aug 2011",
-                "file":"201108_thk.png",
-                "season":"Aug2011"
-            },
-            {
-                "name":"Sep 2011",
-                "file":"201109_thk.png",
-                "season":"Sep2011"
-            },
-            {
-                "name":"Oct 2011",
-                "file":"201110_thk.png",
-                "season":"Oct2011"
-            },
-            {
-                "name":"Nov 2011",
-                "file":"201111_thk.png",
-                "season":"Nov2011"
-            },
-            {
-                "name":"Dec 2011",
-                "file":"201112_thk.png",
-                "season":"Dec2011"
-            },
-            {
-                "name":"Jan 2012",
-                "file":"201201_thk.png",
-                "season":"Jan2012"
-            },
-            {
-                "name":"Feb 2012",
-                "file":"201202_thk.png",
-                "season":"Feb2012"
-            },
-            {
-                "name":"Mar 2012",
-                "file":"201203_thk.png",
-                "season":"Mar2012"
-            },
-            {
-                "name":"Apr 2012",
-                "file":"201204_thk.png",
-                "season":"Apr2012"
-            },
-            {
-                "name":"May 2012",
-                "file":"201205_thk.png",
-                "season":"May2012"
-            },
-            {
-                "name":"Jun 2012",
-                "file":"201206_thk.png",
-                "season":"Jun2012"
-            },
-            {
-                "name":"Jul 2012",
-                "file":"201207_thk.png",
-                "season":"Jul2012"
-            },
-            {
-                "name":"Aug 2012",
-                "file":"201208_thk.png",
-                "season":"Aug2012"
-            },
-            {
-                "name":"Sep 2012",
-                "file":"201209_thk.png",
-                "season":"Sep2012"
-            },
-            {
-                "name":"Oct 2012",
-                "file":"201210_thk.png",
-                "season":"Oct2012"
-            },
-            {
-                "name":"Nov 2012",
-                "file":"201211_thk.png",
-                "season":"Nov2012"
-            },
-            {
-                "name":"Dec 2012",
-                "file":"201212_thk.png",
-                "season":"Dec2012"
-            },
-            {
-                "name":"Jan 2013",
-                "file":"201301_thk.png",
-                "season":"Jan2013"
-            },
-            {
-                "name":"Feb 2013",
-                "file":"201302_thk.png",
-                "season":"Feb2013"
-            },
-            {
-                "name":"Mar 2013",
-                "file":"201303_thk.png",
-                "season":"Mar2013"
-            },
-            {
-                "name":"Apr 2013",
-                "file":"201304_thk.png",
-                "season":"Apr2013"
-            },
-            {
-                "name":"May 2013",
-                "file":"201305_thk.png",
-                "season":"May2013"
-            },
-            {
-                "name":"Jun 2013",
-                "file":"201306_thk.png",
-                "season":"Jun2013"
-            },
-            {
-                "name":"Jul 2013",
-                "file":"201307_thk.png",
-                "season":"Jul2013"
-            },
-            {
-                "name":"Aug 2013",
-                "file":"201308_thk.png",
-                "season":"Aug2013"
-            },
-            {
-                "name":"Sep 2013",
-                "file":"201309_thk.png",
-                "season":"Sep2013"
-            },
-            {
-                "name":"Oct 2013",
-                "file":"201310_thk.png",
-                "season":"Oct2013"
-            },
-            {
-                "name":"Nov 2013",
-                "file":"201311_thk.png",
-                "season":"Nov2013"
-            },
-            {
-                "name":"Dec 2013",
-                "file":"201312_thk.png",
-                "season":"Dec2013"
-            },
-            {
-                "name":"Jan 2014",
-                "file":"201401_thk.png",
-                "season":"Jan2014"
-            },
-            {
-                "name":"Feb 2014",
-                "file":"201402_thk.png",
-                "season":"Feb2014"
-            },
-            {
-                "name":"Mar 2014",
-                "file":"201403_thk.png",
-                "season":"Mar2014"
-            },
-            {
-                "name":"Apr 2014",
-                "file":"201404_thk.png",
-                "season":"Apr2014"
-            },
-            {
-                "name":"May 2014",
-                "file":"201405_thk.png",
-                "season":"May2014"
-            },
-            {
-                "name":"Jun 2014",
-                "file":"201406_thk.png",
-                "season":"Jun2014"
-            },
-            {
-                "name":"Jul 2014",
-                "file":"201407_thk.png",
-                "season":"Jul2014"
-            },
-            {
-                "name":"Aug 2014",
-                "file":"201408_thk.png",
-                "season":"Aug2014"
-            },
-            {
-                "name":"Sep 2014",
-                "file":"201409_thk.png",
-                "season":"Sep2014"
-            },
-            {
-                "name":"Oct 2014",
-                "file":"201410_thk.png",
-                "season":"Oct2014"
-            },
-            {
-                "name":"Nov 2014",
-                "file":"201411_thk.png",
-                "season":"Nov2014"
-            },
-            {
-                "name":"Dec 2014",
-                "file":"201412_thk.png",
-                "season":"Dec2014"
-            },
-            {
-                "name":"Jan 2015",
-                "file":"201501_thk.png",
-                "season":"Jan2015"
-            },
-            {
-                "name":"Feb 2015",
-                "file":"201502_thk.png",
-                "season":"Feb2015"
-            },
-            {
-                "name":"Mar 2015",
-                "file":"201503_thk.png",
-                "season":"Mar2015"
-            },
-            {
-                "name":"Apr 2015",
-                "file":"201504_thk.png",
-                "season":"Apr2015"
-            },
-            {
-                "name":"May 2015",
-                "file":"201505_thk.png",
-                "season":"May2015"
-            },
-            {
-                "name":"Jun 2015",
-                "file":"201506_thk.png",
-                "season":"Jun2015"
-            },
-            {
-                "name":"Jul 2015",
-                "file":"201507_thk.png",
-                "season":"Jul2015"
-            },
-            {
-                "name":"Aug 2015",
-                "file":"201508_thk.png",
-                "season":"Aug2015"
-            },
-            {
-                "name":"Sep 2015",
-                "file":"201509_thk.png",
-                "season":"Sep2015"
-            },
-            {
-                "name":"Oct 2015",
-                "file":"201510_thk.png",
-                "season":"Oct2015"
-            },
-            {
-                "name":"Nov 2015",
-                "file":"201511_thk.png",
-                "season":"Nov2015"
-            },
-            {
-                "name":"Dec 2015",
-                "file":"201512_thk.png",
-                "season":"Dec2015"
-            },
-            {
-                "name":"Jan 2016",
-                "file":"201601_thk.png",
-                "season":"Jan2016"
-            },
-            {
-                "name":"Feb 2016",
-                "file":"201602_thk.png",
-                "season":"Feb2016"
-            },
-            {
-                "name":"Mar 2016",
-                "file":"201603_thk.png",
-                "season":"Mar2016"
-            },
-            {
-                "name":"Apr 2016",
-                "file":"201604_thk.png",
-                "season":"Apr2016"
-            }
-        ];
-
-        $scope.value = 'Sep 2014';
-        $scope.rangeConfig = {
-            min:'0',
-            max: ($scope.iceOptions.length - 1).toString(),
-            value:'50'
-        };
-
-        $scope.dontShow = {
-            checked: false
-        };
-
-        routeService.selectedIceAnt = $scope.iceOptions[50].file;
-        routeService.iceSeasonAnt = "#" + $scope.iceOptions[50].season;
-        routeService.selectedQuadAnt = "#quad0";
-
-        //Handle reload on new ice data selected
-        $scope.selectedSeaIce = function(mySelect){
-            //Set ice data label to selected date
-            $scope.value = $scope.iceOptions[mySelect].name;
-            routeService.iceSeasonAnt = "#" + $scope.iceOptions[mySelect].season;
-
-            //Set selected ice image from slider
-            routeService.selectedIceAnt = $scope.iceOptions[mySelect].file;
-            //Call mapFunction with new selected ice image
-            var vis = mapFunc();
-
-            //Select reference point and highlight
-            try {
-
-                d3.selectAll(".dot-touch")
-                    .style("fill", "rgba(0, 55, 109, 0)")
-                    .style('stroke', 'rgba(0, 55, 109, 0)')
-                    .attr('r', 3);
-
-                d3.select(routeService.iceSeasonAnt)
-                    .style('fill', 'rgba(0, 55, 109, 0)')
-                    .style('stroke', 'red')
-                    .attr('r', 6);
-
-                
-            } catch(error) {
-                console.log(error);
-            }
-
-            //If quad was selected before, reselect and fill.
-            try {
-                selectedQuad = routeService.selectedQuadAnt;
-
-                d3.select(selectedQuad)
-                    .attr('fill', 'rgba(0, 55, 109, 0.3)');
-
-            } catch(error) {
-                console.log(error);
-            };
-
-        };
-
-        $scope.closeModal = function(){
-            if(window.Statusbar){
-                StatusBar.backgroundColorByHexString("#00338d");
-            };
-            $scope.modal.hide();
-            $scope.modal.remove();
-        };
-
-        $scope.iceInfo = function(){
-            $ionicModal.fromTemplateUrl('templates/ice-modal.html', {
-                scope: $scope,
-                animation: 'slide-in-up'
-            }).then(function(modal){
-                $scope.modal = modal;
-                if(window.Statusbar){
-                    Statusbar.backgroundColorByHexString("#ffffff");
-                };
-                $scope.modal.show();
-            });
-        };
-
-        var vis = mapFunc();
-        vis.select("#quad0")
-            .attr('fill', 'rgba(0, 51, 141, 0.3)');
-        
-        d3.csv("res/means_ice_ant.csv", function(data){
-            scatterFunc(data, 0);
-        });
-    });
 })
 
 .controller('routeTrackCtrl', function($scope, $state, $ionicPlatform, $cordovaToast, $ionicPopup, $cordovaBackgroundGeolocation, $cordovaGeolocation, $interval, $ionicLoading, routeService, $ionicActionSheet, $cordovaFile, $ionicListDelegate, $http, locationUpdateService, routeHolder){
@@ -2669,8 +1875,44 @@ angular.module('app.controllers', [])
             $scope.userRoutes = [];
         });
 
+        $scope.$on("$ionicView.enter", function(){
+            if(routeHolder.returnToRouteTrack_process == true){
+                var alertPopup = $ionicPopup.show({
+                    title: "Route Processing",
+                    subTitle: "Route needs processing before sea ice trends can be viewed",
+                    template: '<p style="text-align:center">To view sea ice trends along your route, please swipe your route to the left and select "Process" from the More menu. This will require a stable internet connection.</p>',
+                    buttons: [
+                        { text: 'OK'}
+                    ]
+                });
+                alertPopup.then(function(res){
+                    console.log("Alert tapped!");
+                    routeHolder.returnToRouteTrack_process = false;
+                });
+            };
+
+            if(routeHolder.returnAndProcess == true){
+                processRoute(routeService.selectedRoute);
+                routeHolder.returnAndProcess = false;
+            };
+
+            if(routeHolder.returnToRouteTrack_empty == true){
+                var alertPopup = $ionicPopup.show({
+                    title: "Route Empty",
+                    template: "This route file is empty. This normally happens if the route tracking is stopped before a location point is recorded. Recommended action is to delete the route.",
+                    buttons: [
+                        { text: 'OK'}
+                    ]
+                });
+                alertPopup.then(function(res){
+                    console.log("Alert tapped");
+                    routeHolder.returnToRouteTrack_empty = false;
+                });
+            };
+        });
+
         //If platform is iOS, use Christocracy plugin
-        if(ionic.Platform.isIOS){
+        if(ionic.Platform.isIOS()){
             console.log("Platform is iOS");
             // Get a reference to the plugin.
             var bgGeo = window.BackgroundGeolocation;
@@ -2724,7 +1966,6 @@ angular.module('app.controllers', [])
                 console.log('[bgGeo] ready: ', state);
             });
 
-            //TODO: sort out checkbox below
             $scope.startGeoTemplate = '<p style="text-align:center">Do you want to begin recording your location? </br></br>In order to view sea ice trends along a route, swipe it to the left and select "Process" from the More menu. The route will not be saved on our server unless you choose to by selecting "Share with us" from the More menu. </br></br> Please do not force kill the app whilst recording (Double-press Home, swipe app out of recents) as this will prevent the route from saving correctly.</p>';
 
             $scope.startGeolocation = function(){
@@ -2750,7 +1991,9 @@ angular.module('app.controllers', [])
                         var year = new Date().getFullYear(),
                             date = new Date().getDate(),
                             month = new Date().getMonth(),
-                            date_string = date + "_" + month + "_" + year;
+                            hour = new Date().getHours(),
+                            minute = new Date().getMinutes(),
+                            date_string = hour + "_" + minute + "_" + date + "_" + month + "_" + year;
 
                         routeHolder.routeName = "route_" + date_string + ".json";
 
@@ -2828,22 +2071,23 @@ angular.module('app.controllers', [])
                             var route_json = locationUpdateService.tempJson,
                                 route_str = JSON.stringify(route_json);
                                 route_json_str = '[' + route_str.slice(1,-1) + ']';
-                            $cordovaFile.checkFile($scope.fileDir, routeHolder.routeName).then(function(success){
-                                $cordovaFile.writeExistingFile($scope.fileDir, routeHolder.routeName, route_json_str, true).then(function(success){
-                                    console.log('[bgGeo] Route written to file.');
-                                    console.log('[bgGeo] Route coords: ' + JSON.stringify(route_json));
-                                    locationUpdateService.clearTemp();
-                                }, function(error){
-                                    console.log('[bgGeo] Route could not be written to file.', JSON.stringify(error));
-                                });
-                            }, function(error){
-                                console.log('[bgGeo] Route file does not exist.');
-                                alert("[bgGeo] Could not find route file.");
-                            });
                         } catch(error) {
                             console.log("[bgGeo] Could not find routeJson in window.localStorage.", error);
-                            alert("[bgGeo] Could not find route file.");
+                            // alert("[bgGeo] Could not find route file.");
+                            route_json_str = '[]';
                         };
+                        $cordovaFile.checkFile($scope.fileDir, routeHolder.routeName).then(function(success){
+                            $cordovaFile.writeExistingFile($scope.fileDir, routeHolder.routeName, route_json_str, true).then(function(success){
+                                console.log('[bgGeo] Route written to file.');
+                                console.log('[bgGeo] Route coords: ' + JSON.stringify(route_json));
+                                locationUpdateService.clearTemp();
+                            }, function(error){
+                                console.log('[bgGeo] Route could not be written to file.', JSON.stringify(error));
+                            });
+                        }, function(error){
+                            console.log('[bgGeo] Route file does not exist.');
+                            alert("[bgGeo] Could not find route file.");
+                        });
                         bgGeo.stop();
                         $scope.isRecording = false;
                         console.log('[bgGeo] Tracking stopped.');
@@ -2855,11 +2099,188 @@ angular.module('app.controllers', [])
 
 
         } else {
-            console.log("Error: Platform is not iOS");
-            alert("There has been a fatal error. Platform not recognised as iOS. Please contact the developer.");
+            //If platform is Android, use mauron85 plugin
+            console.log("Platform is Android");
+
+            if(typeof locationUpdateService.tempJson !== 'undefined'){
+                $scope.isRecording = true;
+            } else {
+                $scope.isRecording = false;
+            };
+
+            var bgOptions = {
+                stationaryRadius: 50,
+                distanceFilter: 10,
+                desiredAccuracy: 0,
+                debug: false,
+                notificationTitle: 'SeaIce Tracking',
+                notificationText: 'Your route is being tracked!',
+                notificationIconColor: '#00388d',
+                notificationIconLarge: 'mappointer_large',
+                notificationIconSmall: 'mappointer_small',
+                locationProvider: 0,//backgroundGeolocation.provider.ANDROID_DISTANCE_FILTER_PROVIDER,
+                interval: 5000,
+                fastestInterval: 5000,
+                stopOnTerminate: true,
+                startOnBoot: false,
+                startForeground: true,
+                activityType: 'AutomotiveNavigation',
+                pauseLocationUpdates: false,
+                saveBatteryOnBackground: false
+            };
+
+            var bgGeo = window.backgroundGeoLocation;
+
+            var callbackFn = function(location){
+                var lat = location.latitude;
+                var lon = location.longitude;
+
+                var coords = { 'latitude' : lat, 'longitude' : lon };
+                console.log('[bgGeo] location: ' + JSON.stringify(location));
+                locationUpdateService.updateLoc(coords);
+
+                bgGeo.finish();
+            };
+
+            var failureFn = function(error){
+                console.log('[bgGeo] error: ', error);
+            };
+
+            bgGeo.configure(callbackFn, failureFn, bgOptions);
+
+            $scope.startGeoTemplate = '<p style="text-align:center">Do you want to begin recording your location? </br></br>In order to view sea ice trends along a route, swipe it to the left and select "Process" from the More menu. The route will not be saved on our server unless you choose to by selecting "Share with us" from the More menu. </br></br> Please do not force kill the app whilst recording (Double-press Home, swipe app out of recents) as this will prevent the route from saving correctly.</p>';
+
+            $scope.startGeolocation = function(){
+                var confirmPopup = $ionicPopup.show({
+                    title: 'Location Tracking',
+                    template: $scope.startGeoTemplate,
+                    scope: $scope,
+                    buttons: [
+                        { 
+                            text: 'Cancel'
+                        },
+                        {
+                            text: 'OK',
+                            type: 'button-positive',
+                            onTap: function(e) {
+                                return true;
+                            }
+                        }
+                    ]
+                });
+                confirmPopup.then(function(res){
+                    if(res){
+                        var year = new Date().getFullYear(),
+                            date = new Date().getDate(),
+                            month = new Date().getMonth(),
+                            hour = new Date().getHours(),
+                            minute = new Date().getMinutes(),
+                            date_string = hour + "_" + minute + "_" + date + "_" + month + "_" + year;
+
+                        routeHolder.routeName = "route_" + date_string + ".json";
+
+                        $cordovaFile.createFile($scope.fileDir, routeHolder.routeName, true);
+                        bgGeo.start();
+                        $scope.isRecording = true;
+                        console.log('[bgGeo] Tracking started.');
+                        console.log('[bgGeo] Route file created');
+                    } else {
+                        console.log('[bgGeo] Begin tracking cancelled by user.');
+                    };
+                });
+            };
+
+            $scope.stopGeolocation = function(){
+                var confirmPopup = $ionicPopup.show({
+
+                    template: '<input type="text" name="namer" ng-model="data.name" required>',
+                    title: 'Location Tracking',
+                    subTitle: 'Please enter a name for this track to stop recording:',
+                    scope: $scope,
+                    buttons: [
+                        { text: 'Cancel'},
+                        {
+                            text: '<b>Save</b>',
+                            type: 'button-bright',
+                            onTap: function(e){
+                                if(!$scope.data.name){
+                                    alert('You have to name your route before you can save it.');
+                                    e.preventDefault();
+                                } else {
+                                    var json_entry = { "name" : $scope.data.name, "filename" : $scope.fileDir + routeHolder.routeName, "file" : routeHolder.routeName };
+                                    //Check route database exists
+                                    $cordovaFile.checkFile($scope.fileDir, "userRoutes.json").then(function(success){
+                                        //Read it in it's current state
+                                        $cordovaFile.readAsText($scope.fileDir, "userRoutes.json").then(function(success){
+                                            //Add new string to file
+                                            var updated_text = success + ',' + JSON.stringify(json_entry);
+                                            //Write updated string to file
+                                            $cordovaFile.writeFile($scope.fileDir, "userRoutes.json", updated_text, true).then(function(){
+                                                //Re-read file and parse to a json object for list
+                                                $cordovaFile.readAsText($scope.fileDir, "userRoutes.json").then(function(success){
+                                                    console.log("User routes read.");
+                                                    var user_route_json = '[' + success + ']';
+                                                    $scope.userRoutes = JSON.parse(user_route_json);
+                                                }, function(error){
+                                                    console.log("Error reading userRoutes.json as text: " + error);
+                                                });
+                                            });
+                                        });
+                                    }, function(error){
+                                        //userRoute.json does not exist
+                                        var initial_entry = JSON.stringify(json_entry)
+                                        $cordovaFile.writeFile($scope.fileDir, "userRoutes.json", initial_entry, true).then(function(){
+                                            $cordovaFile.readAsText($scope.fileDir, "userRoutes.json").then(function(success){
+                                                console.log("User routes read.");
+                                                var user_route_json = '[' + success + ']';
+                                                $scope.userRoutes = JSON.parse(user_route_json);
+                                            }, function(error){
+                                                console.log("Error reading userRoutes.json as text.", error);
+                                            });
+                                        });
+                                    });
+
+                                    return $scope.data.name;
+                                };
+                            }
+                        }
+                    ]
+                });
+                confirmPopup.then(function(res){
+                    if(res){
+                        try {
+                            var route_json = locationUpdateService.tempJson,
+                                route_str = JSON.stringify(route_json);
+                                route_json_str = '[' + route_str.slice(1,-1) + ']';
+                        } catch(error) {
+                            console.log("[bgGeo] Could not find routeJson in window.localStorage.", error);
+                            // alert("[bgGeo] Could not find route file.");
+                            route_json_str = '[]';
+                        };
+                        $cordovaFile.checkFile($scope.fileDir, routeHolder.routeName).then(function(success){
+                            $cordovaFile.writeExistingFile($scope.fileDir, routeHolder.routeName, route_json_str, true).then(function(success){
+                                console.log('[bgGeo] Route written to file.');
+                                console.log('[bgGeo] Route coords: ' + JSON.stringify(route_json));
+                                locationUpdateService.clearTemp();
+                            }, function(error){
+                                console.log('[bgGeo] Route could not be written to file.', JSON.stringify(error));
+                            });
+                        }, function(error){
+                            console.log('[bgGeo] Route file does not exist.');
+                            alert("[bgGeo] Could not find route file.");
+                        });
+                        bgGeo.stop();
+                        $scope.isRecording = false;
+                        console.log('[bgGeo] Tracking stopped.');
+                    } else {
+                        console.log('[bgGeo] End tracking cancelled by user.');
+                    }
+                });
+            };
+
         };
 
-});
+    });
 })
 
 .controller('aboutCtrl', function($scope, $ionicPlatform, $cordovaFile, $ionicPopup){
@@ -2928,7 +2349,12 @@ angular.module('app.controllers', [])
                 }
             } else {
                 console.log('[SendMail] Email plugin is not available');
-                alert("This feature is currently not working on your device. Please email me at py14sts@leeds.ac.uk");
+                $scope.feedbackMail = function(){
+                    alert("The email feature is not currently working on your device. Please email me at py14sts@leeds.ac.uk if you have any feedback.");
+                };
+                $scope.cpomMail = function(mailAddress){
+                    alert("The email feature is not currently working on your device. Please email me at py14sts@leeds.ac.uk if you have any feedback.");
+                };
             };
         });
 
@@ -2955,66 +2381,6 @@ angular.module('app.controllers', [])
             });
         };
 
-    });
-
-})
-
-.controller('dlCtrl', function($scope, $http, $ionicLoading, $ionicPlatform, $ionicPopup){
-
-    var popUpTemplate = '<p style="text-align: center">The remote server could not be accessed. Please try again later.</p>';
-
-    var downloadImage = function(file){
-        //TODO: Download image function here
-    };
-
-    var loadingTemplate = "<div style='margin:-20px;padding:15px;border-radius:7px;background-color:#00338d'; text-align:center>Processing.</br>This can take a few minutes.</br><ion-spinner class='spinner-light' icon='ripple'></ion-spinner></div>";
-
-    $scope.postReq2 = function(){
-        $http({
-            method: 'POST',
-            url: "http://cryoapp.leeds.ac.uk/post2",
-            headers: 'application/json',
-            data: dataObj
-        }).then(function(success){
-            console.log(success.data);
-        }, function(error){
-            console.log("error: " + error);
-        });
-    };
-
-    $scope.getRequest = function(){
-        $scope.$broadcast('scroll.refreshComplete');
-        $http({
-            method: 'POST',
-            url: "http://cryoapp.leeds.ac.uk/getData",
-            headers: 'application/json',
-            data: ""
-        }).then(function(success){
-            $scope.data = success.data;
-            console.log(JSON.stringify(success));
-        }, function(error){
-            console.log("error: " + JSON.stringify(error));
-            var alertPopup = $ionicPopup.show({
-                title: 'Remote Server',
-                template: popUpTemplate,
-                buttons: [
-                    { text: 'OK'}
-                ]
-            });
-            alertPopup.then(function(res){
-                console.log("Alert tapped!");
-            });
-        });
-    };
-
-    $scope.itemClick = function(object){
-        var index = $scope.data.indexOf(object);
-        alert("This will download the " + $scope.data[index].name + " dataset.");
-        //TODO: Download ice image here. POST2 Request.
-    };
-
-    $ionicPlatform.ready(function(){
-        $scope.getRequest();
     });
 
 })

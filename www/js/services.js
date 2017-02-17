@@ -43,5 +43,8 @@ angular.module('app.services', [])
 .service('routeHolder', [function(){
 
     this.routeName;
+    this.returnToRouteTrack_empty = false;
+    this.returnToRouteTrack_process = false;
+    this.returnAndProcess = false;
 
 }])

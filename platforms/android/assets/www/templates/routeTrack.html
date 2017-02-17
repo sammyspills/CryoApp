@@ -52,19 +52,9 @@
     <ion-content padding="false" class="has-header">
         <div class="list card" id="route-card-1">
             <div class="padding">
-                <p style="text-align:justify; color:gray; font-size:15px">Route tracking will use the phones GPS to record your position once every hour, and then plot your route on a map once recording is stopped. In order to view sea ice trends along a route, swipe it to the left and select 'Process' from the More menu. The route will not be saved on our servers unless you choose to by selecting 'Share with us' from the More menu.</p>
+                <p style="text-align:justify; color:gray; font-size:15px">Route tracking will use the phones GPS to record your position when it moves significantly, and then plot your route on a map once recording is stopped.</p>
                 <button class="button button-positive" style="width:45%;margin-left:2%;margin-right:2%"ng-disabled="isRecording" ng-click="startGeolocation()">Start Recording</button>
                 <button class="button button-assertive" style="width:45%;margin-left:2%;margin-right:2%" ng-click="stopGeolocation()" ng-disabled="!isRecording">Stop Recording</button>
-            </div>
-            <div class="item-divider">
-                <label class="item item-input item-select item-divider" style="height:40px">
-                    <div class="input-label">
-                        Recording Interval:
-                    </div>
-                    <select ng-disabled="isRecording" id="intervalSelect" ng-model="mySelect" ng-change="selectedInterval(mySelect)">
-                        <option ng-selected="{{obj.value == defaultInterval}}" ng-repeat="obj in intervalOptions" value="{{obj}}">{{obj.value}}</option>
-                    </select>
-                </label>
             </div>
         </div>
         <div class="list card" id="sea-ice-card">
@@ -88,9 +78,6 @@
                 <ion-item class="item-icon-left shady item-text-wrap" ng-repeat="route in exampleRoutes" ng-click="mapScreenExample(route)">
                     <i class="icon ion-ios-location-outline"></i>
                     {{route.name}}
-                    <ion-option-button class="button-calm" ng-click="editItem(route)">
-                        More
-                    </ion-option-button>
                 </ion-item>
             </ion-list>
         </div>

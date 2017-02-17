@@ -136,9 +136,20 @@
             <div class="upper-right" ng-click="iceInfo()">
                 <img src="img/ice_cbs/201604_thk_cb.png" height="100%"/>
             </div>
-            <div class="">
-                <div style="height:50vh;" id="chart-div">
+            <div class="" ng-show="!processButtonShow">
+                <div style="height:47vh;" id="chart-div">
                     <svg id="visualisation" width="100%" height="100%"></svg>
+                </div>
+            </div>
+            <div ng-show="processButtonShow" style="padding: 5px">
+                <div class="item item-divider">
+                    <h4 style="text-align: center; font-size: 18px">Route Processing</h4>
+                </div>
+                <div style="padding-left: 5px; padding-right: 5px;">
+                    <button id="process-button" class="button button-positive button-block" ng-click="processButtonPressed()">Process Route</button>
+                    <h4 style="font-size: 19px; text-align: center;">
+                        This route has not yet been processed. In order to view ice thickness data, tap the above button.
+                    </h4>
                 </div>
             </div>
         </div>

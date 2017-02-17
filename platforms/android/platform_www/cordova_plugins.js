@@ -1,52 +1,11 @@
 cordova.define('cordova/plugin_list', function(require, exports, module) {
 module.exports = [
     {
-        "id": "cordova-plugin-dialogs.notification",
-        "file": "plugins/cordova-plugin-dialogs/www/notification.js",
-        "pluginId": "cordova-plugin-dialogs",
-        "merges": [
-            "navigator.notification"
-        ]
-    },
-    {
-        "id": "cordova-plugin-dialogs.notification_android",
-        "file": "plugins/cordova-plugin-dialogs/www/android/notification.js",
-        "pluginId": "cordova-plugin-dialogs",
-        "merges": [
-            "navigator.notification"
-        ]
-    },
-    {
-        "id": "cordova-plugin-background-fetch.BackgroundFetch",
-        "file": "plugins/cordova-plugin-background-fetch/www/BackgroundFetch.js",
-        "pluginId": "cordova-plugin-background-fetch",
-        "clobbers": [
-            "window.BackgroundFetch"
-        ]
-    },
-    {
-        "id": "com.transistorsoft.cordova.background-geolocation.BackgroundGeolocation",
-        "file": "plugins/com.transistorsoft.cordova.background-geolocation/www/BackgroundGeolocation.js",
-        "pluginId": "com.transistorsoft.cordova.background-geolocation",
-        "clobbers": [
-            "window.BackgroundGeolocation"
-        ]
-    },
-    {
         "id": "cordova-plugin-device.device",
         "file": "plugins/cordova-plugin-device/www/device.js",
         "pluginId": "cordova-plugin-device",
         "clobbers": [
             "device"
-        ]
-    },
-    {
-        "id": "cordova-plugin-email.EmailComposer",
-        "file": "plugins/cordova-plugin-email/www/email_composer.js",
-        "pluginId": "cordova-plugin-email",
-        "clobbers": [
-            "cordova.plugins.email",
-            "plugin.email"
         ]
     },
     {
@@ -223,59 +182,12 @@ module.exports = [
         "runs": true
     },
     {
-        "id": "cordova-plugin-file-transfer.FileTransferError",
-        "file": "plugins/cordova-plugin-file-transfer/www/FileTransferError.js",
-        "pluginId": "cordova-plugin-file-transfer",
-        "clobbers": [
-            "window.FileTransferError"
-        ]
-    },
-    {
-        "id": "cordova-plugin-file-transfer.FileTransfer",
-        "file": "plugins/cordova-plugin-file-transfer/www/FileTransfer.js",
-        "pluginId": "cordova-plugin-file-transfer",
-        "clobbers": [
-            "window.FileTransfer"
-        ]
-    },
-    {
-        "id": "cordova-plugin-geolocation.geolocation",
-        "file": "plugins/cordova-plugin-geolocation/www/android/geolocation.js",
-        "pluginId": "cordova-plugin-geolocation",
-        "clobbers": [
-            "navigator.geolocation"
-        ]
-    },
-    {
-        "id": "cordova-plugin-geolocation.PositionError",
-        "file": "plugins/cordova-plugin-geolocation/www/PositionError.js",
-        "pluginId": "cordova-plugin-geolocation",
-        "runs": true
-    },
-    {
         "id": "cordova-plugin-inappbrowser.inappbrowser",
         "file": "plugins/cordova-plugin-inappbrowser/www/inappbrowser.js",
         "pluginId": "cordova-plugin-inappbrowser",
         "clobbers": [
             "cordova.InAppBrowser.open",
             "window.open"
-        ]
-    },
-    {
-        "id": "cordova-plugin-network-information.network",
-        "file": "plugins/cordova-plugin-network-information/www/network.js",
-        "pluginId": "cordova-plugin-network-information",
-        "clobbers": [
-            "navigator.connection",
-            "navigator.network.connection"
-        ]
-    },
-    {
-        "id": "cordova-plugin-network-information.Connection",
-        "file": "plugins/cordova-plugin-network-information/www/Connection.js",
-        "pluginId": "cordova-plugin-network-information",
-        "clobbers": [
-            "Connection"
         ]
     },
     {
@@ -295,27 +207,6 @@ module.exports = [
         ]
     },
     {
-        "id": "cordova-plugin-x-toast.Toast",
-        "file": "plugins/cordova-plugin-x-toast/www/Toast.js",
-        "pluginId": "cordova-plugin-x-toast",
-        "clobbers": [
-            "window.plugins.toast"
-        ]
-    },
-    {
-        "id": "cordova-plugin-x-toast.tests",
-        "file": "plugins/cordova-plugin-x-toast/test/tests.js",
-        "pluginId": "cordova-plugin-x-toast"
-    },
-    {
-        "id": "cordova-sqlite-storage.SQLitePlugin",
-        "file": "plugins/cordova-sqlite-storage/www/SQLitePlugin.js",
-        "pluginId": "cordova-sqlite-storage",
-        "clobbers": [
-            "SQLitePlugin"
-        ]
-    },
-    {
         "id": "ionic-plugin-keyboard.keyboard",
         "file": "plugins/ionic-plugin-keyboard/www/android/keyboard.js",
         "pluginId": "ionic-plugin-keyboard",
@@ -325,37 +216,48 @@ module.exports = [
         "runs": true
     },
     {
-        "id": "me.rahul.plugins.sqlDB.sqlDB",
-        "file": "plugins/me.rahul.plugins.sqlDB/www/sqlDB.js",
-        "pluginId": "me.rahul.plugins.sqlDB",
+        "id": "cordova-plugin-email.EmailComposer",
+        "file": "plugins/cordova-plugin-email/www/email_composer.js",
+        "pluginId": "cordova-plugin-email",
         "clobbers": [
-            "window.plugins.sqlDB"
+            "cordova.plugins.email",
+            "plugin.email"
+        ]
+    },
+    {
+        "id": "cordova-plugin-email-composer.EmailComposer",
+        "file": "plugins/cordova-plugin-email-composer/www/email_composer.js",
+        "pluginId": "cordova-plugin-email-composer",
+        "clobbers": [
+            "cordova.plugins.email",
+            "plugin.email"
+        ]
+    },
+    {
+        "id": "cordova-plugin-mauron85-background-geolocation.backgroundGeolocation",
+        "file": "plugins/cordova-plugin-mauron85-background-geolocation/www/backgroundGeolocation.js",
+        "pluginId": "cordova-plugin-mauron85-background-geolocation",
+        "clobbers": [
+            "backgroundGeolocation"
         ]
     }
 ];
 module.exports.metadata = 
 // TOP OF METADATA
 {
-    "cordova-plugin-dialogs": "1.3.1",
-    "cordova-plugin-background-fetch": "4.0.0",
-    "com.transistorsoft.cordova.background-geolocation": "2.3.0",
     "cordova-plugin-cocoalumberjack": "0.0.1",
-    "cordova-plugin-compat": "1.0.0",
-    "cordova-plugin-console": "1.0.3",
-    "cordova-plugin-device": "1.1.2",
-    "cordova-plugin-email": "1.1.1",
-    "cordova-plugin-file": "4.3.0",
-    "cordova-plugin-file-transfer": "1.6.0",
-    "cordova-plugin-geolocation": "2.2.0",
-    "cordova-plugin-inappbrowser": "1.4.0",
-    "cordova-plugin-network-information": "1.2.1",
-    "cordova-plugin-splashscreen": "3.2.2",
-    "cordova-plugin-statusbar": "2.1.3",
-    "cordova-plugin-whitelist": "1.2.2",
-    "cordova-plugin-x-toast": "2.5.2",
-    "cordova-sqlite-storage": "1.4.6",
+    "cordova-plugin-compat": "1.1.0",
+    "cordova-plugin-console": "1.0.5",
+    "cordova-plugin-device": "1.1.4",
+    "cordova-plugin-file": "4.3.1",
+    "cordova-plugin-inappbrowser": "1.6.1",
+    "cordova-plugin-splashscreen": "4.0.1",
+    "cordova-plugin-statusbar": "2.2.1",
+    "cordova-plugin-whitelist": "1.3.1",
     "ionic-plugin-keyboard": "2.2.1",
-    "me.rahul.plugins.sqlDB": "1.0.3"
+    "cordova-plugin-email": "1.2.6",
+    "cordova-plugin-email-composer": "0.8.3",
+    "cordova-plugin-mauron85-background-geolocation": "2.2.5"
 };
 // BOTTOM OF METADATA
 });

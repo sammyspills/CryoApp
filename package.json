@@ -26,7 +26,9 @@
     "cordova-plugin-inappbrowser",
     "ionic-plugin-keyboard",
     "cordova-plugin-file",
-    "cordova-background-geolocation-lt"
+    "cordova-plugin-email-composer@0.8.3",
+    "cordova-plugin-email",
+    "cordova-plugin-mauron85-background-geolocation"
   ],
   "cordovaPlatforms": [
     "android",
